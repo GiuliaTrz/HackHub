@@ -23,6 +23,6 @@ public class Report {
     private List<UtenteRegistrato> mentorsList;
     private Soldi moneyPrice;
     private Giudice judge;
-    private Organizzatore coordinator;
-    private Prenotazione reservation;
+    private final Organizzatore coordinator;
+    private final Prenotazione reservation;
 }
