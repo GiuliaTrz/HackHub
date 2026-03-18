@@ -1,7 +1,5 @@
 package com.project.hackhub.model.hackathon.state;
 
-import com.project.hackhub.observer.HackathonStateType;
-
 public class HackathonStateFactory {
 
     public HackathonState createState(){

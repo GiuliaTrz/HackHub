@@ -1,4 +1,4 @@
-package com.project.hackhub.model.hackathon.state;
+package com.project.hackhub.observer;
 
 public enum EventType {
     ELIMINAZIONE_HACKATHON, NUOVO_LEADER, SCELTA_VINCITORE, INVITO_UTENTE,
