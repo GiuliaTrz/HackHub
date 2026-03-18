@@ -26,8 +26,6 @@ public class Hackathon {
     private Organizzatore coordinator;
     private Prenotazione reservation;
 
-
-
     public void addMentor(UtenteRegistrato u){
         mentorsList.add(u);
     }
@@ -36,13 +34,10 @@ public class Hackathon {
         this.state = hs;
     }
 
-    public HackathonState getState(){
-        return this.state;
-    }
+    public HackathonState getState(){return this.state;}
 
     public boolean removeTeam(Team t){
-        teamsList.remove(t);
-        return true;
+        return teamsList.remove(t);
     }
 
 
