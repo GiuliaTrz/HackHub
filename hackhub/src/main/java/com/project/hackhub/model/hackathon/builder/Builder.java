@@ -6,6 +6,7 @@ import com.project.hackhub.model.hackathon.Soldi;
 import com.project.hackhub.model.utente.UtenteRegistrato;
 
 import java.time.LocalDate;
+import java.util.List;
 
 public interface Builder {
 
@@ -16,8 +17,7 @@ public interface Builder {
     void setMaxTeamDimension(int num);
     void setReservation(Prenotazione p);
     void setMoneyPrice(Soldi p);
-    void addMentor(UtenteRegistrato utente);
+    void addMentorsList(List<UtenteRegistrato> mentorsList);
     void setExpiredSubscriptionDate(LocalDate d);
-    void createListTeams();
     void setJudge(UtenteRegistrato u);
 }

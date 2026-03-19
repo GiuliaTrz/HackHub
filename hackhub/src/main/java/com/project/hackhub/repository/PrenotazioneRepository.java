@@ -1,4 +1,11 @@
 package com.project.hackhub.repository;
 
-public interface PrenotazioneRepository {
+import com.project.hackhub.model.hackathon.builder.HackathonBuilderMemento;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import java.util.UUID;
+
+@Repository
+public interface PrenotazioneRepository extends JpaRepository<HackathonBuilderMemento, UUID> {
 }
