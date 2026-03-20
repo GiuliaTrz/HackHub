@@ -13,7 +13,6 @@ public class Director {
     public void populateBuilder(HackathonDTO dto){
          builder.setName(dto.name());
          builder.setRuleBook(dto.ruleBook());
-         builder.setState(dto.state());
          builder.setJudge(dto.judge());
          builder.setReservation(dto.reservation());
          builder.addMentorsList(dto.mentorsList());

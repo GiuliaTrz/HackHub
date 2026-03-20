@@ -4,13 +4,17 @@ import com.project.hackhub.model.hackathon.Hackathon;
 import com.project.hackhub.model.hackathon.state.HackathonState;
 import com.project.hackhub.model.hackathon.Prenotazione;
 import com.project.hackhub.model.hackathon.Soldi;
+import com.project.hackhub.model.hackathon.state.HackathonStateFactory;
+import com.project.hackhub.model.hackathon.state.HackathonStateType;
 import com.project.hackhub.model.utente.UtenteRegistrato;
+import lombok.Setter;
 
 import java.time.LocalDate;
 import java.util.List;
 
 public class HackathonBuilder implements Builder {
 
+    @Setter
     private Hackathon hackathon;
 
     @Override
@@ -30,7 +34,9 @@ public class HackathonBuilder implements Builder {
     }
 
     @Override
-    public void setState(HackathonState state) {
+    public void setState() {
+        HackathonStateFactory factory = new HackathonStateFactory();
+        HackathonState state = factory.createState(HackathonStateType.IN_ISCRIZIONE);
         hackathon.setState(state);
     }
 
@@ -63,5 +69,15 @@ public class HackathonBuilder implements Builder {
     public void setJudge(UtenteRegistrato u) {
         hackathon.setJudge(u);
 
+    }
+
+    public Hackathon getProduct() {
+        return this.hackathon;
+    }
+
+    public HackathonBuilderMemento saveMemento() {
+        //importante! facendo uno screenshot non posso salvare direttamente
+        // l'istanza perchè se la modificassi si modificherebbe anche il memento. Mi serve creare una copia!
+        return new HackathonBuilderMemento((hackathon));
     }
 }

@@ -4,6 +4,7 @@ import com.project.hackhub.dto.HackathonDTO;
 import com.project.hackhub.model.hackathon.Hackathon;
 import com.project.hackhub.model.hackathon.builder.Director;
 import com.project.hackhub.model.hackathon.builder.HackathonBuilder;
+import com.project.hackhub.model.hackathon.builder.HackathonBuilderMemento;
 import com.project.hackhub.model.team.Team;
 import com.project.hackhub.model.utente.UtenteRegistrato;
 import com.project.hackhub.repository.HackathonBuilderMementoRepository;
@@ -32,6 +33,10 @@ public class HackathonHandler {
     }
 
     public void addMentor(UtenteRegistrato u, Hackathon h){
+
+        if(h == null) throw new IllegalArgumentException("hacakthon cannot be null");
+        if(u == null) throw new IllegalArgumentException("user cannot be null");
+
         h.addMentor(u);
         hackathonRepo.save(h);
     }
@@ -41,6 +46,8 @@ public class HackathonHandler {
     }
 
     public boolean removeTeamFromHackathon(Hackathon h, Team t){
+
+        if(h == null || t == null) return false;
 
         if(h.removeTeam(t)){
             hackathonRepo.save(h);
@@ -57,12 +64,9 @@ public class HackathonHandler {
         return new HackathonBuilder();
     }
 
-    public void insertData(HackathonDTO dto){
-        Director director = new Director(hackathonBuilder);
-        director.populateBuilder(dto);
-    }
-
     public boolean checkHackathonDTO(HackathonDTO dto){
+
+        if(dto == null) throw new IllegalArgumentException("dto cannot be null");
         //TODO
         return true;
     }
@@ -74,5 +78,32 @@ public class HackathonHandler {
 
         hackathonRepo.delete(h);
         return true;
+    }
+
+    //added, to add anche alle classi di progetto
+    public void creaHackathon(HackathonDTO dto) {
+
+        if(dto == null) throw new IllegalArgumentException("HackathonDTO cannot be null");
+
+        insertData(dto);
+        if(checkHackathonDTO(dto)) {
+            hackathonBuilder.setState();
+            Hackathon hackathon = hackathonBuilder.getProduct();
+            hackathonRepo.save(hackathon);
+        }
+        else
+        {
+            HackathonBuilderMemento state =  hackathonBuilder.saveMemento();
+            hackathonBuilderMementoRepo.save(state);
+        }
+    }
+
+    //changed to private
+    private void insertData(HackathonDTO dto){
+
+        if(dto == null) throw new IllegalArgumentException("dto cannot be null");
+
+        Director director = new Director(hackathonBuilder);
+        director.populateBuilder(dto);
     }
 }

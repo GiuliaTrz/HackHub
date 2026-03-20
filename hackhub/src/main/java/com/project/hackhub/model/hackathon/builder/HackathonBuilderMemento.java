@@ -1,18 +1,28 @@
 package com.project.hackhub.model.hackathon.builder;
 
-import com.project.hackhub.model.utente.state.Giudice;
-import com.project.hackhub.model.utente.UtenteRegistrato;
-
-import java.util.List;
+import com.project.hackhub.model.hackathon.Hackathon;
 
 public class HackathonBuilderMemento implements Memento {
 
-    private Giudice judge;
+    private final Hackathon hackathon;
 
-    private List<UtenteRegistrato> mentorsList;
+    public HackathonBuilderMemento(Hackathon hackathon) {
+        this.hackathon = hackathon;
+    }
 
     @Override
-    public HackathonBuilderMemento restoreMemento() {
+    public Memento restoreMemento() {
+        //serve?
+        return null;
+    }
+
+    public Hackathon getSavedState() {
+        return hackathon;
+    }
+
+    @Override
+    public HackathonBuilderMemento saveMemento() {
+        //TODO
         return null;
     }
 }

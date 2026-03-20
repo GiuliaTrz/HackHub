@@ -1,6 +1,5 @@
 package com.project.hackhub.model.hackathon.builder;
 
-import com.project.hackhub.model.hackathon.state.HackathonState;
 import com.project.hackhub.model.hackathon.Prenotazione;
 import com.project.hackhub.model.hackathon.Soldi;
 import com.project.hackhub.model.utente.UtenteRegistrato;
@@ -13,7 +12,7 @@ public interface Builder {
     void reset();
     void setName(String n);
     void setRuleBook(String r);
-    void setState(HackathonState state);
+    void setState();
     void setMaxTeamDimension(int num);
     void setReservation(Prenotazione p);
     void setMoneyPrice(Soldi p);

@@ -4,4 +4,6 @@ public interface Memento {
 
     Memento restoreMemento();
 
+    Memento saveMemento();
+
 }

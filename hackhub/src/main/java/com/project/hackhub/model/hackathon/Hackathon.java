@@ -2,19 +2,22 @@ package com.project.hackhub.model.hackathon;
 
 import com.project.hackhub.model.hackathon.state.HackathonState;
 import com.project.hackhub.model.team.Team;
-import com.project.hackhub.model.utente.state.Giudice;
-import com.project.hackhub.model.utente.state.Organizzatore;
 import com.project.hackhub.model.utente.UtenteRegistrato;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+@Setter @Getter
+@NoArgsConstructor
 public class Hackathon {
 
-    private String name;
     private UUID id;
-    private String description;
+    private String name;
     private String ruleBook;
     private LocalDate expiredSubscriptionsDate;
     private int maxTeamDimension;
@@ -22,9 +25,21 @@ public class Hackathon {
     private List<Team> teamsList;
     private List<UtenteRegistrato> mentorsList;
     private Soldi moneyPrice;
-    private Giudice judge;
-    private Organizzatore coordinator;
+    private UtenteRegistrato judge;
+    private UtenteRegistrato coordinator;
     private Prenotazione reservation;
+
+    //costruttore di copia!
+    public Hackathon(Hackathon other) {
+        this.name = other.name;
+        this.ruleBook = other.ruleBook;
+        this.maxTeamDimension = other.maxTeamDimension;
+        this.reservation = other.reservation;
+        this.moneyPrice = other.moneyPrice;
+        this.mentorsList = new ArrayList<>(other.mentorsList);
+        this.expiredSubscriptionsDate = other.expiredSubscriptionsDate;
+        this.judge = other.judge;
+    }
 
     public void addMentor(UtenteRegistrato u){
         mentorsList.add(u);

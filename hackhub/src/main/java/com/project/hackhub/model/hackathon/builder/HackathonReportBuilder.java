@@ -1,6 +1,5 @@
 package com.project.hackhub.model.hackathon.builder;
 
-import com.project.hackhub.model.hackathon.state.HackathonState;
 import com.project.hackhub.model.hackathon.Prenotazione;
 import com.project.hackhub.model.hackathon.Report;
 import com.project.hackhub.model.hackathon.Soldi;
@@ -29,7 +28,7 @@ public class HackathonReportBuilder implements Builder {
     }
 
     @Override
-    public void setState(HackathonState state) {
+    public void setState() {
 
     }
 
