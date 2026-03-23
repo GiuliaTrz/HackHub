@@ -1,6 +1,7 @@
 package com.project.hackhub.model.hackathon;
 
 import com.project.hackhub.model.hackathon.state.HackathonState;
+import com.project.hackhub.model.team.Infraction;
 import com.project.hackhub.model.team.Team;
 import com.project.hackhub.model.utente.UtenteRegistrato;
 import lombok.Getter;
@@ -28,6 +29,7 @@ public class Hackathon {
     private UtenteRegistrato judge;
     private UtenteRegistrato coordinator;
     private Prenotazione reservation;
+    private List<Infraction> infractions;
 
     //costruttore di copia!
     public Hackathon(Hackathon other) {
@@ -39,6 +41,7 @@ public class Hackathon {
         this.mentorsList = new ArrayList<>(other.mentorsList);
         this.expiredSubscriptionsDate = other.expiredSubscriptionsDate;
         this.judge = other.judge;
+        this.infractions = other.infractions;
     }
 
     public void addMentor(UtenteRegistrato u){

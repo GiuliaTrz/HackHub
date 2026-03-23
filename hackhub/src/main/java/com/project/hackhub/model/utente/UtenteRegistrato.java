@@ -19,6 +19,4 @@ public class UtenteRegistrato implements Utente{
 
     private UserState state;
 
-
-    public 
 }

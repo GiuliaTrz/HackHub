@@ -10,4 +10,5 @@ public class Prenotazione {
 
     private UUID id;
 
+
 }

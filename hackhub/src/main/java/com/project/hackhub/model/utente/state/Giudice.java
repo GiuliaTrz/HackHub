@@ -1,8 +1,18 @@
 package com.project.hackhub.model.utente.state;
 
-public class Giudice implements UserState {
+import com.project.hackhub.model.team.Infraction;
+import com.project.hackhub.model.utente.UtenteRegistrato;
+
+import java.util.List;
+import java.util.Set;
+
+public class Giudice extends UserState {
+    public Giudice(Set<Permission> permissions) {
+        super(permissions);
+    }
+
     @Override
-    public void visualizzaHackathon() {
+    public void viewHackathon() {
 
     }
 
@@ -10,4 +20,10 @@ public class Giudice implements UserState {
     public boolean hasPermission(Permission p) {
         return false;
     }
+
+    @Override
+    public List<String> getInfractions() {
+        return List.of();
+    }
+
 }

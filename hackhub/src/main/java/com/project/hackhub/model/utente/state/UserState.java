@@ -1,8 +1,29 @@
 package com.project.hackhub.model.utente.state;
 
-public interface UserState {
+import com.project.hackhub.model.hackathon.Hackathon;
+import com.project.hackhub.model.team.Infraction;
+import com.project.hackhub.model.utente.UtenteRegistrato;
 
-    void visualizzaHackathon();
+import java.util.List;
+import java.util.Set;
 
-    boolean hasPermission(Permission p);
+public abstract class UserState {
+    protected Set<Permission> permissions;
+
+
+    public UserState(Set<Permission> permissions) {
+        this.permissions = permissions;
+    }
+
+    public boolean hasPermission(Permission p) {
+        return permissions.contains(p);
+    }
+
+    public abstract void viewHackathon();
+
+    //implementato da Giudice, Mentore e Organizzatore
+    public abstract List<String> getInfractions();
+
+
+
 }
