@@ -76,8 +76,11 @@ public class HackathonBuilder implements Builder {
     }
 
     public HackathonBuilderMemento saveMemento() {
-        //importante! facendo uno screenshot non posso salvare direttamente
-        // l'istanza perchè se la modificassi si modificherebbe anche il memento. Mi serve creare una copia!
-        return new HackathonBuilderMemento((hackathon));
+        Hackathon memento = new Hackathon(this.hackathon);
+        return new HackathonBuilderMemento((memento));
+    }
+
+    public void restoreMemento(HackathonBuilderMemento hackathonBuilderMemento){
+        this.hackathon = hackathonBuilderMemento.getState();
     }
 }

@@ -11,18 +11,8 @@ public class HackathonBuilderMemento implements Memento {
     }
 
     @Override
-    public Memento restoreMemento() {
-        //serve?
-        return null;
-    }
-
-    public Hackathon getSavedState() {
+    public Hackathon getState() {
         return hackathon;
     }
 
-    @Override
-    public HackathonBuilderMemento saveMemento() {
-        //TODO
-        return null;
-    }
 }
