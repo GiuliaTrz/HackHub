@@ -7,5 +7,5 @@ import org.springframework.stereotype.Repository;
 import java.util.UUID;
 
 @Repository
-public interface TeamRepository extends JpaRepository<HackathonBuilderMemento, UUID> {
+public interface TeamRepository extends JpaRepository<Team, UUID> {
 }

@@ -7,5 +7,5 @@ import org.springframework.stereotype.Repository;
 import java.util.UUID;
 
 @Repository
-public interface InvitoRepository extends JpaRepository<HackathonBuilderMemento, UUID> {
+public interface InvitoRepository extends JpaRepository<Invito, UUID> {
 }

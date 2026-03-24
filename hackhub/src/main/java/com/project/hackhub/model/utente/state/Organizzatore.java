@@ -4,38 +4,38 @@ import com.project.hackhub.dto.HackathonDTO;
 import com.project.hackhub.model.team.Infraction;
 import com.project.hackhub.model.utente.UtenteRegistrato;
 
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
 
 public class Organizzatore extends UserState {
 
-    public Organizzatore(Set<Permission> permissions) {
-        super(permissions);
+    public Organizzatore() {
+        super(EnumSet.of(Permission.CAN_MODIFY_HACKATHON,
+                Permission.CAN_MANAGE_INFRACTIONS,
+                Permission.CAN_ADD_MENTOR,
+                Permission.CAN_ADD_JUDGE));
     }
-
+    //TODO
     @Override
     public void viewHackathon() {
 
     }
 
-    @Override
-    public boolean hasPermission(Permission p) {
-        return false;
-    }
-
+    //TODO
     @Override
     public List<String> getInfractions() {
         return List.of();
     }
 
+    //TODO
+    @Override
     public void handleInfractions(Infraction infraction) {
 
     }
 
-    public boolean addInfraction(Infraction infraction) {
-        return false;
-    }
-
+    //TODO
+    @Override
     public void insertData(HackathonDTO dto){
 
     }

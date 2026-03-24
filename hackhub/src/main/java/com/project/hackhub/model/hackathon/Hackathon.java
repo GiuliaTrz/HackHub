@@ -3,6 +3,7 @@ package com.project.hackhub.model.hackathon;
 import com.project.hackhub.model.hackathon.state.HackathonState;
 import com.project.hackhub.model.team.Infraction;
 import com.project.hackhub.model.team.Team;
+import com.project.hackhub.model.utente.AidRequest;
 import com.project.hackhub.model.utente.UtenteRegistrato;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -30,6 +31,7 @@ public class Hackathon {
     private UtenteRegistrato coordinator;
     private Prenotazione reservation;
     private List<Infraction> infractions;
+    private List<AidRequest> aidRequests;
 
     //costruttore di copia!
     public Hackathon(Hackathon other) {

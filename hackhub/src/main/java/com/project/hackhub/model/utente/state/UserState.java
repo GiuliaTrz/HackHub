@@ -1,29 +1,29 @@
 package com.project.hackhub.model.utente.state;
 
-import com.project.hackhub.model.hackathon.Hackathon;
-import com.project.hackhub.model.team.Infraction;
-import com.project.hackhub.model.utente.UtenteRegistrato;
-
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-public abstract class UserState {
+public abstract class UserState implements MentorshipActions, CoordinatorActions{
     protected Set<Permission> permissions;
 
 
-    public UserState(Set<Permission> permissions) {
-        this.permissions = permissions;
+    protected UserState(Set<Permission> permissions) {
+        this.permissions = (permissions == null)? Collections.emptySet() : permissions;
     }
 
     public boolean hasPermission(Permission p) {
         return permissions.contains(p);
     }
 
-    public abstract void viewHackathon();
-
+    //TODO
     //implementato da Giudice, Mentore e Organizzatore
     public abstract List<String> getInfractions();
 
+
+    //TODO
+    //comune
+    public abstract void viewHackathon();
 
 
 }
