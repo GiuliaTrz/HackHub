@@ -11,12 +11,7 @@ public class DefaultState extends UserState {
 
 
     @Override
-    public List<String> getInfractions() {
-        return null;
-    }
-
-    @Override
-    public void viewHackathon() {
+    public void viewHackathonInfo() {
 
     }
 }

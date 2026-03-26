@@ -8,6 +8,7 @@ import com.project.hackhub.model.hackathon.builder.HackathonBuilder;
 import com.project.hackhub.model.hackathon.builder.HackathonBuilderMemento;
 import com.project.hackhub.model.team.Team;
 import com.project.hackhub.model.utente.UtenteRegistrato;
+import com.project.hackhub.model.utente.state.Permission;
 import com.project.hackhub.repository.HackathonBuilderMementoRepository;
 import com.project.hackhub.repository.HackathonRepository;
 import com.project.hackhub.repository.PrenotazioneRepository;
@@ -45,7 +46,8 @@ public class HackathonHandler {
 
         if(h == null) throw new IllegalArgumentException("hacakthon cannot be null");
         if(u == null) throw new IllegalArgumentException("user cannot be null");
-
+        if(!u.hasPermission(Permission.CAN_ADD_MENTOR, h))
+            throw new UnsupportedOperationException("Azione non permessa.");
         h.addMentor(u);
         hackathonRepo.save(h);
     }
@@ -55,7 +57,8 @@ public class HackathonHandler {
     }
 
     public boolean removeTeamFromHackathon(Hackathon h, Team t){
-
+        if(!t.getTeamLeader().hasPermission(Permission.CAN_UNSUBSCRIBE_TEAM, h))
+        throw new UnsupportedOperationException("Azione non permessa.");
         if(h == null || t == null) return false;
 
         if(h.removeTeam(t)){

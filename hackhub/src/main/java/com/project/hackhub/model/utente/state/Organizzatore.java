@@ -18,25 +18,9 @@ public class Organizzatore extends UserState {
     }
     //TODO
     @Override
-    public void viewHackathon() {
+    public void viewHackathonInfo() {
 
     }
 
-    //TODO
-    @Override
-    public List<String> getInfractions() {
-        return List.of();
-    }
 
-    //TODO
-    @Override
-    public void handleInfractions(Infraction infraction) {
-
-    }
-
-    //TODO
-    @Override
-    public void insertData(HackathonDTO dto){
-
-    }
 }

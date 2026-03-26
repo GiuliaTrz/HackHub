@@ -1,5 +1,7 @@
 package com.project.hackhub.model.team;
 
+import com.project.hackhub.model.hackathon.Hackathon;
+
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -18,5 +20,9 @@ public class Infraction {
         this.description = description;
         this.type = type;
         this.timestamp = LocalDateTime.now();
+    }
+
+    public Hackathon getHackathon() {
+        return this.team.getHackathon();
     }
 }

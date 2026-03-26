@@ -13,13 +13,9 @@ public class Giudice extends UserState {
     }
 
     @Override
-    public void viewHackathon() {
+    public void viewHackathonInfo() {
 
     }
 
-    @Override
-    public List<String> getInfractions() {
-        return List.of();
-    }
 
 }

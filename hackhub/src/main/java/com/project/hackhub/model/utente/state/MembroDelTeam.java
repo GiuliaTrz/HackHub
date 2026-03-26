@@ -13,15 +13,10 @@ public class MembroDelTeam extends UserState {
     protected MembroDelTeam(EnumSet<Permission> permissions) {
         super(permissions);
     }
-    //TODO
-    @Override
-    public List<String> getInfractions() {
-        return null;
-    }
 
     //TODO
     @Override
-    public void viewHackathon() {
+    public void viewHackathonInfo() {
 
     }
 }

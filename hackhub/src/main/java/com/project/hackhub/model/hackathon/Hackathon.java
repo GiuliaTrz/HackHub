@@ -3,10 +3,11 @@ package com.project.hackhub.model.hackathon;
 import com.project.hackhub.model.hackathon.state.HackathonState;
 import com.project.hackhub.model.team.Infraction;
 import com.project.hackhub.model.team.Team;
-import com.project.hackhub.model.utente.AidRequest;
+import com.project.hackhub.model.team.AidRequest;
 import com.project.hackhub.model.utente.UtenteRegistrato;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
 import lombok.Setter;
 
 import java.time.LocalDate;
@@ -54,4 +55,9 @@ public class Hackathon {
         teamsList.remove(t);
         return true;
     }
+
+    public boolean addAidRequest(@NonNull AidRequest a){
+        return aidRequests.add(a);
+    }
+
 }

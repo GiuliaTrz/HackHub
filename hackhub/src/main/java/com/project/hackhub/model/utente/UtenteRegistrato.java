@@ -4,6 +4,7 @@ import com.project.hackhub.model.hackathon.Hackathon;
 import com.project.hackhub.model.hackathon.Prenotazione;
 import com.project.hackhub.model.team.Invito;
 import com.project.hackhub.model.utente.state.DefaultState;
+import com.project.hackhub.model.utente.state.Permission;
 import com.project.hackhub.model.utente.state.UserState;
 import lombok.*;
 import java.util.*;
@@ -28,6 +29,7 @@ public class UtenteRegistrato implements Utente{
     public UtenteRegistrato(@NonNull Anagrafica a){
         this.anagrafica = a;
     }
+
     public UserState getState(Hackathon hackathon){
         if (hackathon == null) return defaultState;
         return statesInHackathon.getOrDefault(hackathon, new DefaultState());
@@ -73,6 +75,8 @@ public class UtenteRegistrato implements Utente{
             throw new NoSuchElementException("Invitation not contained in invitationList");
         invitationsList.remove(i);
     }
-
+    public boolean hasPermission(Permission p, Hackathon h){
+        return this.getState(h).hasPermission(p);
+}
 
 }

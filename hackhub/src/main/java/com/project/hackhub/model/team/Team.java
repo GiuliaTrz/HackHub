@@ -15,11 +15,15 @@ public class Team {
 
     private UUID id;
 
+    private Hackathon hackathon;
+
     private List<Invito> invitationList;
 
     private List<UtenteRegistrato> teamMembersList;
 
     private UtenteRegistrato teamLeader;
+
+    private boolean pendingCallProposal;
 
     public void addTeamMember(UtenteRegistrato u){
             teamMembersList.add(u);
