@@ -1,10 +1,20 @@
 package com.project.hackhub.model.hackathon.builder;
 
 import com.project.hackhub.model.hackathon.Hackathon;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 
+import java.util.UUID;
+
+@Entity @NoArgsConstructor
 public class HackathonBuilderMemento implements Memento {
 
-    private final Hackathon hackathon;
+    @Id @GeneratedValue
+    private UUID id;
+
+    @ManyToOne
+    private Hackathon hackathon;
 
     public HackathonBuilderMemento(Hackathon hackathon) {
         this.hackathon = hackathon;
@@ -14,5 +24,4 @@ public class HackathonBuilderMemento implements Memento {
     public Hackathon getState() {
         return hackathon;
     }
-
 }
