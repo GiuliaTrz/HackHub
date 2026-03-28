@@ -5,6 +5,7 @@ import com.project.hackhub.model.team.Infraction;
 import com.project.hackhub.model.team.Team;
 import com.project.hackhub.model.team.AidRequest;
 import com.project.hackhub.model.utente.UtenteRegistrato;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
@@ -17,21 +18,43 @@ import java.util.UUID;
 
 @Setter @Getter
 @NoArgsConstructor
+@Entity
 public class Hackathon {
 
+    @Id @GeneratedValue
     private UUID id;
+
+    @AttributeOverride(name = "name", column = @Column(name = "hackathonName"))
     private String name;
     private String ruleBook;
     private LocalDate expiredSubscriptionsDate;
     private int maxTeamDimension;
+
+    @Embedded
     private HackathonState state;
+
+    @OneToMany
     private List<Team> teamsList;
+
+    @OneToMany
     private List<UtenteRegistrato> mentorsList;
+
+    @Embedded
     private Soldi moneyPrice;
+
+    @OneToOne
     private UtenteRegistrato judge;
+
+    @OneToOne
     private UtenteRegistrato coordinator;
+
+    @OneToOne
     private Prenotazione reservation;
+
+    @ElementCollection
     private List<Infraction> infractions;
+
+    @ElementCollection
     private List<AidRequest> aidRequests;
 
     //costruttore di copia!

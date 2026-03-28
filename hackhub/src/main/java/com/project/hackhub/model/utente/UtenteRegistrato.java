@@ -6,25 +6,32 @@ import com.project.hackhub.model.team.Invito;
 import com.project.hackhub.model.utente.state.DefaultState;
 import com.project.hackhub.model.utente.state.Permission;
 import com.project.hackhub.model.utente.state.UserState;
+import jakarta.persistence.*;
 import lombok.*;
 import java.util.*;
 
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 @AllArgsConstructor
-public class UtenteRegistrato implements Utente{
+@Entity
+public class UtenteRegistrato implements Utente {
 
+    @Id @GeneratedValue
     @Getter private final UUID id = UUID.randomUUID();;
 
+    @OneToMany
     private Set<Invito> invitationsList = new LinkedHashSet<>();
 
-    private List<Prenotazione> reservationsList= new ArrayList<>();
-
+    @Embedded
     @Setter(AccessLevel.PROTECTED) @NonNull private Anagrafica anagrafica;
 
+    @Embedded
     private final UserState defaultState = new DefaultState();
 
-    private Map<Hackathon,UserState> statesInHackathon = new HashMap<>();
+    @ElementCollection @CollectionTable(name = "StateInHackathon")
+    private Map<Prenotazione, UserState> stateInHackathon = new HashMap<>();
 
+    @OneToMany //to remove
+    private Set<Prenotazione> reservationsList = stateInHackathon.keySet();
 
     public UtenteRegistrato(@NonNull Anagrafica a){
         this.anagrafica = a;
@@ -32,11 +39,11 @@ public class UtenteRegistrato implements Utente{
 
     public UserState getState(Hackathon hackathon){
         if (hackathon == null) return defaultState;
-        return statesInHackathon.getOrDefault(hackathon, new DefaultState());
+        return stateInHackathon.getOrDefault(hackathon, new DefaultState());
     }
 
-    public void setState(Hackathon hackathon, UserState newState){
-        this.statesInHackathon.put(hackathon, newState);
+    public void setState(Prenotazione prenotazione, UserState newState){
+        this.stateInHackathon.put(prenotazione, newState);
     }
 
     public void addReservation(Hackathon h){

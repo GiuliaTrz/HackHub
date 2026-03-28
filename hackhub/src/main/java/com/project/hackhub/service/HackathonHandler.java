@@ -104,7 +104,7 @@ public class HackathonHandler {
         Prenotazione p = dto.reservation();
         if(p == null) return false;
         if( p.getLocalita() == null || p.getIntervalloTemporale() == null) return false;
-        return !prenotazioneRepository.existsByLocationAndDataRange(p.getLocalita(), p.getIntervalloTemporale());
+        return !prenotazioneRepository.existsByLocalitaAndIntervalloTemporale(p.getLocalita(), p.getIntervalloTemporale());
     }
 
     public boolean deleteHackathon(Hackathon h){
