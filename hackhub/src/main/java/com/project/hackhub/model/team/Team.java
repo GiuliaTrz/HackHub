@@ -25,6 +25,8 @@ public class Team {
 
     private boolean pendingCallProposal;
 
+    //note: fix method names
+    
     public void addTeamMember(UtenteRegistrato u){
             teamMembersList.add(u);
     }
