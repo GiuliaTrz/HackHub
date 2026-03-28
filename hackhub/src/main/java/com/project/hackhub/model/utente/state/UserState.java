@@ -1,8 +1,33 @@
 package com.project.hackhub.model.utente.state;
 
-public interface UserState {
+import com.project.hackhub.model.hackathon.Hackathon;
+import com.project.hackhub.model.team.Infraction;
 
-    void visualizzaHackathon();
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
 
-    boolean hasPermission(Permission p);
+public abstract class UserState {
+    protected Set<Permission> permissions;
+
+
+    protected UserState(Set<Permission> permissions) {
+        this.permissions = (permissions == null)? Collections.emptySet() : permissions;
+    }
+
+    public boolean hasPermission(Permission p) {
+        return permissions.contains(p);
+    }
+
+    public List<Infraction> getInfractions(Hackathon h){
+        if(!permissions.contains(Permission.STAFF_PERMISSION))
+            throw new UnsupportedOperationException("Azione non permessa.");
+        return h.getInfractions();
+    };
+
+
+    //TODO
+    public abstract void viewHackathonInfo();
+
+
 }

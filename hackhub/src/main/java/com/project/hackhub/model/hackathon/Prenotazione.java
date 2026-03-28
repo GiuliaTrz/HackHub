@@ -1,7 +1,10 @@
 package com.project.hackhub.model.hackathon;
 
 import java.util.UUID;
+import lombok.Getter;
 
+
+@Getter
 public class Prenotazione {
 
     private Localita localita;
@@ -10,4 +13,8 @@ public class Prenotazione {
 
     private UUID id;
 
+Prenotazione(Localita localita, IntervalloTemporale intervalloTemporale){
+    this.localita = localita;
+    this.intervalloTemporale = intervalloTemporale;
+    }
 }

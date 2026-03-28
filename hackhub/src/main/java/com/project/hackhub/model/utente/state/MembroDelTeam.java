@@ -1,13 +1,22 @@
 package com.project.hackhub.model.utente.state;
 
-public class MembroDelTeam implements UserState {
-    @Override
-    public void visualizzaHackathon() {
+import java.util.EnumSet;
+import java.util.List;
 
+public class MembroDelTeam extends UserState {
+
+
+    public MembroDelTeam() {
+        super(EnumSet.of(Permission.CAN_INVITE_USERS));
     }
 
+    protected MembroDelTeam(EnumSet<Permission> permissions) {
+        super(permissions);
+    }
+
+    //TODO
     @Override
-    public boolean hasPermission(Permission p) {
-        return false;
+    public void viewHackathonInfo() {
+
     }
 }

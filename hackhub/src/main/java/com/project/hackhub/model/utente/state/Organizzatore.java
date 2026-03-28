@@ -1,19 +1,26 @@
 package com.project.hackhub.model.utente.state;
 
 import com.project.hackhub.dto.HackathonDTO;
+import com.project.hackhub.model.team.Infraction;
+import com.project.hackhub.model.utente.UtenteRegistrato;
 
-public class Organizzatore implements UserState {
+import java.util.EnumSet;
+import java.util.List;
+import java.util.Set;
+
+public class Organizzatore extends UserState {
+
+    public Organizzatore() {
+        super(EnumSet.of(Permission.CAN_MODIFY_HACKATHON,
+                Permission.CAN_MANAGE_INFRACTIONS,
+                Permission.CAN_ADD_MENTOR,
+                Permission.CAN_ADD_JUDGE));
+    }
+    //TODO
     @Override
-    public void visualizzaHackathon() {
+    public void viewHackathonInfo() {
 
     }
 
-    @Override
-    public boolean hasPermission(Permission p) {
-        return false;
-    }
 
-    public void insertData(HackathonDTO dto){
-
-    }
 }

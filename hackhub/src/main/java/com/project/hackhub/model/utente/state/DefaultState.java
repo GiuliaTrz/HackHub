@@ -1,13 +1,17 @@
 package com.project.hackhub.model.utente.state;
 
-public class DefaultState implements UserState {
-    @Override
-    public void visualizzaHackathon() {
+import java.util.EnumSet;
+import java.util.List;
 
+public class DefaultState extends UserState {
+
+    public DefaultState() {
+        super(EnumSet.of(Permission.CAN_CREATE_TEAM));
     }
 
+
     @Override
-    public boolean hasPermission(Permission p) {
-        return false;
+    public void viewHackathonInfo() {
+
     }
 }

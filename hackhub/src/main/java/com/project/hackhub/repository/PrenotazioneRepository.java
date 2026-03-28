@@ -1,4 +1,16 @@
 package com.project.hackhub.repository;
 
-public interface PrenotazioneRepository {
+import com.project.hackhub.model.hackathon.IntervalloTemporale;
+import com.project.hackhub.model.hackathon.Localita;
+import com.project.hackhub.model.hackathon.Prenotazione;
+import com.project.hackhub.model.hackathon.builder.HackathonBuilderMemento;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import java.util.UUID;
+
+@Repository
+public interface PrenotazioneRepository extends JpaRepository<Prenotazione, UUID> {
+
+    boolean existsByLocationAndDataRange(Localita l, IntervalloTemporale i);
 }

@@ -2,15 +2,20 @@ package com.project.hackhub.model.team;
 
 import com.project.hackhub.model.hackathon.Hackathon;
 import com.project.hackhub.model.utente.UtenteRegistrato;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.List;
 import java.util.UUID;
 
+@Getter @Setter
 public class Team {
 
     private String name;
 
     private UUID id;
+
+    private Hackathon hackathon;
 
     private List<Invito> invitationList;
 
@@ -18,14 +23,10 @@ public class Team {
 
     private UtenteRegistrato teamLeader;
 
-    public List<UtenteRegistrato> getTeamMembersList(){
-        return this.teamMembersList;
-    }
+    private boolean pendingCallProposal;
 
-    public void setTeamLeader(UtenteRegistrato u){
-        this.teamLeader = u;
-    }
-
+    //note: fix method names
+    
     public void addTeamMember(UtenteRegistrato u){
             teamMembersList.add(u);
     }
@@ -35,7 +36,7 @@ public class Team {
     }
 
     public void addInvitation(Invito i){
-        invitationList.add(u);
+        invitationList.add(i);
     }
 
 }

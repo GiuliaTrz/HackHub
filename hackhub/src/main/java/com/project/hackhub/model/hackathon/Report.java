@@ -22,7 +22,7 @@ public class Report {
     private List<Team> teamsList;
     private List<UtenteRegistrato> mentorsList;
     private Soldi moneyPrice;
-    private Giudice judge;
-    private final Organizzatore coordinator;
-    private final Prenotazione reservation;
+    private UtenteRegistrato judge;
+    private UtenteRegistrato coordinator;
+    private Prenotazione reservation;
 }

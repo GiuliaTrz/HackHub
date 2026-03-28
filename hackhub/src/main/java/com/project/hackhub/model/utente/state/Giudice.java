@@ -1,13 +1,21 @@
 package com.project.hackhub.model.utente.state;
 
-public class Giudice implements UserState {
-    @Override
-    public void visualizzaHackathon() {
+import com.project.hackhub.model.team.Infraction;
+import com.project.hackhub.model.utente.UtenteRegistrato;
 
+import java.util.EnumSet;
+import java.util.List;
+import java.util.Set;
+
+public class Giudice extends UserState {
+    public Giudice() {
+        super(EnumSet.of(Permission.CAN_GRADE_SUBMISSION));
     }
 
     @Override
-    public boolean hasPermission(Permission p) {
-        return false;
+    public void viewHackathonInfo() {
+
     }
+
+
 }

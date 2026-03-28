@@ -1,13 +1,19 @@
 package com.project.hackhub.model.utente.state;
 
-public class Mentore implements UserState {
-    @Override
-    public void visualizzaHackathon() {
+import java.util.EnumSet;
 
+public class Mentore extends UserState {
+
+
+    public Mentore(){
+        super(EnumSet.of(Permission.CAN_REPORT_INFRACTION,
+                Permission.CAN_PROPOSE_CALL));
     }
 
+
+    //TODO
     @Override
-    public boolean hasPermission(Permission p) {
-        return false;
+    public void viewHackathonInfo() {
+
     }
 }
