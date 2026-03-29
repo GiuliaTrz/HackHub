@@ -61,4 +61,9 @@ public class HackathonReportBuilder implements Builder {
     public void setJudge(UtenteRegistrato u) {
 
     }
+
+    @Override
+    public void setCoordinator(UtenteRegistrato coordinator) {
+
+    }
 }

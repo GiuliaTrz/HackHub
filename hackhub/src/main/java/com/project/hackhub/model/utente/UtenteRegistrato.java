@@ -39,27 +39,18 @@ public class UtenteRegistrato implements Utente {
 
     public UserState getState(Hackathon hackathon){
         if (hackathon == null) return defaultState;
-        return stateInHackathon.getOrDefault(hackathon, new DefaultState());
+        return stateInHackathon.getOrDefault(hackathon.getReservation(), new DefaultState());
     }
 
     public void setState(Prenotazione prenotazione, UserState newState){
         this.stateInHackathon.put(prenotazione, newState);
     }
 
-    public void addReservation(Hackathon h){
-        if(h == null)
-            throw new IllegalArgumentException("Hackathon can't be null");
-        if (isAvailable(h.getReservation())) {
-            reservationsList.add(h.getReservation());
-        }
-    }
-
     public void removeReservation(Hackathon h){
+
         if(h == null)
             throw new IllegalArgumentException("Hackathon can't be null");
-        if(!reservationsList.contains(h.getReservation()))
-            throw new NoSuchElementException("Reservation not contained in reservationList");
-        reservationsList.remove(h.getReservation());
+        stateInHackathon.remove(h.getReservation());
     }
 
     public boolean isAvailable(Prenotazione p){

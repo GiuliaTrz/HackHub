@@ -19,4 +19,5 @@ public interface Builder {
     void addMentorsList(List<UtenteRegistrato> mentorsList);
     void setExpiredSubscriptionDate(LocalDate d);
     void setJudge(UtenteRegistrato u);
+    void setCoordinator(UtenteRegistrato coordinator);
 }
