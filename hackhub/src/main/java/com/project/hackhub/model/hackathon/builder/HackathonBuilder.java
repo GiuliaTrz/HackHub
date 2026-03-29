@@ -12,6 +12,10 @@ import lombok.Setter;
 import java.time.LocalDate;
 import java.util.List;
 
+/**
+ * Concrete {@link Builder} class used to create {@link Hackathon} istances.
+ * @author Giorgia Branchesi
+ */
 public class HackathonBuilder implements Builder {
 
     @Setter
@@ -24,13 +28,17 @@ public class HackathonBuilder implements Builder {
 
     @Override
     public void setName(String n) {
-        hackathon.setName(n);
+
+        if(n != null && !n.isBlank())
+             hackathon.setName(n);
 
     }
 
     @Override
     public void setRuleBook(String r) {
-        hackathon.setRuleBook(r);
+
+        if(r != null && !r.isBlank())
+            hackathon.setRuleBook(r);
     }
 
     @Override
@@ -42,7 +50,9 @@ public class HackathonBuilder implements Builder {
 
     @Override
     public void setMaxTeamDimension(int num) {
-        hackathon.setMaxTeamDimension(num);
+
+        if(num > 1 && num < 20)
+            hackathon.setMaxTeamDimension(num);
     }
 
     @Override
@@ -52,23 +62,32 @@ public class HackathonBuilder implements Builder {
 
     @Override
     public void setMoneyPrice(Soldi p) {
+         if(p != null && p.getQuantity() > 0)
             hackathon.setMoneyPrice(p);
     }
 
     @Override
     public void addMentorsList(List<UtenteRegistrato> mentorsList) {
+        if(mentorsList!=null)
             hackathon.setMentorsList(mentorsList);
     }
 
     @Override
     public void setExpiredSubscriptionDate(LocalDate d) {
+
+        if(d != null && d.isBefore(LocalDate.now().plusDays(31)))
             hackathon.setExpiredSubscriptionsDate(d);
     }
 
     @Override
     public void setJudge(UtenteRegistrato u) {
-        hackathon.setJudge(u);
+            hackathon.setJudge(u);
 
+    }
+
+    @Override
+    public void setCoordinator(UtenteRegistrato coordinator) {
+        hackathon.setCoordinator(coordinator);
     }
 
     public Hackathon getProduct() {
@@ -82,5 +101,16 @@ public class HackathonBuilder implements Builder {
 
     public void restoreMemento(HackathonBuilderMemento hackathonBuilderMemento){
         this.hackathon = hackathonBuilderMemento.getState();
+    }
+
+    public boolean isComplete() {
+        return hackathon.getName() != null
+                && hackathon.getRuleBook() != null
+                && hackathon.getExpiredSubscriptionsDate() != null
+                && hackathon.getMaxTeamDimension() != 0
+                && hackathon.getMoneyPrice() != null
+                && hackathon.getJudge() != null
+                && hackathon.getReservation() != null
+                && hackathon.getMentorsList() != null;
     }
 }

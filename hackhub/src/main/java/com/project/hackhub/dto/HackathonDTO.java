@@ -16,6 +16,5 @@ public record HackathonDTO(
           List<UtenteRegistrato> mentorsList,
           Soldi moneyPrice,
           UtenteRegistrato judge,
-          UtenteRegistrato coordinator,
           Prenotazione reservation
 ) {}

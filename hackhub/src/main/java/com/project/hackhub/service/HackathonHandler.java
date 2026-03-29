@@ -9,16 +9,14 @@ import com.project.hackhub.model.hackathon.builder.HackathonBuilderMemento;
 import com.project.hackhub.model.team.Team;
 import com.project.hackhub.model.utente.UtenteRegistrato;
 import com.project.hackhub.model.utente.state.Permission;
+import com.project.hackhub.model.utente.state.UserStateType;
 import com.project.hackhub.repository.HackathonBuilderMementoRepository;
 import com.project.hackhub.repository.HackathonRepository;
 import com.project.hackhub.repository.PrenotazioneRepository;
-import java.time.LocalDate;
 
 public class HackathonHandler {
 
     private final HackathonRepository hackathonRepo;
-
-    private final HackathonBuilder hackathonBuilder;
 
     private final HackathonBuilderMementoRepository hackathonBuilderMementoRepo;
 
@@ -27,10 +25,9 @@ public class HackathonHandler {
     private final PrenotazioneRepository prenotazioneRepository;
 
 
-    public HackathonHandler(HackathonBuilder b, HackathonRepository h, HackathonBuilderMementoRepository hm, UtenteRegistratoHandler uh, PrenotazioneRepository pr){
+    public HackathonHandler(HackathonRepository h, HackathonBuilderMementoRepository hm, UtenteRegistratoHandler uh, PrenotazioneRepository pr){
 
         this.hackathonRepo = h;
-        this.hackathonBuilder = b;
         this.hackathonBuilderMementoRepo = hm;
         this.utenteRegistratoHandler = uh;
         this.prenotazioneRepository = pr;
@@ -57,9 +54,11 @@ public class HackathonHandler {
     }
 
     public boolean removeTeamFromHackathon(Hackathon h, Team t){
-        if(!t.getTeamLeader().hasPermission(Permission.CAN_UNSUBSCRIBE_TEAM, h))
-        throw new UnsupportedOperationException("Azione non permessa.");
+
         if(h == null || t == null) return false;
+
+        if(!t.getTeamLeader().hasPermission(Permission.CAN_UNSUBSCRIBE_TEAM, h))
+            throw new UnsupportedOperationException("Azione non permessa.");
 
         if(h.removeTeam(t)){
             hackathonRepo.save(h);
@@ -76,31 +75,7 @@ public class HackathonHandler {
         return new HackathonBuilder();
     }
 
-    //TO REVISE
-    public boolean checkHackathonDTO(HackathonDTO dto){
-
-        if(dto == null) throw new IllegalArgumentException("dto cannot be null");
-        if(dto.name() == null || dto.name().isBlank()) return false;
-        if(dto.ruleBook() == null || dto.ruleBook().isBlank()) return false;
-        if(dto.expiredSubscriptionsDate() == null
-                || dto.expiredSubscriptionsDate().isBefore(LocalDate.now())
-                || dto.expiredSubscriptionsDate().isBefore(LocalDate.now().plusDays(31))) return false;
-        if(dto.maxTeamDimension() < 1 || dto.maxTeamDimension() > 20) return false;
-        if(dto.moneyPrice() == null || dto.moneyPrice().getQuantity() < 0) return false;
-        if(dto.coordinator() == null) return false;
-        if(dto.judge() == null || !(utenteRegistratoHandler.checkAvailabilityUser(dto.judge()))) return false;
-        if(dto.mentorsList() != null) {
-            for(UtenteRegistrato mentor : dto.mentorsList()) {
-                if(mentor == null || !(utenteRegistratoHandler.checkAvailabilityUser(mentor)))
-                    return false;
-            }
-        }
-        if(!isReservationAvailable(dto)) return false;
-
-        return true;
-    }
-
-    private boolean isReservationAvailable(HackathonDTO dto) {
+    public boolean isReservationAvailable(HackathonDTO dto) {
         Prenotazione p = dto.reservation();
         if(p == null) return false;
         if( p.getLocalita() == null || p.getIntervalloTemporale() == null) return false;
@@ -116,30 +91,68 @@ public class HackathonHandler {
         return true;
     }
 
-    //added, to add anche alle classi di progetto
-    public void creaHackathon(HackathonDTO dto) {
+    /**
+     * Creates a Hackathon or a HackathonBuilderMemento if the dto given is not complete.
+     * At the start of the creation restores a memento if the coordinator that is trying to create it
+     * already has a suspended creation.
+     *
+     * @param dto the list of attributes needed to create a Hackathon
+     * @throws IllegalArgumentException if the dto given is {@code null}
+     *
+     * @author Giorgia Branchesi
+     */
+    public void createHackathon(HackathonDTO dto, UtenteRegistrato coordinator) {
 
         if(dto == null) throw new IllegalArgumentException("HackathonDTO cannot be null");
+        if(coordinator == null) throw new IllegalArgumentException("coordinator cannot be null");
 
-        insertData(dto);
-        if(checkHackathonDTO(dto)) {
+        HackathonBuilder hackathonBuilder = createHackathonBuilder();
+        hackathonBuilderMementoRepo.findByAuthor(coordinator).ifPresent(hackathonBuilder::restoreMemento);
+
+        populateBuilder(dto, hackathonBuilder);
+        if(hackathonBuilder.isComplete()) {
             hackathonBuilder.setState();
+            hackathonBuilder.setCoordinator(coordinator);
             Hackathon hackathon = hackathonBuilder.getProduct();
+            updateStaffState(hackathon);
             hackathonRepo.save(hackathon);
+
+            hackathonBuilderMementoRepo.removeHackathonBuilderMementoByAuthor(coordinator);
         }
         else
         {
-            HackathonBuilderMemento state =  hackathonBuilder.saveMemento();
-            hackathonBuilderMementoRepo.save(state);
+            HackathonBuilderMemento memento =  hackathonBuilder.saveMemento();
+            hackathonBuilderMementoRepo.save(memento);
         }
     }
 
-    //changed to private
-    private void insertData(HackathonDTO dto){
+    /**
+     * Updates the state of the staff assigned to a Hackathon
+     *
+     * @param hackathon the hackathon
+     * @author Giorgia Branchesi
+     */
+    private void updateStaffState(Hackathon hackathon) {
+        utenteRegistratoHandler.changeUserState(hackathon.getJudge(), true, hackathon, UserStateType.GIUDICE);
+        utenteRegistratoHandler.changeUserState(hackathon.getCoordinator(), true, hackathon, UserStateType.ORGANIZZATORE);
+        if(hackathon.getMentorsList() != null) {
+            for (UtenteRegistrato mentor : hackathon.getMentorsList()) {
+                utenteRegistratoHandler.changeUserState(mentor, true, hackathon, UserStateType.MENTORE);
+            }
+        }
+    }
 
-        if(dto == null) throw new IllegalArgumentException("dto cannot be null");
+    /**
+     * Populates the builder thanks to the {@link Director} class.
+     *
+     * @param dto the information needed to populate the builder
+     * @param builder the builder to use
+     *
+     * @author Giorgia Branchesi
+     */
+    private void populateBuilder(HackathonDTO dto, HackathonBuilder builder){
 
-        Director director = new Director(hackathonBuilder);
+        Director director = new Director(builder, this);
         director.populateBuilder(dto);
     }
 }
