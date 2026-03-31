@@ -1,15 +1,21 @@
 package com.project.hackhub.model.calendar;
 
-import com.project.hackhub.model.hackathon.state.HackathonStateType;
-import lombok.Getter;
+import com.project.hackhub.model.hackathon.Hackathon;
 import java.util.List;
 
-@Getter
+
 public class CalendarAdapter {
 
     private List<Slot> slotsList;
-    private HackathonStateType  hackathonStateType;
+    private final Hackathon hackathon;
 
+    public CalendarAdapter(Hackathon hackathon){
+        this.hackathon = hackathon;
+    }
+
+    public Hackathon getHackathon(){
+        return this.hackathon;
+    }
     //TODO
     public List<Slot> getAvailableSlots() {
         return null;

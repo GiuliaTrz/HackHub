@@ -26,17 +26,17 @@ public class SupportRequestHandler {
     }
 
     /**
-     * Retrieves the list of available time slots for a call proposal.     *
+     * Retrieves the list of available time slots for a call proposal.
      * @param u The registered user requesting the slots.
-     * @param t The team for which the slots are being requested.
+     * @param c The calendarAdapter that handles timeslots for a given hackathon
      * @return A {@code List} of available {@code Slot} objects.
      * {@code null} if the hackathon state type is not "IN_CORSO"
      * @throws UnsupportedOperationException if the user lacks the {@code CAN_PROPOSE_CALL} permission.
      * @author Chiara Marinucci
      */
-    public List<Slot> getAvailableSlots(UtenteRegistrato u, Team t){
-        if(t.getHackathon().getState().getStateType() == HackathonStateType.IN_CORSO) {
-            if (!u.hasPermission(Permission.CAN_PROPOSE_CALL, t.getHackathon()))
+    public List<Slot> getAvailableSlots(UtenteRegistrato u, CalendarAdapter c){
+        if(c.getHackathon().getState().getStateType() == HackathonStateType.IN_CORSO) {
+            if (!u.hasPermission(Permission.CAN_PROPOSE_CALL, c.getHackathon()))
                 throw new UnsupportedOperationException("Azione non permessa.");
             return calendarAdapter.getAvailableSlots();
         }
