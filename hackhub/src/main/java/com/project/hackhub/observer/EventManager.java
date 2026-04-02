@@ -6,10 +6,18 @@ import lombok.NoArgsConstructor;
 import java.util.ArrayList;
 import java.util.List;
 
-@NoArgsConstructor
+/**
+ * Singleton class to handle listeners and events
+ * @author Giorgia Branchesi
+ */
 public final class EventManager {
 
     private final List<EventListener> listeners = new ArrayList<>();
+    private static final EventManager INSTANCE = new EventManager();
+
+    public static EventManager getInstance() {
+        return INSTANCE;
+    }
 
     /**
      * Notifies a list of {@link UtenteRegistrato} about a specific event happening

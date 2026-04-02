@@ -7,8 +7,11 @@ import com.project.hackhub.model.team.Team;
 import com.project.hackhub.model.utente.UtenteRegistrato;
 import com.project.hackhub.model.utente.state.Permission;
 import com.project.hackhub.observer.EventManager;
+import com.project.hackhub.observer.EventType;
 import com.project.hackhub.repository.TeamRepository;
 import com.project.hackhub.repository.UtenteRegistratoRepository;
+
+import java.util.List;
 
 public class TeamHandler {
 
@@ -31,18 +34,17 @@ public class TeamHandler {
      */
     public void inviteUser(UtenteRegistrato user, Team team) {
 
-        if(!team.getHackathon().getState().getStateType().equals(HackathonStateType.IN_ISCRIZIONE))
-            if(!team.getTeamLeader().hasPermission(Permission.CAN_INVITE_USERS, team.getHackathon()))
+        if(!team.getHackathon().getState().getStateType().equals(HackathonStateType.IN_ISCRIZIONE)
+            || team.getTeamLeader().hasPermission(Permission.CAN_INVITE_USERS, team.getHackathon()))
                 throw new UnsupportedOperationException("Azione non permessa.");
 
         if(user.isAvailable(team.getHackathon().getReservation()))
         {
-            Invito invite = new Invito(team, user);
-            team.addInvitation(invite);
+            Invito invitation = new Invito(team, user);
+            team.addInvitation(invitation);
             teamRepository.save(team);
-            EventManager notifier = new EventManager();
-
-            notifier.notify();
+            EventManager notifier = EventManager.getInstance();
+            notifier.notify(EventType.INVITO_UTENTE, List.of(user), invitation);
         }
         else throw new UserNotAvailableException("L'utente non è disponibile, non può essere invitato!");
     }

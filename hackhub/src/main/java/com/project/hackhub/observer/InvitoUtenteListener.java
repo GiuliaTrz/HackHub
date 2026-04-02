@@ -41,6 +41,6 @@ public class InvitoUtenteListener implements EventListener{
 
         Invito invitation = (Invito) entity;
         usersHandler.addInvitation(usersList.getFirst(), invitation);
-        System.out.println(message);
+        //TODO, il messaggio è da restituire quando facciamo la chiamata API!
     }
 }
