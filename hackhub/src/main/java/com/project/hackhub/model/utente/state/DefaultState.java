@@ -6,7 +6,8 @@ import java.util.List;
 public class DefaultState extends UserState {
 
     public DefaultState() {
-        super(EnumSet.of(Permission.CAN_CREATE_TEAM));
+        super(EnumSet.of(Permission.CAN_CREATE_TEAM,
+                Permission.DETAILED_INFO));
     }
 
 
