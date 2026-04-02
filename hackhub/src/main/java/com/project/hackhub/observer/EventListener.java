@@ -4,5 +4,11 @@ import com.project.hackhub.model.utente.UtenteRegistrato;
 
 import java.util.List;
 
-public interface EventListener {
+public interface EventListener{
+
+    void updateUsers(List<UtenteRegistrato> usersList,
+                     String message,
+                     Object entity);
+
+    EventType getSupportedEventType();
 }
