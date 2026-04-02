@@ -12,13 +12,33 @@ public class InvitoUtenteListener implements EventListener{
 
     private final UtenteRegistratoHandler usersHandler;
 
+    /**
+     * Gets the {@link EventType} supported by this listener
+     * @return the {@link EventType} supported by this listener
+     * @author Giorgia Branchesi
+     */
     @Override
     public EventType getSupportedEventType() {
         return EventType.INVITO_UTENTE;
     }
-    
+
+    /**
+     * Updates the users about its invitation on a team
+     *
+     * @param usersList the users to update
+     * @param message the message to send
+     * @param entity the entity
+     * @throws IllegalArgumentException if the message or the entity are null
+     * @author Giorgia Branchesi
+     */
     @Override
     public void updateUsers(List<UtenteRegistrato> usersList, String message, Object entity) {
+
+        if(usersList == null || usersList.isEmpty())
+            return;
+        if(message == null) throw new IllegalArgumentException("message needed");
+        if(entity == null) throw new IllegalArgumentException("invitation cannot be null");
+
         Invito invitation = (Invito) entity;
         usersHandler.addInvitation(usersList.getFirst(), invitation);
         System.out.println(message);
