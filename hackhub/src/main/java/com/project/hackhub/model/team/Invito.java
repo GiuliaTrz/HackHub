@@ -5,24 +5,30 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToOne;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 
 import java.util.UUID;
 
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 public class Invito {
 
     @OneToOne
-    private UtenteRegistrato mittente;
+    private Team mittente;
 
     @OneToOne
     private UtenteRegistrato destinatario;
 
     private boolean pendente;
 
-    @OneToOne
-    private Team team;
-
     @Id @GeneratedValue
     private UUID id;
 
+    public Invito(Team team, UtenteRegistrato user) {
+        this.mittente = team;
+        this.destinatario = user;
+        this.pendente = true;
+    }
 }

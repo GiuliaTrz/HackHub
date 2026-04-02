@@ -1,18 +1,18 @@
 package com.project.hackhub.service;
 
 import com.project.hackhub.model.hackathon.Hackathon;
+import com.project.hackhub.model.team.Invito;
 import com.project.hackhub.model.utente.UtenteRegistrato;
 import com.project.hackhub.model.utente.state.UserState;
 import com.project.hackhub.model.utente.state.UserStateFactory;
 import com.project.hackhub.model.utente.state.UserStateType;
+import com.project.hackhub.repository.UtenteRegistratoRepository;
+import lombok.AllArgsConstructor;
 
+@AllArgsConstructor
 public class UtenteRegistratoHandler {
 
-    public boolean checkAvailabilityUser(UtenteRegistrato u) {
-        //TODO
-        return false;
-    }
-
+    private final UtenteRegistratoRepository utenteRegistratoRepo;
     /**
      * Sets the given state on the given user and adds or removes the reservation of the Hackathon as needed
      *
@@ -34,5 +34,12 @@ public class UtenteRegistratoHandler {
         {
             user.removeReservation(hackathon);
         }
+    }
+
+    public void addInvitation(UtenteRegistrato user, Invito invitation) {
+
+        user.addInvitation(invitation);
+        utenteRegistratoRepo.save(user);
+
     }
 }
