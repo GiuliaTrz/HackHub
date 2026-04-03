@@ -75,11 +75,27 @@ public class HackathonHandler {
         return new HackathonBuilder();
     }
 
+    /**
+     *
+     * @param dto
+     * @return
+     * @author Giorgia Branchesi
+     * @author Giulia Trozzi
+     */
     public boolean isReservationAvailable(HackathonDTO dto) {
-        Prenotazione p = dto.reservation();
-        if(p == null) return false;
-        if( p.getLocalita() == null || p.getIntervalloTemporale() == null) return false;
-        return !prenotazioneRepository.existsByLocalitaAndIntervalloTemporale(p.getLocalita(), p.getIntervalloTemporale());
+
+        Prenotazione reservation = dto.reservation();
+
+        if (reservation == null)
+            return false;
+
+        if (reservation.getLocation() == null || reservation.getTimeInterval() == null)
+            return false;
+
+        return !prenotazioneRepository.existsByLocationAndTimeInterval(
+                reservation.getLocation(),
+                reservation.getTimeInterval()
+        );
     }
 
     public boolean deleteHackathon(Hackathon h){

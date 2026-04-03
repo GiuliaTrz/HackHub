@@ -11,5 +11,5 @@ import java.util.UUID;
 @Repository
 public interface PrenotazioneRepository extends JpaRepository<Prenotazione, UUID> {
 
-    boolean existsByLocalitaAndIntervalloTemporale(Localita l, IntervalloTemporale i);
+    boolean existsByLocationAndTimeInterval(Localita location, IntervalloTemporale timeInterval);
 }

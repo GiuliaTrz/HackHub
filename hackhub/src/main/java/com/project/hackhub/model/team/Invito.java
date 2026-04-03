@@ -23,12 +23,30 @@ public class Invito {
 
     private boolean pendente;
 
-    @Id @GeneratedValue
+    @Id
+    @GeneratedValue
     private UUID id;
 
     public Invito(Team team, UtenteRegistrato user) {
+        if (team == null || user == null)
+            throw new IllegalArgumentException("Invalid parameters.");
+
         this.mittente = team;
         this.destinatario = user;
         this.pendente = true;
+    }
+
+    public void accept() {
+        if (!pendente)
+            throw new IllegalStateException("Invite already processed.");
+
+        this.pendente = false;
+    }
+
+    public void reject() {
+        if (!pendente)
+            throw new IllegalStateException("Invite already processed.");
+
+        this.pendente = false;
     }
 }

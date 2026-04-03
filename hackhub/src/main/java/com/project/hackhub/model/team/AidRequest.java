@@ -5,8 +5,8 @@ import jakarta.persistence.Embeddable;
 import jakarta.persistence.OneToOne;
 import lombok.NoArgsConstructor;
 
-@Embeddable @NoArgsConstructor
-
+@Embeddable
+@NoArgsConstructor
 public class AidRequest {
 
     private String description;
@@ -16,21 +16,25 @@ public class AidRequest {
     private Team team;
 
     public AidRequest(Team t, AidRequestType type, String description){
+        if (t == null || type == null)
+            throw new IllegalArgumentException("Invalid parameters.");
+
         this.team = t;
         this.type = type;
         this.description = description;
     }
 
     public AidRequest(Team t, AidRequestType type){
-        this.team = t;
-        this.type = type;
+        this(t, type, null);
     }
 
     public Hackathon getHackathon() {
-        return this.team.getHackathon();
+        if (team == null)
+            throw new IllegalStateException("Team not associated.");
+        return team.getHackathon();
     }
 
-    public Object getTeam() {
+    public Team getTeam() {
         return this.team;
     }
 }
