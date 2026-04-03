@@ -19,6 +19,7 @@ public class Invito {
 
     private boolean pendente;
 
+<<<<<<< Updated upstream
     @OneToOne
     private Team team;
 
@@ -26,3 +27,32 @@ public class Invito {
     private UUID id;
 
 }
+=======
+    @Id
+    @GeneratedValue
+    private UUID id;
+
+    public Invito(Team team, UtenteRegistrato user) {
+        if (team == null || user == null)
+            throw new IllegalArgumentException("Parametri non validi.");
+
+        this.mittente = team;
+        this.destinatario = user;
+        this.pendente = true;
+    }
+
+    public void accetta() {
+        if (!pendente)
+            throw new IllegalStateException("Invito già gestito.");
+
+        this.pendente = false;
+    }
+
+    public void rifiuta() {
+        if (!pendente)
+            throw new IllegalStateException("Invito già gestito.");
+
+        this.pendente = false;
+    }
+}
+>>>>>>> Stashed changes
