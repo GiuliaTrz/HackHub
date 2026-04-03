@@ -73,6 +73,8 @@ public class UtenteRegistrato implements Utente {
             throw new NoSuchElementException("Invitation not contained in invitationList");
         invitationsList.remove(i);
     }
+
+    @Override
     public boolean hasPermission(Permission p, Hackathon h){
         return this.getState(h).hasPermission(p);
 }

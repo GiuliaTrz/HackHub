@@ -8,6 +8,7 @@ import java.util.Set;
 public class TeamLeader extends MembroDelTeam {
 
     public TeamLeader() {
-        super(EnumSet.of(Permission.CAN_UNSUBSCRIBE_TEAM));
+        super(EnumSet.of(Permission.CAN_UNSUBSCRIBE_TEAM,
+                Permission.CAN_SEND_AID_REQUEST));
     }
 }

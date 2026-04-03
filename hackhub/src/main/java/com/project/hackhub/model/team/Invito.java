@@ -5,54 +5,48 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToOne;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 
 import java.util.UUID;
 
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 public class Invito {
 
     @OneToOne
-    private UtenteRegistrato mittente;
+    private Team mittente;
 
     @OneToOne
     private UtenteRegistrato destinatario;
 
     private boolean pendente;
 
-<<<<<<< Updated upstream
-    @OneToOne
-    private Team team;
-
-    @Id @GeneratedValue
-    private UUID id;
-
-}
-=======
     @Id
     @GeneratedValue
     private UUID id;
 
     public Invito(Team team, UtenteRegistrato user) {
         if (team == null || user == null)
-            throw new IllegalArgumentException("Parametri non validi.");
+            throw new IllegalArgumentException("Invalid parameters.");
 
         this.mittente = team;
         this.destinatario = user;
         this.pendente = true;
     }
 
-    public void accetta() {
+    public void accept() {
         if (!pendente)
-            throw new IllegalStateException("Invito già gestito.");
+            throw new IllegalStateException("Invite already processed.");
 
         this.pendente = false;
     }
 
-    public void rifiuta() {
+    public void reject() {
         if (!pendente)
-            throw new IllegalStateException("Invito già gestito.");
+            throw new IllegalStateException("Invite already processed.");
 
         this.pendente = false;
     }
 }
->>>>>>> Stashed changes

@@ -7,7 +7,7 @@ public class MembroDelTeam extends UserState {
 
 
     public MembroDelTeam() {
-        super(EnumSet.of(Permission.CAN_INVITE_USERS));
+        super(EnumSet.of(Permission.CAN_INVITE_USERS, Permission.DETAILED_INFO));
     }
 
     protected MembroDelTeam(EnumSet<Permission> permissions) {
