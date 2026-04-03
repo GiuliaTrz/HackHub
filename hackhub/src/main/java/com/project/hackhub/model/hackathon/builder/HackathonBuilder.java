@@ -49,6 +49,11 @@ public class HackathonBuilder implements Builder {
     }
 
     @Override
+    public void setState(HackathonState state) {
+        hackathon.setState(state);
+    }
+
+    @Override
     public void setMaxTeamDimension(int num) {
 
         if(num > 1 && num < 20)
