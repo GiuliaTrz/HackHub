@@ -10,18 +10,16 @@ import com.project.hackhub.observer.EventManager;
 import com.project.hackhub.observer.EventType;
 import com.project.hackhub.repository.TeamRepository;
 import com.project.hackhub.repository.UtenteRegistratoRepository;
+import lombok.AllArgsConstructor;
 
 import java.util.List;
 
+@AllArgsConstructor
 public class TeamHandler {
 
     private final UtenteRegistratoRepository userRepository;
     private final TeamRepository teamRepository;
-
-    public TeamHandler(UtenteRegistratoRepository userRepository, TeamRepository teamRepository) {
-        this.userRepository = userRepository;
-        this.teamRepository = teamRepository;
-    }
+    private final UtenteRegistratoHandler userHandler;
 
     /**
      * Invites a {@link UtenteRegistrato} to take part in a {@link Team}.
@@ -51,5 +49,37 @@ public class TeamHandler {
         } else {
             throw new UserNotAvailableException("User is not available and cannot be invited!");
         }
+    }
+
+    /**
+     * Adds a user to the Team and deletes its invitation
+     * @param i the invitation
+     * @throws IllegalArgumentException if the invitation is null
+     * @author Giorgia Branchesi
+     */
+    public void acceptInvitation(Invito i) {
+
+        if(i == null)
+            throw new IllegalArgumentException("the invitation cannot be null");
+
+        i.getMittente().addTeamMember(i.getDestinatario());
+        removeInvitation(i);
+    }
+
+    /**
+     * Deletes the invitation for a user
+     *
+     * @param i the invitation
+     * @throws IllegalArgumentException if the invitation is null
+     * @author Giorgia Branchesi
+     */
+    public void removeInvitation(Invito i) {
+
+        if(i == null)
+            throw new IllegalArgumentException("the invitation cannot be null");
+
+        Team t = i.getMittente();
+        t.removeInvitationFromList(i);
+        teamRepository.save(t);
     }
 }
