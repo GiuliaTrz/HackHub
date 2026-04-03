@@ -2,6 +2,8 @@ package com.project.hackhub.service;
 
 import com.project.hackhub.model.hackathon.Hackathon;
 import com.project.hackhub.model.hackathon.Report;
+import com.project.hackhub.model.hackathon.builder.Director;
+import com.project.hackhub.model.hackathon.builder.HackathonReportBuilder;
 import com.project.hackhub.model.hackathon.state.HackathonStateType;
 import com.project.hackhub.model.utente.Utente;
 import com.project.hackhub.model.utente.state.Permission;
@@ -49,10 +51,12 @@ public class InfoHandler {
     }
     //TODO
     private Report getDetailedInfo(Hackathon h) {
-        return null;
+        HackathonReportBuilder builder = new HackathonReportBuilder();
+        return Director.constructDetailedReport(builder, h);
     }
     //TODO
     private Report getPublicInfo(Hackathon h) {
-        return null;
+        HackathonReportBuilder builder = new HackathonReportBuilder();
+        return Director.constructPublicReport(builder, h);
     }
 }

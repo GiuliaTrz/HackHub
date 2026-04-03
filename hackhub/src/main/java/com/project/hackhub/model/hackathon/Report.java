@@ -42,4 +42,34 @@ public class Report {
 
     @OneToOne
     private Prenotazione reservation;
+
+    public void setName(String n) {
+    }
+
+    public void setRuleBook(String r) {
+    }
+
+    public void setState() {
+    }
+
+    public void setMaxTeamDimension(int num) {
+    }
+
+    public void setReservation(Prenotazione p) {
+    }
+
+    public void setMoneyPrice(Soldi p) {
+    }
+
+    public void setMentorsList(List<UtenteRegistrato> mentorsList) {
+    }
+
+    public void setExpiredSubscriptionsDate(LocalDate d) {
+    }
+
+    public void setJudge(UtenteRegistrato u) {
+    }
+
+    public void setCoordinator(UtenteRegistrato coordinator) {
+    }
 }
