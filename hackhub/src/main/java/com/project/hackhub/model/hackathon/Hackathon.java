@@ -21,11 +21,13 @@ import java.util.UUID;
 @Entity
 public class Hackathon {
 
-    @Id @GeneratedValue
+    @Id
+    @GeneratedValue
     private UUID id;
 
     @AttributeOverride(name = "name", column = @Column(name = "hackathonName"))
     private String name;
+
     private String ruleBook;
     private LocalDate expiredSubscriptionsDate;
     private int maxTeamDimension;
@@ -34,10 +36,10 @@ public class Hackathon {
     private HackathonState state;
 
     @OneToMany
-    private List<Team> teamsList;
+    private List<Team> teamsList = new ArrayList<>();
 
     @OneToMany
-    private List<UtenteRegistrato> mentorsList;
+    private List<UtenteRegistrato> mentorsList = new ArrayList<>();
 
     @Embedded
     private Soldi moneyPrice;
@@ -52,13 +54,16 @@ public class Hackathon {
     private Prenotazione reservation;
 
     @ElementCollection
-    private List<Infraction> infractions;
+    private List<Infraction> infractions = new ArrayList<>();
 
     @ElementCollection
-    private List<AidRequest> aidRequests;
+    private List<AidRequest> aidRequests = new ArrayList<>();
 
-    //costruttore di copia!
+    // Copy constructor
     public Hackathon(Hackathon other) {
+        if (other == null)
+            throw new IllegalArgumentException("Hackathon nullo.");
+
         this.name = other.name;
         this.ruleBook = other.ruleBook;
         this.maxTeamDimension = other.maxTeamDimension;
@@ -67,21 +72,40 @@ public class Hackathon {
         this.mentorsList = new ArrayList<>(other.mentorsList);
         this.expiredSubscriptionsDate = other.expiredSubscriptionsDate;
         this.judge = other.judge;
-        this.infractions = other.infractions;
+        this.infractions = new ArrayList<>(other.infractions);
     }
 
-    public void addMentor(UtenteRegistrato u){
+    public void addMentor(UtenteRegistrato u) {
+        if (u == null)
+            throw new IllegalArgumentException("Mentor nullo.");
+
+        if (mentorsList.contains(u))
+            throw new IllegalStateException("Mentor già presente.");
+
         mentorsList.add(u);
     }
 
-    public boolean removeTeam(Team t){
-        teamsList.remove(t);
-        return true;
+    public boolean removeTeam(Team t) {
+        if (t == null)
+            throw new IllegalArgumentException("Team nullo.");
+
+        return teamsList.remove(t);
     }
 
-    public boolean addAidRequest(@NonNull AidRequest a){
+    public void addTeam(Team t) {
+        if (t == null)
+            throw new IllegalArgumentException("Team nullo.");
+
+        if (teamsList.contains(t))
+            throw new IllegalStateException("Team già presente.");
+
+        teamsList.add(t);
+    }
+
+    public boolean addAidRequest(@NonNull AidRequest a) {
+        if (a == null)
+            throw new IllegalArgumentException("Richiesta nulla.");
+
         return aidRequests.add(a);
     }
-
-
 }
