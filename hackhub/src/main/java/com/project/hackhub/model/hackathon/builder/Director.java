@@ -1,6 +1,8 @@
 package com.project.hackhub.model.hackathon.builder;
 
 import com.project.hackhub.dto.HackathonDTO;
+import com.project.hackhub.model.hackathon.Hackathon;
+import com.project.hackhub.model.hackathon.Report;
 import com.project.hackhub.model.utente.UtenteRegistrato;
 import com.project.hackhub.service.HackathonHandler;
 import lombok.NonNull;
@@ -21,6 +23,30 @@ public class Director {
     public Director(@NonNull Builder b, @NonNull HackathonHandler hackathonHandler) {
         this.builder = b;
         this.hackathonHandler = hackathonHandler;
+    }
+
+    /**
+     * Returns a detailed report specific to a state of a given Hackathon
+     * @param builder
+     * @param h
+     * @return a Report
+     * @Author Chiara Marinucci
+     */
+    public Report constructDetailedReport(HackathonReportBuilder builder, Hackathon h) {
+        h.getState().buildDetailedReport(builder, h);
+        return builder.build();
+    }
+
+    /**
+     * Returns a general report specific to a state of a given Hackathon
+     * @param builder
+     * @param h
+     * @return a Report
+     * @Author Chiara Marinucci
+     */
+    public Report constructPublicReport(HackathonReportBuilder builder, Hackathon h) {
+        h.getState().buildPublicReport(builder, h);
+        return builder.build();
     }
 
     /**

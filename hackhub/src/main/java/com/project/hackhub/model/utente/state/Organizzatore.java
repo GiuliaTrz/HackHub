@@ -14,7 +14,8 @@ public class Organizzatore extends UserState {
         super(EnumSet.of(Permission.CAN_MODIFY_HACKATHON,
                 Permission.CAN_MANAGE_INFRACTIONS,
                 Permission.CAN_ADD_MENTOR,
-                Permission.CAN_ADD_JUDGE));
+                Permission.CAN_ADD_JUDGE,
+                Permission.DETAILED_INFO));
     }
     //TODO
     @Override
