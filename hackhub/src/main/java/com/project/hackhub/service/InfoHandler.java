@@ -14,13 +14,14 @@ import java.util.Optional;
 import java.util.UUID;
 
 public class InfoHandler {
-
+    private final Director director;
     private final HackathonRepository hackathonRepository;
     //private final UtenteRegistratoRepository utenteRegistratoRepository;
 
-    public InfoHandler(HackathonRepository hr, UtenteRegistratoRepository ur){
+    public InfoHandler(HackathonRepository hr, UtenteRegistratoRepository ur, Director director){
         this.hackathonRepository = hr;
        // this.utenteRegistratoRepository = ur;
+        this.director = director;
     }
 
     /**
@@ -49,14 +50,25 @@ public class InfoHandler {
         }
         return null;
     }
-    //TODO
+
+    /**
+     * Returns a detailed report of a given Hackathon
+     * @param h the Hakcahton for which a report must be built
+     * @return a Report
+     * @Author Chiara Marinucci
+     */
     private Report getDetailedInfo(Hackathon h) {
         HackathonReportBuilder builder = new HackathonReportBuilder();
-        return Director.constructDetailedReport(builder, h);
+        return director.constructDetailedReport(builder, h);
     }
-    //TODO
+    /**
+     * Returns a general report of a given Hackathon
+     * @param h the Hakcahton for which a report must be built
+     * @return a Report
+     * @Author Chiara Marinucci
+     */
     private Report getPublicInfo(Hackathon h) {
         HackathonReportBuilder builder = new HackathonReportBuilder();
-        return Director.constructPublicReport(builder, h);
+        return director.constructPublicReport(builder, h);
     }
 }

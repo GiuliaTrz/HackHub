@@ -4,7 +4,6 @@ import com.project.hackhub.model.hackathon.Prenotazione;
 import com.project.hackhub.model.hackathon.Report;
 import com.project.hackhub.model.hackathon.Soldi;
 import com.project.hackhub.model.hackathon.state.HackathonState;
-import com.project.hackhub.model.hackathon.state.HackathonStateType;
 import com.project.hackhub.model.utente.UtenteRegistrato;
 import java.time.LocalDate;
 import java.util.List;
@@ -33,8 +32,11 @@ public class HackathonReportBuilder implements Builder {
     }
 
     @Override
-    public void setState() {
-        this.report.setState();
+    public void setState() {}
+
+    @Override
+    public void setState(HackathonState st) {
+        this.report.setState(st);
     }
 
     @Override

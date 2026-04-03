@@ -25,12 +25,26 @@ public class Director {
         this.hackathonHandler = hackathonHandler;
     }
 
-    public static Report constructDetailedReport(HackathonReportBuilder builder, Hackathon h) {
+    /**
+     * Returns a detailed report specific to a state of a given Hackathon
+     * @param builder
+     * @param h
+     * @return a Report
+     * @Author Chiara Marinucci
+     */
+    public Report constructDetailedReport(HackathonReportBuilder builder, Hackathon h) {
         h.getState().buildDetailedReport(builder, h);
         return builder.build();
     }
 
-    public static Report constructPublicReport(HackathonReportBuilder builder, Hackathon h) {
+    /**
+     * Returns a general report specific to a state of a given Hackathon
+     * @param builder
+     * @param h
+     * @return a Report
+     * @Author Chiara Marinucci
+     */
+    public Report constructPublicReport(HackathonReportBuilder builder, Hackathon h) {
         h.getState().buildPublicReport(builder, h);
         return builder.build();
     }
