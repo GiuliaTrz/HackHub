@@ -167,4 +167,43 @@ public class TeamHandler {
         t.removeTeamMember(u);
         teamRepository.save(t);
     }
+
+    public Team createTeam(String name, UtenteRegistrato leader, Hackathon hackathon) {
+        if (name == null || name.isBlank())
+            throw new IllegalArgumentException("Team name cannot be null or blank.");
+        if (leader == null)
+            throw new IllegalArgumentException("Leader cannot be null.");
+        if (hackathon == null)
+            throw new IllegalArgumentException("Hackathon cannot be null.");
+
+        Team team = new Team();
+        team.setName(name);
+        team.setHackathon(hackathon);
+        team.addTeamMember(leader); // aggiunge il leader alla lista membri
+        team.setTeamLeader(leader);
+
+        // Salva il team nel DB
+        teamRepository.save(team);
+
+        return team;
+    }
+
+    public void removeTeamMember(UtenteRegistrato user, Team team) {
+        if (user == null)
+            throw new IllegalArgumentException("User cannot be null.");
+        if (team == null)
+            throw new IllegalArgumentException("Team cannot be null.");
+
+        if (user.equals(team.getTeamLeader()))
+            throw new UnsupportedOperationException("Cannot remove the team leader with this method.");
+
+        if (!team.getTeamMembersList().contains(user))
+            throw new IllegalStateException("User is not a member of the team.");
+
+        // Aggiorna lo stato dell'utente se necessario
+        userHandler.changeUserState(user, false, team.getHackathon(), UserStateType.DEFAULT_STATE);
+
+        team.removeTeamMember(user);
+        teamRepository.save(team);
+    }
 }
