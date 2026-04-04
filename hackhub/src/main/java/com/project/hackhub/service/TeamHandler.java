@@ -1,6 +1,7 @@
 package com.project.hackhub.service;
 
 import com.project.hackhub.exceptions.UserNotAvailableException;
+import com.project.hackhub.model.hackathon.Hackathon;
 import com.project.hackhub.model.hackathon.state.HackathonStateType;
 import com.project.hackhub.model.team.Invito;
 import com.project.hackhub.model.team.Team;
@@ -8,6 +9,7 @@ import com.project.hackhub.model.utente.UtenteRegistrato;
 import com.project.hackhub.model.utente.state.Permission;
 import com.project.hackhub.observer.EventManager;
 import com.project.hackhub.observer.EventType;
+import com.project.hackhub.repository.HackathonRepository;
 import com.project.hackhub.repository.TeamRepository;
 import com.project.hackhub.repository.UtenteRegistratoRepository;
 import lombok.AllArgsConstructor;
@@ -19,6 +21,7 @@ public class TeamHandler {
 
     private final UtenteRegistratoRepository userRepository;
     private final TeamRepository teamRepository;
+    private final HackathonHandler hackathonHandler;
     private final UtenteRegistratoHandler userHandler;
 
     /**
@@ -88,6 +91,9 @@ public class TeamHandler {
      * @param newLeader the new leader
      * @param t the {@link Team}
      * @throws IllegalArgumentException if any of the parameters are null
+     * @throws UnsupportedOperationException if the {@link Hackathon} is not in {@link HackathonStateType#IN_ISCRIZIONE} state
+     * or the user does not have permission to do the action
+     * @author Giorgia Branchesi
      */
     public void chooseNewTeamLeader(UtenteRegistrato newLeader, Team t){
 
@@ -98,10 +104,40 @@ public class TeamHandler {
         if(!newLeader.isAvailable(t.getHackathon().getReservation()))
             throw new IllegalArgumentException("user is not available in said reservation");
 
+        if(t.getTeamLeader().hasPermission(Permission.CAN_MODIFY_LEADER, t.getHackathon())
+                || t.getHackathon().getState().getStateType().equals(HackathonStateType.IN_ISCRIZIONE))
+            throw new UnsupportedOperationException("Cannot choose new Leader");
+
         UtenteRegistrato oldLeader = t.getTeamLeader();
         t.setTeamLeader(newLeader);
         teamRepository.save(t);
         EventManager notifier = EventManager.getInstance();
         notifier.notify(EventType.NUOVO_LEADER, List.of(oldLeader, newLeader), t);
+    }
+
+    /**
+     * Unsubscribes a team from a Hackathon. The team does not exist after his unsubscription
+     * @param t the team
+     * @param h the hackathon
+     * @throws IllegalArgumentException if any of the parameters are null
+     * @throws UnsupportedOperationException if the {@link Hackathon} is not in {@link HackathonStateType#IN_ISCRIZIONE} state
+     * or the user does not have permission to do the action
+     * @author Giorgia Branchesi 
+     */
+    public void unsubscribeTeam(Team t, Hackathon h){
+
+        if(t == null)
+            throw new IllegalArgumentException("team cannot be null");
+        if(h == null)
+            throw new IllegalArgumentException("hackathon cannot be null");
+
+        if(!t.getTeamLeader().hasPermission(Permission.CAN_UNSUBSCRIBE_TEAM, h)
+            || !h.getState().getStateType().equals(HackathonStateType.IN_ISCRIZIONE))
+                throw new UnsupportedOperationException("Cannot unsubscribe team");
+
+        hackathonHandler.removeTeamFromHackathon(h, t);
+        EventManager notifier = EventManager.getInstance();
+        notifier.notify(EventType.ELIMINAZIONE_TEAM, t.getTeamMembersList(), t);
+        teamRepository.delete(t);
     }
 }

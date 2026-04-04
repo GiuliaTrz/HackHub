@@ -12,12 +12,12 @@ public enum EventType {
     ELIMINAZIONE_HACKATHON(Hackathon .class),
     SCELTA_VINCITORE(Hackathon .class),
     RIMOZIONE_DA_TEAM(Hackathon .class),
-    ELIMINAZIONE_TEAM(Hackathon .class),
     PROCLAMAZIONE_VINCITORE(Hackathon .class),
     ILLECITO(Hackathon .class),
     MODIFICA_HACKATHON(Hackathon .class),
 
     //giuste
+    ELIMINAZIONE_TEAM(Team .class),
     NUOVO_LEADER(Team .class),
     INVITO_UTENTE(Invito .class);
 
