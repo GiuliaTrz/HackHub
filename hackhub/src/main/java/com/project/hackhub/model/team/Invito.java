@@ -25,6 +25,10 @@ public class Invito {
 
     private boolean pendente;
 
+    public boolean isPendente() {
+        return pendente;
+    }
+
     @Id
     @GeneratedValue
     private UUID id;
