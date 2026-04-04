@@ -82,4 +82,26 @@ public class TeamHandler {
         t.removeInvitationFromList(i);
         teamRepository.save(t);
     }
+
+    /**
+     * Changes the leader of a team
+     * @param newLeader the new leader
+     * @param t the {@link Team}
+     * @throws IllegalArgumentException if any of the parameters are null
+     */
+    public void chooseNewTeamLeader(UtenteRegistrato newLeader, Team t){
+
+        if(newLeader == null)
+            throw new IllegalArgumentException("new leader cannot be null");
+        if(t == null)
+            throw new IllegalArgumentException("team cannot be null");
+        if(!newLeader.isAvailable(t.getHackathon().getReservation()))
+            throw new IllegalArgumentException("user is not available in said reservation");
+
+        UtenteRegistrato oldLeader = t.getTeamLeader();
+        t.setTeamLeader(newLeader);
+        teamRepository.save(t);
+        EventManager notifier = EventManager.getInstance();
+        notifier.notify(EventType.NUOVO_LEADER, List.of(oldLeader, newLeader), t);
+    }
 }
