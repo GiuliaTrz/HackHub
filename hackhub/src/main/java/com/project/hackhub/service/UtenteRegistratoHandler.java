@@ -98,12 +98,4 @@ public class UtenteRegistratoHandler {
         teamHandler.removeInvitation(i);
     }
 
-    public void leaveTeam(UtenteRegistrato u, Team t) {
-
-        if(u == null) throw new IllegalArgumentException("user cannot be null");
-        if(t == null) throw new IllegalArgumentException("team to leave cannot be null");
-
-        if (t.getTeamMembersList().size() < 2)
-
-    }
 }
