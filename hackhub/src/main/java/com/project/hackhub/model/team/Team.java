@@ -37,8 +37,16 @@ public class Team {
 
     private boolean pendingCallProposal;
 
-    // --- BUSINESS LOGIC ---
-
+    /**
+     * Aggiunge un {@link UtenteRegistrato} alla lista dei membri del team.
+     *
+     * @param u l'utente da aggiungere; non può essere null
+     * @throws IllegalArgumentException se l'utente è null
+     * @throws IllegalStateException se l'utente è già presente nel team
+     * o se la dimensione massima del team è stata raggiunta
+     *
+     * @author Giulia Trozzi
+     */
     public void addTeamMember(UtenteRegistrato u) {
         if (u == null)
             throw new IllegalArgumentException("L'utente non può essere null.");
@@ -53,6 +61,16 @@ public class Team {
         teamMembersList.add(u);
     }
 
+    /**
+     * Rimuove un {@link UtenteRegistrato} dalla lista dei membri del team.
+     *
+     * @param u l'utente da rimuovere; non può essere null
+     * @throws IllegalArgumentException se l'utente è null
+     * @throws IllegalStateException se l'utente non è presente nel team
+     * o se si tenta di rimuovere il team leader
+     *
+     * @author Giulia Trozzi
+     */
     public void removeTeamMember(UtenteRegistrato u) {
         if (u == null)
             throw new IllegalArgumentException("Utente non valido.");
@@ -66,6 +84,16 @@ public class Team {
         teamMembersList.remove(u);
     }
 
+
+    /**
+     * Rimuove un {@link Invito} dalla lista degli inviti del team.
+     *
+     * @param i l'invito da rimuovere; non può essere null
+     * @return true se l'invito è stato rimosso, false se non era presente nella lista
+     * @throws IllegalArgumentException se l'invito è null
+     *
+     * @author Giulia Trozzi
+     */
     public boolean removeInvitationFromList(Invito i) {
         if (i == null)
             throw new IllegalArgumentException("Invito nullo.");
@@ -73,6 +101,15 @@ public class Team {
         return invitationList.remove(i);
     }
 
+    /**
+     * Aggiunge un {@link Invito} alla lista degli inviti del team.
+     *
+     * @param i l'invito da aggiungere; non può essere null
+     * @throws IllegalArgumentException se l'invito è null
+     * @throws IllegalStateException se l'invito è già presente nella lista
+     *
+     * @author Giulia Trozzi
+     */
     public void addInvitation(Invito i) {
         if (i == null)
             throw new IllegalArgumentException("Invito nullo.");
@@ -83,6 +120,15 @@ public class Team {
         invitationList.add(i);
     }
 
+    /**
+     * Imposta il {@link UtenteRegistrato} come leader del team.
+     *
+     * @param leader l'utente che diventerà leader; non può essere null
+     * @throws IllegalArgumentException se il leader è null
+     * @throws IllegalStateException se l'utente non è già membro del team
+     *
+     * @author Giulia Trozzi
+     */
     public void setTeamLeader(UtenteRegistrato leader) {
         if (leader == null)
             throw new IllegalArgumentException("Leader non valido.");

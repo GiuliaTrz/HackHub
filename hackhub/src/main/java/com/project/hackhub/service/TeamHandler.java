@@ -168,6 +168,19 @@ public class TeamHandler {
         teamRepository.save(t);
     }
 
+    /**
+     * Creates a new {@link Team} in a given {@link Hackathon} with a specified leader.
+     * The leader is automatically added to the team's member list and set as the team leader.
+     * The team is then persisted in the database.
+     *
+     * @param name the name of the new team; must not be null or blank
+     * @param leader the {@link UtenteRegistrato} who will lead the team; must not be null
+     * @param hackathon the {@link Hackathon} in which the team will participate; must not be null
+     * @return the newly created {@link Team} instance, persisted in the database
+     * @throws IllegalArgumentException if any parameter is null or the team name is blank
+     *
+     * @author Giulia Trozzi
+     */
     public Team createTeam(String name, UtenteRegistrato leader, Hackathon hackathon) {
         if (name == null || name.isBlank())
             throw new IllegalArgumentException("Team name cannot be null or blank.");
@@ -188,6 +201,20 @@ public class TeamHandler {
         return team;
     }
 
+    /**
+     * Removes a member from a {@link Team}.
+     * This method cannot remove the team leader; to change or remove the leader, use the appropriate handler method.
+     * The user's state is updated via {@link UtenteRegistratoHandler} before removal.
+     * The team is then updated in the database.
+     *
+     * @param user the {@link UtenteRegistrato} to be removed from the team; must not be null
+     * @param team the {@link Team} from which the user will be removed; must not be null
+     * @throws IllegalArgumentException if either parameter is null
+     * @throws UnsupportedOperationException if the specified user is the team leader
+     * @throws IllegalStateException if the specified user is not a member of the team
+     *
+     * @author Giulia Trozzi
+     */
     public void removeTeamMember(UtenteRegistrato user, Team team) {
         if (user == null)
             throw new IllegalArgumentException("User cannot be null.");
