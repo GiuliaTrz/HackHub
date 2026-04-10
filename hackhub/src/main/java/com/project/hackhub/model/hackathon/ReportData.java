@@ -5,7 +5,17 @@ import com.project.hackhub.model.team.Team;
 import com.project.hackhub.model.utente.UtenteRegistrato;
 import java.time.LocalDate;
 import java.util.List;
-
+/**
+ * Intermediate aggregated data model used to construct different
+ * Report DTOs.
+ *
+ * <p>This class collects all domain information required by the report
+ * builders before transforming it into a specific representation
+ * (e.g. public, detailed, or staff view).</p>
+ *
+ * <p>It is not exposed directly to clients and is intended solely as
+ * an internal data carrier between the domain layer and report DTOs.</p>
+ */
 public class ReportData {
     private String name;
     private String description;

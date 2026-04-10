@@ -22,10 +22,9 @@ public class InfoHandler {
     }
 
     /**
-     * @return a list of all Hakcathons
+     * @return a list of all Hackathons
      * @author Chiara Marinucci
      */
-
     public List<Hackathon> getAllHackathon() {return hackathonRepository.findAll();}
 
     /**

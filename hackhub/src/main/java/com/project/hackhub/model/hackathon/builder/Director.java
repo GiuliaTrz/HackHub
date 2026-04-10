@@ -1,11 +1,7 @@
 package com.project.hackhub.model.hackathon.builder;
 
 import com.project.hackhub.dto.HackathonDTO;
-import com.project.hackhub.model.hackathon.Hackathon;
-import com.project.hackhub.model.hackathon.Report;
-import com.project.hackhub.model.hackathon.ReportData;
 import com.project.hackhub.model.utente.UtenteRegistrato;
-import com.project.hackhub.model.utente.state.Permission;
 import com.project.hackhub.service.HackathonHandler;
 import lombok.NonNull;
 
@@ -21,27 +17,11 @@ public class Director {
 
     @NonNull private Builder builder;
     @NonNull private final HackathonHandler hackathonHandler;
-    private final HackathonReportBuilder reportBuilder = new HackathonReportBuilder();
 
     public Director(@NonNull Builder b, @NonNull HackathonHandler hackathonHandler) {
         this.builder = b;
         this.hackathonHandler = hackathonHandler;
     }
-
-
-    public Report constructReport(Hackathon h, UtenteRegistrato u) {
-        ReportData data = h.getState().getReportData(h);
-        if (u == null)
-            return reportBuilder.buildPublic(data);
-
-        if (u.hasPermission(Permission.STAFF_PERMISSION, h))
-            return reportBuilder.buildStaff(data);
-
-        return reportBuilder.buildDetailed(data);
-    }
-
-
-
 
     /**
      * populates the builder from a dto given
