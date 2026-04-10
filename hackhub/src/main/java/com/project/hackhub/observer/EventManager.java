@@ -1,7 +1,6 @@
 package com.project.hackhub.observer;
 
 import com.project.hackhub.model.utente.UtenteRegistrato;
-import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;

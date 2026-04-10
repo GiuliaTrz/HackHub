@@ -1,4 +1,4 @@
-package com.project.hackhub.service;
+package com.project.hackhub.handler;
 
 import com.project.hackhub.dto.HackathonDTO;
 import com.project.hackhub.model.hackathon.Hackathon;
@@ -33,12 +33,6 @@ public class HackathonHandler {
         this.prenotazioneRepository = pr;
     }
 
-    public boolean saveMemento(){
-
-        //TODO
-        return true;
-    }
-
     public void addMentor(UtenteRegistrato u, Hackathon h){
 
         if(h == null) throw new IllegalArgumentException("hacakthon cannot be null");
@@ -47,10 +41,6 @@ public class HackathonHandler {
             throw new UnsupportedOperationException("Azione non permessa.");
         h.addMentor(u);
         hackathonRepo.save(h);
-    }
-
-    public void handleExpiredSubscriptions(){
-          //TODO
     }
 
     public boolean removeTeamFromHackathon(Hackathon h, Team t){
@@ -65,10 +55,6 @@ public class HackathonHandler {
             return true;
         }
         return false;
-    }
-
-    public void handleExpiredSubmissions(){
-        //TODO
     }
 
     public HackathonBuilder createHackathonBuilder(){
@@ -99,12 +85,8 @@ public class HackathonHandler {
     }
 
     public boolean deleteHackathon(Hackathon h){
-
-        //TOREVISE
-        if(h == null) throw new IllegalArgumentException("Hackathon to delete cannot be null");
-
-        hackathonRepo.delete(h);
-        return true;
+        //TODO
+        return false;
     }
 
     /**

@@ -1,4 +1,4 @@
-package com.project.hackhub.service;
+package com.project.hackhub.handler;
 
 import com.project.hackhub.dto.AidRequestDTO;
 import com.project.hackhub.model.calendar.CalendarAdapter;

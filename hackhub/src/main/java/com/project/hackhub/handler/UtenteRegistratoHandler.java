@@ -1,9 +1,8 @@
-package com.project.hackhub.service;
+package com.project.hackhub.handler;
 
 import com.project.hackhub.model.hackathon.Hackathon;
 import com.project.hackhub.model.hackathon.state.HackathonStateType;
 import com.project.hackhub.model.team.Invito;
-import com.project.hackhub.model.team.Team;
 import com.project.hackhub.model.utente.UtenteRegistrato;
 import com.project.hackhub.model.utente.state.UserState;
 import com.project.hackhub.model.utente.state.UserStateFactory;

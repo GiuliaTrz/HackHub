@@ -1,4 +1,4 @@
-package com.project.hackhub.service;
+package com.project.hackhub.handler;
 
 import com.project.hackhub.exceptions.UserNotAvailableException;
 import com.project.hackhub.model.hackathon.Hackathon;
@@ -10,7 +10,6 @@ import com.project.hackhub.model.utente.state.Permission;
 import com.project.hackhub.model.utente.state.UserStateType;
 import com.project.hackhub.observer.EventManager;
 import com.project.hackhub.observer.EventType;
-import com.project.hackhub.repository.HackathonRepository;
 import com.project.hackhub.repository.InvitoRepository;
 import com.project.hackhub.repository.TeamRepository;
 import com.project.hackhub.repository.UtenteRegistratoRepository;
@@ -26,37 +25,6 @@ public class TeamHandler {
     private final HackathonHandler hackathonHandler;
     private final UtenteRegistratoHandler userHandler;
     private final InvitoRepository invitoRepo;
-
-    /**
-     * Invites a {@link UtenteRegistrato} to take part in a {@link Team}.
-     *
-     * @param user the user to invite
-     * @param team the team that extends the invite
-     * @throws UserNotAvailableException if the user is not available
-     */
-    public void inviteUser(UtenteRegistrato user, Team team) {
-
-        if (team == null || user == null)
-            throw new IllegalArgumentException("Team or user cannot be null.");
-
-        // Check if hackathon is open for registration and if team leader has permission
-        if (!team.getHackathon().getState().getStateType().equals(HackathonStateType.IN_ISCRIZIONE)
-            || !team.getTeamLeader().hasPermission(Permission.CAN_INVITE_USERS, team.getHackathon()))
-            throw new UnsupportedOperationException("Action not allowed.");
-
-        // Check if user is available
-        if (user.isAvailable(team.getHackathon().getReservation())) {
-            Invito invitation = new Invito(team, user);
-            invitoRepo.save(invitation);
-            team.addInvitation(invitation);
-            teamRepository.save(team);
-
-            EventManager notifier = EventManager.getInstance();
-            notifier.notify(EventType.INVITO_UTENTE, List.of(user), invitation);
-        } else {
-            throw new UserNotAvailableException("User is not available and cannot be invited!");
-        }
-    }
 
     /**
      * Adds a user to the Team and deletes its invitation
