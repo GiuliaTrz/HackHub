@@ -11,9 +11,4 @@ public class Mentore extends UserState {
     }
 
 
-    //TODO
-    @Override
-    public void viewHackathonInfo() {
-
-    }
 }

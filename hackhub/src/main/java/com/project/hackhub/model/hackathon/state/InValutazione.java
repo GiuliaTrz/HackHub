@@ -1,6 +1,7 @@
 package com.project.hackhub.model.hackathon.state;
 
 import com.project.hackhub.model.hackathon.Hackathon;
+import com.project.hackhub.model.hackathon.ReportData;
 import com.project.hackhub.model.hackathon.builder.HackathonReportBuilder;
 
 public class InValutazione implements HackathonState {
@@ -10,31 +11,18 @@ public class InValutazione implements HackathonState {
         return HackathonStateType.IN_VALUTAZIONE;
     }
 
-
-    /**
-     * Builds a detailed Report for a given Hackathon
-     * @param builder
-     * @param h
-     * @Author Chiara Marinucci
-     */
     @Override
-    public void buildDetailedReport(HackathonReportBuilder builder, Hackathon h) {
-        buildPublicReport(builder, h);
-        builder.setCoordinator(h.getCoordinator());
-        builder.setJudge(h.getJudge());
-        builder.addMentorsList(h.getMentorsList());
-    }
+    public ReportData getReportData(Hackathon h){
+        ReportData r = new ReportData();
+        //public data
+        r.setName(h.getName());
+        r.setRuleBook(h.getRuleBook());
+        r.setState(h.getState());
+        //dettagli
+        r.setCoordinator(h.getCoordinator());
+        r.setJudge(h.getJudge());
+        r.setMentorsList(h.getMentorsList());
 
-    /**
-     * Builds a general Report for a given Hackathon
-     * @param builder
-     * @param h
-     * @Author Chiara Marinucci
-     */
-    @Override
-    public void buildPublicReport(HackathonReportBuilder builder, Hackathon h) {
-        builder.setName(h.getName());
-        builder.setRuleBook(h.getRuleBook());
-        builder.setState(h.getState());
+        return r;
     }
 }

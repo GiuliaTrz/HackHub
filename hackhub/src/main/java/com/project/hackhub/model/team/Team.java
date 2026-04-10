@@ -37,6 +37,9 @@ public class Team {
 
     private boolean pendingCallProposal;
 
+    //da cambiare più avanti in Valutazione/Grade in caso
+    private String grade;
+
     /**
      * Aggiunge un {@link UtenteRegistrato} alla lista dei membri del team.
      *

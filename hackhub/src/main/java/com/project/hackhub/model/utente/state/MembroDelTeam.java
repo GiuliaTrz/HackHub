@@ -7,16 +7,13 @@ public class MembroDelTeam extends UserState {
 
 
     public MembroDelTeam() {
-        super(EnumSet.of(Permission.CAN_INVITE_USERS, Permission.DETAILED_INFO));
+        super(EnumSet.of(Permission.CAN_INVITE_USERS, Permission.DETAILED_INFO,
+                Permission.TEAM_PERMISSION));
     }
 
     protected MembroDelTeam(EnumSet<Permission> permissions) {
         super(permissions);
     }
 
-    //TODO
-    @Override
-    public void viewHackathonInfo() {
 
-    }
 }

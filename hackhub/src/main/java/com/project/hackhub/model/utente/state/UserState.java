@@ -29,9 +29,4 @@ public abstract class UserState {
         return h.getInfractions();
     };
 
-
-    //TODO
-    public abstract void viewHackathonInfo();
-
-
 }

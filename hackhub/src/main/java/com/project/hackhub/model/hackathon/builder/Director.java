@@ -3,7 +3,9 @@ package com.project.hackhub.model.hackathon.builder;
 import com.project.hackhub.dto.HackathonDTO;
 import com.project.hackhub.model.hackathon.Hackathon;
 import com.project.hackhub.model.hackathon.Report;
+import com.project.hackhub.model.hackathon.ReportData;
 import com.project.hackhub.model.utente.UtenteRegistrato;
+import com.project.hackhub.model.utente.state.Permission;
 import com.project.hackhub.service.HackathonHandler;
 import lombok.NonNull;
 
@@ -19,35 +21,27 @@ public class Director {
 
     @NonNull private Builder builder;
     @NonNull private final HackathonHandler hackathonHandler;
+    private final HackathonReportBuilder reportBuilder = new HackathonReportBuilder();
 
     public Director(@NonNull Builder b, @NonNull HackathonHandler hackathonHandler) {
         this.builder = b;
         this.hackathonHandler = hackathonHandler;
     }
 
-    /**
-     * Returns a detailed report specific to a state of a given Hackathon
-     * @param builder
-     * @param h
-     * @return a Report
-     * @Author Chiara Marinucci
-     */
-    public Report constructDetailedReport(HackathonReportBuilder builder, Hackathon h) {
-        h.getState().buildDetailedReport(builder, h);
-        return builder.build();
+
+    public Report constructReport(Hackathon h, UtenteRegistrato u) {
+        ReportData data = h.getState().getReportData(h);
+        if (u == null)
+            return reportBuilder.buildPublic(data);
+
+        if (u.hasPermission(Permission.STAFF_PERMISSION, h))
+            return reportBuilder.buildStaff(data);
+
+        return reportBuilder.buildDetailed(data);
     }
 
-    /**
-     * Returns a general report specific to a state of a given Hackathon
-     * @param builder
-     * @param h
-     * @return a Report
-     * @Author Chiara Marinucci
-     */
-    public Report constructPublicReport(HackathonReportBuilder builder, Hackathon h) {
-        h.getState().buildPublicReport(builder, h);
-        return builder.build();
-    }
+
+
 
     /**
      * populates the builder from a dto given

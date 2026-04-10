@@ -1,6 +1,7 @@
 package com.project.hackhub.model.hackathon.state;
 
 import com.project.hackhub.model.hackathon.Hackathon;
+import com.project.hackhub.model.hackathon.ReportData;
 import com.project.hackhub.model.hackathon.builder.HackathonReportBuilder;
 
 public class Concluso implements HackathonState {
@@ -9,32 +10,21 @@ public class Concluso implements HackathonState {
         return HackathonStateType.CONCLUSO;
     }
 
-    /**
-     * Builds a detailed Report for a given Hackathon
-     * @param builder
-     * @param h
-     * @Author Chiara Marinucci
-     */
-    @Override
-    public void buildDetailedReport(HackathonReportBuilder builder, Hackathon h) {
-        buildPublicReport(builder, h);
-        builder.setCoordinator(h.getCoordinator());
-        builder.setJudge(h.getJudge());
-        builder.addMentorsList(h.getMentorsList());
-    }
 
-    /**
-     * Builds a general Report for a given Hackathon
-     * @param builder
-     * @param h
-     * @Author Chiara Marinucci
-     */
-    @Override
-    public void buildPublicReport(HackathonReportBuilder builder, Hackathon h) {
-        builder.setName(h.getName());
-        builder.setRuleBook(h.getRuleBook());
-        builder.setState(h.getState());
-        builder.setMoneyPrice(h.getMoneyPrice());
 
+    @Override
+    public ReportData getReportData(Hackathon h){
+        ReportData r = new ReportData();
+        //public data
+        r.setName(h.getName());
+        r.setRuleBook(h.getRuleBook());
+        r.setState(h.getState());
+        r.setTeamsGrades(h.getTeamsGrades());
+        //dettagli
+        r.setCoordinator(h.getCoordinator());
+        r.setJudge(h.getJudge());
+        r.setMentorsList(h.getMentorsList());
+
+        return r;
     }
 }

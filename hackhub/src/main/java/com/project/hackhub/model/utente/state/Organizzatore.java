@@ -17,11 +17,5 @@ public class Organizzatore extends UserState {
                 Permission.CAN_ADD_JUDGE,
                 Permission.DETAILED_INFO));
     }
-    //TODO
-    @Override
-    public void viewHackathonInfo() {
-
-    }
-
 
 }

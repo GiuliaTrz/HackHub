@@ -1,82 +1,62 @@
 package com.project.hackhub.model.hackathon.builder;
 
-import com.project.hackhub.model.hackathon.Prenotazione;
+import com.project.hackhub.dto.DetailedReport;
+import com.project.hackhub.dto.PublicReport;
+import com.project.hackhub.dto.StaffReport;
+import com.project.hackhub.model.hackathon.Hackathon;
 import com.project.hackhub.model.hackathon.Report;
-import com.project.hackhub.model.hackathon.Soldi;
-import com.project.hackhub.model.hackathon.state.HackathonState;
+import com.project.hackhub.model.hackathon.ReportData;
 import com.project.hackhub.model.utente.UtenteRegistrato;
-import java.time.LocalDate;
-import java.util.List;
+import com.project.hackhub.model.utente.state.Permission;
 
-public class HackathonReportBuilder implements Builder {
 
-    private Report report;
+public class HackathonReportBuilder {
 
-    public HackathonReportBuilder(){
-        this.reset();;
+
+       public PublicReport buildPublic(ReportData data) {
+        return new PublicReport(
+                data.getName(),
+                data.getDescription(),
+                data.getRuleBook(),
+                data.getState(),
+                data.getMoneyPrice()
+        );
     }
-
-    @Override
-    public void reset() {
-        this.report = new Report();
+    public DetailedReport buildDetailed(ReportData data) {
+        return new DetailedReport(
+                data.getName(),
+                data.getDescription(),
+                data.getRuleBook(),
+                data.getState(),
+                data.getMoneyPrice(),
+                data.getCoordinator(),
+                data.getJudge(),
+                data.getMentorsList()
+        );
     }
-
-    @Override
-    public void setName(String n) {
-        this.report.setName(n);
+    public StaffReport buildStaff(ReportData data) {
+        return new StaffReport(
+                data.getName(),
+                data.getDescription(),
+                data.getRuleBook(),
+                data.getState(),
+                data.getMoneyPrice(),
+                data.getTeamsList(),
+                data.getMentorsList(),
+                data.getCoordinator(),
+                data.getJudge(),
+                data.getReservation(),
+                data.getTeamsGrades()
+        );
     }
+    public Report build(ReportData data, Hackathon h, UtenteRegistrato u) {
 
-    @Override
-    public void setRuleBook(String r) {
-        this.report.setRuleBook(r);
-    }
+        if (u == null || !u.hasPermission(Permission.TEAM_PERMISSION, h))
+            return buildPublic(data);
 
-    @Override
-    public void setState() {}
+        if (u.hasPermission(Permission.STAFF_PERMISSION, h))
+            return buildStaff(data);
 
-    @Override
-    public void setState(HackathonState st) {
-        this.report.setState(st);
-    }
-
-    @Override
-    public void setMaxTeamDimension(int num) {
-        this.report.setMaxTeamDimension(num);
-    }
-
-    @Override
-    public void setReservation(Prenotazione p) {
-        this.report.setReservation(p);
-    }
-
-    @Override
-    public void setMoneyPrice(Soldi p) {
-        this.report.setMoneyPrice(p);
-    }
-
-    @Override
-    public void addMentorsList(List<UtenteRegistrato> mentorsList) {
-        this.report.setMentorsList(mentorsList);
-    }
-
-    @Override
-    public void setExpiredSubscriptionDate(LocalDate d) {
-        this.report.setExpiredSubscriptionsDate(d);
-    }
-
-    @Override
-    public void setJudge(UtenteRegistrato u) {
-        this.report.setJudge(u);
-    }
-
-    @Override
-    public void setCoordinator(UtenteRegistrato coordinator) {
-        this.report.setCoordinator(coordinator);
-    }
-
-    public Report build() {
-        Report result = this.report;
-        this.reset();
-        return result;
+        return buildDetailed(data);
     }
 }
