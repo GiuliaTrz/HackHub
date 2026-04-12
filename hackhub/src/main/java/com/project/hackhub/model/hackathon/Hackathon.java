@@ -14,6 +14,7 @@ import lombok.Setter;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @Setter @Getter
@@ -58,6 +59,7 @@ public class Hackathon {
 
     @ElementCollection
     private List<AidRequest> aidRequests = new ArrayList<>();
+
 
     // Copy constructor
     public Hackathon(Hackathon other) {
@@ -107,5 +109,14 @@ public class Hackathon {
             throw new IllegalArgumentException("Richiesta nulla.");
 
         return aidRequests.add(a);
+    }
+
+    //Da cambiare più avanti in modo che ritorni una Map<Team, Valutazione> in caso
+    public String getTeamsGrades() {
+        StringBuilder res = new StringBuilder();
+        for(Team t : this.teamsList){
+            res.append("Valutazioni Team:\n").append(t.getName()).append(" : ").append(t.getGrade()).append("\n");
+        }
+        return res.toString();
     }
 }

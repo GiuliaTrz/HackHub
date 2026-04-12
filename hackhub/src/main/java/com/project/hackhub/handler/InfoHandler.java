@@ -1,74 +1,52 @@
 package com.project.hackhub.handler;
 
 import com.project.hackhub.model.hackathon.Hackathon;
-import com.project.hackhub.model.hackathon.Report;
-import com.project.hackhub.model.hackathon.builder.Director;
-import com.project.hackhub.model.hackathon.builder.HackathonReportBuilder;
-import com.project.hackhub.model.hackathon.state.HackathonStateType;
-import com.project.hackhub.model.utente.Utente;
-import com.project.hackhub.model.utente.state.Permission;
+import com.project.hackhub.model.hackathon.report.Report;
+import com.project.hackhub.model.hackathon.report.ReportData;
+import com.project.hackhub.model.hackathon.report.HackathonReportAssembler;
+import com.project.hackhub.model.utente.UtenteRegistrato;
 import com.project.hackhub.repository.HackathonRepository;
 import com.project.hackhub.repository.UtenteRegistratoRepository;
 import java.util.List;
-import java.util.Optional;
+import java.util.NoSuchElementException;
 import java.util.UUID;
 
 public class InfoHandler {
-    private final Director director;
     private final HackathonRepository hackathonRepository;
-    //private final UtenteRegistratoRepository utenteRegistratoRepository;
+    private final UtenteRegistratoRepository utenteRegistratoRepository;
+    private final HackathonReportAssembler reportBuilder = new HackathonReportAssembler();
 
-    public InfoHandler(HackathonRepository hr, UtenteRegistratoRepository ur, Director director){
+    public InfoHandler(HackathonRepository hr, UtenteRegistratoRepository ur){
         this.hackathonRepository = hr;
-       // this.utenteRegistratoRepository = ur;
-        this.director = director;
+        this.utenteRegistratoRepository = ur;
     }
 
     /**
-     * @return a list of Hakcathons' UUID whose state is not concluded.
-     * @Author Chiara Marinucci
+     * @return a list of all Hackathons
+     * @author Chiara Marinucci
      */
-    public List<UUID> getActiveHackathon(){
-        return hackathonRepository.findIdByStateNot(HackathonStateType.CONCLUSO);
-    }
+    public List<Hackathon> getAllHackathon() {return hackathonRepository.findAll();}
 
     /**
-     * Return a report containing information about a given Hackathon
+     * Return a report containing information about a given Hackathon according to the state of the Hackathon
+     * and the user's permissions.
      * @param hackathonId a unique id associated to a certain Hackathon
-     * @param u the user that wants to access the report
-     * @return a Report of the Hackathon if the hackathonId is mapped to a Hackathon or null
-     * @Author Chiara Marinucci
+     * @param utenteId a unique id associate to the user that wants to access the report
+     * @return a Report of the Hackathon if the hackathonId is mapped to a Hackathon
+     * * @throws NoSuchElementException if hackathonId is not mapped to a Hackathon
+     * @author Chiara Marinucci
      */
-    public Report getHackathonReport(UUID hackathonId, Utente u){
-        Optional<Hackathon> optionalHackathon = hackathonRepository.findById(hackathonId);
-        if(optionalHackathon.isPresent()) {
-            Hackathon h = optionalHackathon.get();
-            if (!u.hasPermission(Permission.DETAILED_INFO, h))
-                return getPublicInfo(h);
-            else
-                return getDetailedInfo(h);
-        }
-        return null;
+    public Report getHackathonReport(UUID hackathonId, UUID utenteId){
+        Hackathon h = hackathonRepository.findById(hackathonId).orElse(null);
+        if (h == null)
+            throw new NoSuchElementException("Hackathon given does not exist");
+
+        UtenteRegistrato u = utenteRegistratoRepository.findById(utenteId).orElse(null);
+
+        ReportData data = h.getState().getReportData(h);
+
+        return reportBuilder.build(data, h, u);
     }
 
-    /**
-     * Returns a detailed report of a given Hackathon
-     * @param h the Hakcahton for which a report must be built
-     * @return a Report
-     * @Author Chiara Marinucci
-     */
-    private Report getDetailedInfo(Hackathon h) {
-        HackathonReportBuilder builder = new HackathonReportBuilder();
-        return director.constructDetailedReport(builder, h);
-    }
-    /**
-     * Returns a general report of a given Hackathon
-     * @param h the Hakcahton for which a report must be built
-     * @return a Report
-     * @Author Chiara Marinucci
-     */
-    private Report getPublicInfo(Hackathon h) {
-        HackathonReportBuilder builder = new HackathonReportBuilder();
-        return director.constructPublicReport(builder, h);
-    }
+
 }

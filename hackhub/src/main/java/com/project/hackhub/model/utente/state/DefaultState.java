@@ -10,9 +10,4 @@ public class DefaultState extends UserState {
                 Permission.DETAILED_INFO));
     }
 
-
-    @Override
-    public void viewHackathonInfo() {
-
-    }
 }
