@@ -89,32 +89,6 @@ public class TeamHandler {
     }
 
     /**
-     * Unsubscribes a team from a Hackathon. The team does not exist after his unsubscription
-     * @param t the team
-     * @param h the hackathon
-     * @throws IllegalArgumentException if any of the parameters are null
-     * @throws UnsupportedOperationException if the {@link Hackathon} is not in {@link HackathonStateType#IN_ISCRIZIONE} state
-     * or the user does not have permission to do the action
-     * @author Giorgia Branchesi
-     */
-    public void unsubscribeTeam(Team t, Hackathon h){
-
-        if(t == null)
-            throw new IllegalArgumentException("team cannot be null");
-        if(h == null)
-            throw new IllegalArgumentException("hackathon cannot be null");
-
-        if(!t.getTeamLeader().hasPermission(Permission.CAN_UNSUBSCRIBE_TEAM, h)
-            || !h.getState().getStateType().equals(HackathonStateType.IN_ISCRIZIONE))
-                throw new UnsupportedOperationException("Cannot unsubscribe team");
-
-        hackathonHandler.removeTeamFromHackathon(h, t);
-        EventManager notifier = EventManager.getInstance();
-        notifier.notify(EventType.ELIMINAZIONE_TEAM, t.getTeamMembersList(), t);
-        teamRepository.delete(t);
-    }
-
-    /**
      * Removes a user from a team
      * @param u the user to remove
      * @param t the team
