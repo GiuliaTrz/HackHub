@@ -2,7 +2,7 @@ package com.project.hackhub.model.hackathon.builder;
 
 import com.project.hackhub.dto.HackathonDTO;
 import com.project.hackhub.model.utente.UtenteRegistrato;
-import com.project.hackhub.service.HackathonHandler;
+import com.project.hackhub.handler.HackathonHandler;
 import lombok.NonNull;
 
 import java.util.ArrayList;

@@ -1,10 +1,9 @@
 package com.project.hackhub.observer;
 
-import com.project.hackhub.model.team.Invito;
 import com.project.hackhub.model.team.Team;
 import com.project.hackhub.model.utente.UtenteRegistrato;
 import com.project.hackhub.model.utente.state.UserStateType;
-import com.project.hackhub.service.UtenteRegistratoHandler;
+import com.project.hackhub.handler.UtenteRegistratoHandler;
 import lombok.AllArgsConstructor;
 
 import java.util.List;
