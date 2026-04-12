@@ -43,20 +43,6 @@ public class HackathonHandler {
         hackathonRepo.save(h);
     }
 
-    public boolean removeTeamFromHackathon(Hackathon h, Team t){
-
-        if(h == null || t == null) return false;
-
-        if(!t.getTeamLeader().hasPermission(Permission.CAN_UNSUBSCRIBE_TEAM, h))
-            throw new UnsupportedOperationException("Azione non permessa.");
-
-        if(h.removeTeam(t)){
-            hackathonRepo.save(h);
-            return true;
-        }
-        return false;
-    }
-
     public HackathonBuilder createHackathonBuilder(){
         return new HackathonBuilder();
     }

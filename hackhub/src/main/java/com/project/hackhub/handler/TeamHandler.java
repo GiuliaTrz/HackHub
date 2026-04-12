@@ -17,6 +17,8 @@ import lombok.AllArgsConstructor;
 
 import java.util.List;
 
+import static com.project.hackhub.service.UserStateService.changeUserState;
+
 @AllArgsConstructor
 public class TeamHandler {
 
@@ -148,7 +150,7 @@ public class TeamHandler {
             throw new IllegalStateException("User is not a member of the team.");
 
         // Aggiorna lo stato dell'utente se necessario
-        userHandler.changeUserState(user, false, team.getHackathon(), UserStateType.DEFAULT_STATE);
+        changeUserState(user, false, team.getHackathon(), UserStateType.DEFAULT_STATE);
 
         team.removeTeamMember(user);
         teamRepository.save(team);

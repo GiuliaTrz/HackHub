@@ -46,11 +46,11 @@ public class UtenteRegistrato implements Utente {
         this.stateInHackathon.put(prenotazione, newState);
     }
 
-    public void removeReservation(Hackathon h){
+    public void removeReservation(Prenotazione p){
 
-        if(h == null)
-            throw new IllegalArgumentException("Hackathon can't be null");
-        stateInHackathon.remove(h.getReservation());
+        if(p == null)
+            throw new IllegalArgumentException("Reservation can't be null");
+        stateInHackathon.remove(p);
     }
 
     public boolean isAvailable(Prenotazione p){
