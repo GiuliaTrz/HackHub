@@ -29,11 +29,16 @@ public class InvitationHandler {
      * @param user the user to invite
      * @param team the team that extends the invite
      * @throws UserNotAvailableException if the user is not available
+     * @throws IllegalArgumentException if the invitation or the team member do not exist in the
+     * repositories or if the ids are {@code null}
+     * @throws UnsupportedOperationException if the user that initiated the operation does not
+     * have permission to cancel the invitation or if the {@link com.project.hackhub.model.hackathon.Hackathon}
+     * is not {@link HackathonStateType#IN_ISCRIZIONE}
      */
     public void inviteUser(UUID user, UUID team) {
 
         UtenteRegistrato userToInvite = utenteRegistratoRepo.findById(user).orElseThrow(
-                () -> new IllegalArgumentException("user to invite does not exist")
+                () -> new IllegalArgumentException("User to invite does not exist")
         );
 
         Team t = teamRepository.findById(team).orElseThrow(
@@ -56,5 +61,34 @@ public class InvitationHandler {
         } else {
             throw new UserNotAvailableException("User is not available and cannot be invited!");
         }
+    }
+
+    /**
+     * Cancels an invitation that was sent and not yet accepted
+     * @param invitation the invitation to cancel
+     * @param teamMember the team member that wants to cancel the invitation
+     * @throws IllegalArgumentException if the invitation or the team member do not exist in the
+     * repositories or if the ids are {@code null}
+     * @throws UnsupportedOperationException if the user that initiated the operation does not
+     * have permission to cancel the invitation or if the {@link com.project.hackhub.model.hackathon.Hackathon}
+     * is not {@link HackathonStateType#IN_ISCRIZIONE}
+     */
+    public void cancelInvitation(UUID invitation, UUID teamMember) {
+
+        Invito toCancel = invitoRepository.findById(invitation).orElseThrow(
+                () -> new IllegalArgumentException("invitation to cancel does not exist"));
+
+        Team t = toCancel.getMittente();
+        UtenteRegistrato tMember = utenteRegistratoRepo.findById(teamMember).orElseThrow(() -> new IllegalArgumentException("user does not exist"));
+
+        if(!t.getHackathon().getState().getStateType().equals(HackathonStateType.IN_ISCRIZIONE)
+                || !tMember.hasPermission(Permission.CAN_CANCEL_INVITATION, t.getHackathon()))
+            throw new UnsupportedOperationException("Action not allowed.");
+
+        t.removeInvitationFromList(toCancel);
+        teamRepository.save(t);
+        toCancel.getDestinatario().removeInvitation(toCancel);
+        utenteRegistratoRepo.save(toCancel.getDestinatario());
+        invitoRepository.delete(toCancel);
     }
 }
