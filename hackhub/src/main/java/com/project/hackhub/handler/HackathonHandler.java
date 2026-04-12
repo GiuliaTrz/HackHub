@@ -6,32 +6,24 @@ import com.project.hackhub.model.hackathon.Prenotazione;
 import com.project.hackhub.model.hackathon.builder.Director;
 import com.project.hackhub.model.hackathon.builder.HackathonBuilder;
 import com.project.hackhub.model.hackathon.builder.HackathonBuilderMemento;
-import com.project.hackhub.model.team.Team;
 import com.project.hackhub.model.utente.UtenteRegistrato;
 import com.project.hackhub.model.utente.state.Permission;
 import com.project.hackhub.model.utente.state.UserStateType;
 import com.project.hackhub.repository.HackathonBuilderMementoRepository;
 import com.project.hackhub.repository.HackathonRepository;
 import com.project.hackhub.repository.PrenotazioneRepository;
+import lombok.AllArgsConstructor;
 
+import static com.project.hackhub.service.UserStateService.changeUserState;
+
+@AllArgsConstructor
 public class HackathonHandler {
 
     private final HackathonRepository hackathonRepo;
 
     private final HackathonBuilderMementoRepository hackathonBuilderMementoRepo;
 
-    private final UtenteRegistratoHandler utenteRegistratoHandler;
-
     private final PrenotazioneRepository prenotazioneRepository;
-
-
-    public HackathonHandler(HackathonRepository h, HackathonBuilderMementoRepository hm, UtenteRegistratoHandler uh, PrenotazioneRepository pr){
-
-        this.hackathonRepo = h;
-        this.hackathonBuilderMementoRepo = hm;
-        this.utenteRegistratoHandler = uh;
-        this.prenotazioneRepository = pr;
-    }
 
     public void addMentor(UtenteRegistrato u, Hackathon h){
 
@@ -41,20 +33,6 @@ public class HackathonHandler {
             throw new UnsupportedOperationException("Azione non permessa.");
         h.addMentor(u);
         hackathonRepo.save(h);
-    }
-
-    public boolean removeTeamFromHackathon(Hackathon h, Team t){
-
-        if(h == null || t == null) return false;
-
-        if(!t.getTeamLeader().hasPermission(Permission.CAN_UNSUBSCRIBE_TEAM, h))
-            throw new UnsupportedOperationException("Azione non permessa.");
-
-        if(h.removeTeam(t)){
-            hackathonRepo.save(h);
-            return true;
-        }
-        return false;
     }
 
     public HackathonBuilder createHackathonBuilder(){
@@ -131,11 +109,11 @@ public class HackathonHandler {
      * @author Giorgia Branchesi
      */
     private void updateStaffState(Hackathon hackathon) {
-        utenteRegistratoHandler.changeUserState(hackathon.getJudge(), true, hackathon, UserStateType.GIUDICE);
-        utenteRegistratoHandler.changeUserState(hackathon.getCoordinator(), true, hackathon, UserStateType.ORGANIZZATORE);
+        changeUserState(hackathon.getJudge(), true, hackathon, UserStateType.GIUDICE);
+        changeUserState(hackathon.getCoordinator(), true, hackathon, UserStateType.ORGANIZZATORE);
         if(hackathon.getMentorsList() != null) {
             for (UtenteRegistrato mentor : hackathon.getMentorsList()) {
-                utenteRegistratoHandler.changeUserState(mentor, true, hackathon, UserStateType.MENTORE);
+               changeUserState(mentor, true, hackathon, UserStateType.MENTORE);
             }
         }
     }

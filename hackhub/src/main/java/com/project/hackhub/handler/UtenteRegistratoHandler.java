@@ -11,34 +11,14 @@ import com.project.hackhub.repository.TeamRepository;
 import com.project.hackhub.repository.UtenteRegistratoRepository;
 import lombok.AllArgsConstructor;
 
+import static com.project.hackhub.service.UserStateService.changeUserState;
+
 @AllArgsConstructor
 public class UtenteRegistratoHandler {
 
     private final UtenteRegistratoRepository utenteRegistratoRepo;
     private final TeamRepository teamRepo;
     private final TeamHandler teamHandler;
-
-    /**
-     * Sets the given state on the given user and adds or removes the reservation of the Hackathon as needed
-     *
-     * @param user      the user which state is to update.
-     * @param toAdd     {@code true} if the reservation needs to be added to the list of the user, {@code false} if it does not
-     * @param hackathon the hackathon
-     * @param state     the userState to set
-     * @author Giorgia Branchesi
-     */
-    public void changeUserState(UtenteRegistrato user, boolean toAdd, Hackathon hackathon, UserStateType state) {
-
-        UserStateFactory factory = new UserStateFactory();
-        UserState concreteState = factory.createUserState(state);
-
-        if (toAdd)
-            user.setState(hackathon.getReservation(), concreteState);
-        else {
-            user.removeReservation(hackathon);
-        }
-        utenteRegistratoRepo.save(user);
-    }
 
     public void addInvitation(UtenteRegistrato user, Invito invitation) {
 
