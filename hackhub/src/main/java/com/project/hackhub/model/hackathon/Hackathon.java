@@ -14,7 +14,6 @@ import lombok.Setter;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 @Setter @Getter
@@ -59,6 +58,9 @@ public class Hackathon {
 
     @ElementCollection
     private List<AidRequest> aidRequests = new ArrayList<>();
+
+    @OneToMany
+    private List<Task> taskList = new ArrayList<>();
 
 
     // Copy constructor
@@ -118,5 +120,9 @@ public class Hackathon {
             res.append("Valutazioni Team:\n").append(t.getName()).append(" : ").append(t.getGrade()).append("\n");
         }
         return res.toString();
+    }
+
+    public void addTask(@NonNull Task t){
+        taskList.add(t);
     }
 }
