@@ -1,4 +1,4 @@
-package com.project.hackhub.service;
+package com.project.hackhub.handler;
 
 import com.project.hackhub.model.team.Infraction;
 import com.project.hackhub.model.utente.UtenteRegistrato;
