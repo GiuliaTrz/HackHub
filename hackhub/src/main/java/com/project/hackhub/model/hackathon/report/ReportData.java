@@ -1,5 +1,7 @@
-package com.project.hackhub.model.hackathon;
+package com.project.hackhub.model.hackathon.report;
 
+import com.project.hackhub.model.hackathon.Prenotazione;
+import com.project.hackhub.model.hackathon.Soldi;
 import com.project.hackhub.model.hackathon.state.HackathonState;
 import com.project.hackhub.model.team.Team;
 import com.project.hackhub.model.utente.UtenteRegistrato;

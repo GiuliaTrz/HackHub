@@ -1,11 +1,9 @@
-package com.project.hackhub.model.hackathon.builder;
+package com.project.hackhub.model.hackathon.report;
 
 import com.project.hackhub.dto.DetailedReport;
 import com.project.hackhub.dto.PublicReport;
 import com.project.hackhub.dto.StaffReport;
 import com.project.hackhub.model.hackathon.Hackathon;
-import com.project.hackhub.model.hackathon.Report;
-import com.project.hackhub.model.hackathon.ReportData;
 import com.project.hackhub.model.utente.UtenteRegistrato;
 import com.project.hackhub.model.utente.state.Permission;
 
@@ -13,7 +11,7 @@ import com.project.hackhub.model.utente.state.Permission;
  * A class that builds different report views based on user permissions.
  */
 
-public class HackathonReportBuilder {
+public class HackathonReportAssembler {
 
     /**
      * Builds a public report containing only publicly visible data.     *

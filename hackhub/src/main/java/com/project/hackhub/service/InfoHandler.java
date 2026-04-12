@@ -1,9 +1,9 @@
 package com.project.hackhub.service;
 
 import com.project.hackhub.model.hackathon.Hackathon;
-import com.project.hackhub.model.hackathon.Report;
-import com.project.hackhub.model.hackathon.ReportData;
-import com.project.hackhub.model.hackathon.builder.HackathonReportBuilder;
+import com.project.hackhub.model.hackathon.report.Report;
+import com.project.hackhub.model.hackathon.report.ReportData;
+import com.project.hackhub.model.hackathon.report.HackathonReportAssembler;
 import com.project.hackhub.model.utente.UtenteRegistrato;
 import com.project.hackhub.repository.HackathonRepository;
 import com.project.hackhub.repository.UtenteRegistratoRepository;
@@ -14,7 +14,7 @@ import java.util.UUID;
 public class InfoHandler {
     private final HackathonRepository hackathonRepository;
     private final UtenteRegistratoRepository utenteRegistratoRepository;
-    private final HackathonReportBuilder reportBuilder = new HackathonReportBuilder();
+    private final HackathonReportAssembler reportBuilder = new HackathonReportAssembler();
 
     public InfoHandler(HackathonRepository hr, UtenteRegistratoRepository ur){
         this.hackathonRepository = hr;

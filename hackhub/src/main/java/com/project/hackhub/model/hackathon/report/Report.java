@@ -1,4 +1,4 @@
-package com.project.hackhub.model.hackathon;
+package com.project.hackhub.model.hackathon.report;
 
 /**
  * Interface for all Hackathon report representations.

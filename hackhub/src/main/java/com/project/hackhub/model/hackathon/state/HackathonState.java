@@ -2,7 +2,7 @@ package com.project.hackhub.model.hackathon.state;
 
 
 import com.project.hackhub.model.hackathon.Hackathon;
-import com.project.hackhub.model.hackathon.ReportData;
+import com.project.hackhub.model.hackathon.report.ReportData;
 import jakarta.persistence.Embeddable;
 
 @Embeddable

@@ -1,7 +1,7 @@
 package com.project.hackhub.dto;
 
 import com.project.hackhub.model.hackathon.Prenotazione;
-import com.project.hackhub.model.hackathon.Report;
+import com.project.hackhub.model.hackathon.report.Report;
 import com.project.hackhub.model.hackathon.Soldi;
 import com.project.hackhub.model.hackathon.state.HackathonState;
 import com.project.hackhub.model.team.Team;

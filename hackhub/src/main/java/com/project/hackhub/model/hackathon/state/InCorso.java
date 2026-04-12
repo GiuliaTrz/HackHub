@@ -1,7 +1,7 @@
 package com.project.hackhub.model.hackathon.state;
 
 import com.project.hackhub.model.hackathon.Hackathon;
-import com.project.hackhub.model.hackathon.ReportData;
+import com.project.hackhub.model.hackathon.report.ReportData;
 
 public class InCorso implements HackathonState {
 
