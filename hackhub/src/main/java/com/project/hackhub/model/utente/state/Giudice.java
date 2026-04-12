@@ -12,10 +12,5 @@ public class Giudice extends UserState {
         super(EnumSet.of(Permission.CAN_GRADE_SUBMISSION, Permission.DETAILED_INFO));
     }
 
-    @Override
-    public void viewHackathonInfo() {
-
-    }
-
 
 }
