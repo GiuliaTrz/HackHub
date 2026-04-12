@@ -89,28 +89,6 @@ public class TeamHandler {
     }
 
     /**
-     * Removes a user from a team
-     * @param u the user to remove
-     * @param t the team
-     * @throws IllegalArgumentException if any of the parameters are null
-     * @throws UnsupportedOperationException if the team is composed by only the user
-     * @author Giorgia Branchesi
-     */
-    public void leaveTeam(UtenteRegistrato u, Team t) {
-
-        if(u == null) throw new IllegalArgumentException("user cannot be null");
-        if(t == null) throw new IllegalArgumentException("team to leave cannot be null");
-
-        if(t.getTeamMembersList().size() < 2)
-            throw new UnsupportedOperationException("cannot leave team! " +
-                    "Must change team leader of delete hackathon participation!");
-
-        userHandler.changeUserState(u, false, t.getHackathon(), UserStateType.DEFAULT_STATE);
-        t.removeTeamMember(u);
-        teamRepository.save(t);
-    }
-
-    /**
      * Creates a new {@link Team} in a given {@link Hackathon} with a specified leader.
      * The leader is automatically added to the team's member list and set as the team leader.
      * The team is then persisted in the database.
