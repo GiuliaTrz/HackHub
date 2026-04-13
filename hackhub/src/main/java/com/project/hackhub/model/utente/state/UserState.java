@@ -12,6 +12,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Embeddable
 public abstract class UserState {
+
     protected Set<Permission> permissions;
 
 
@@ -23,10 +24,10 @@ public abstract class UserState {
         return permissions.contains(p);
     }
 
-    public List<Infraction> getInfractions(Hackathon h){
-        if(!permissions.contains(Permission.STAFF_PERMISSION))
-            throw new UnsupportedOperationException("Azione non permessa.");
-        return h.getInfractions();
-    };
+//    public List<Infraction> getInfractions(Hackathon h){
+//        if(!permissions.contains(Permission.STAFF_PERMISSION))
+//            throw new UnsupportedOperationException("Azione non permessa.");
+//        return h.getInfractions();
+//    };
 
 }
