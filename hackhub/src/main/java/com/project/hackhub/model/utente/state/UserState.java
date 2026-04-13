@@ -12,6 +12,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Embeddable
 public abstract class UserState {
+
     protected Set<Permission> permissions;
 
 

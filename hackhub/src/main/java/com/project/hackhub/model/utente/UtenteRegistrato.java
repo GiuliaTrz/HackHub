@@ -22,16 +22,13 @@ public class UtenteRegistrato implements Utente {
     private Set<Invito> invitationsList = new LinkedHashSet<>();
 
     @Embedded
-    @Setter(AccessLevel.PROTECTED) @NonNull private Anagrafica anagrafica;
+    @Setter @NonNull private Anagrafica anagrafica;
 
     @Embedded
     private final UserState defaultState = new DefaultState();
 
     @ElementCollection @CollectionTable(name = "StateInHackathon")
     private Map<Prenotazione, UserState> stateInHackathon = new HashMap<>();
-
-    @OneToMany //to remove
-    private Set<Prenotazione> reservationsList = stateInHackathon.keySet();
 
     public UtenteRegistrato(@NonNull Anagrafica a){
         this.anagrafica = a;
@@ -56,7 +53,7 @@ public class UtenteRegistrato implements Utente {
     public boolean isAvailable(Prenotazione p){
         if(p == null)
             throw new IllegalArgumentException("Reservation can't be null");
-        return (!reservationsList.contains(p));
+        return (!stateInHackathon.containsKey(p));
     }
 
     public void addInvitation(Invito i){
