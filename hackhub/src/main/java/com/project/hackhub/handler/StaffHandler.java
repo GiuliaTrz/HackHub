@@ -24,6 +24,7 @@ public class StaffHandler {
      * @param mentorId ID dell'utente da aggiungere come mentore
      * @throws UnsupportedOperationException se l'organizzatore non ha i permessi
      * @throws IllegalArgumentException se uno degli ID non corrisponde a un'entità
+     * @author Giulia Trozzi
      */
     public void addMentor(UUID organizerId, UUID hackathonId, UUID mentorId) {
         UtenteRegistrato organizer = utenteRepository.findById(organizerId)
@@ -47,6 +48,7 @@ public class StaffHandler {
      * @param organizerId ID organizzatore
      * @param hackathonId ID hackathon
      * @param mentorId ID mentore da rimuovere
+     * @author Giulia Trozzi
      */
     public void removeMentor(UUID organizerId, UUID hackathonId, UUID mentorId) {
         UtenteRegistrato organizer = utenteRepository.findById(organizerId)

@@ -65,8 +65,6 @@ public class Hackathon {
     @OneToOne
     private Team winner;
 
-
-    // Copy constructor
     public Hackathon(Hackathon other) {
         if (other == null)
             throw new IllegalArgumentException("Hackathon nullo.");
@@ -92,6 +90,11 @@ public class Hackathon {
         mentorsList.add(u);
     }
 
+    /**
+     * Rimuove un mentore
+     * @param u utente registrato
+     * @author Giulia Trozzi
+     */
     public void removeMentor(UtenteRegistrato u) {
         if (u == null)
             throw new IllegalArgumentException("Mentor nullo.");
