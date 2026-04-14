@@ -65,8 +65,6 @@ public class Hackathon {
     @OneToOne
     private Team winner;
 
-
-    // Copy constructor
     public Hackathon(Hackathon other) {
         if (other == null)
             throw new IllegalArgumentException("Hackathon nullo.");
@@ -90,6 +88,22 @@ public class Hackathon {
             throw new IllegalStateException("Mentor già presente.");
 
         mentorsList.add(u);
+    }
+
+    /**
+     * Rimuove un mentore
+     * @param u utente registrato
+     * @author Giulia Trozzi
+     */
+    public void removeMentor(UtenteRegistrato u) {
+        if (u == null)
+            throw new IllegalArgumentException("Mentor nullo.");
+        if (!mentorsList.contains(u))
+            throw new IllegalStateException("Mentor non presente nella lista.");
+        mentorsList.remove(u);
+    }
+    public boolean isMentor(UtenteRegistrato u) {
+        return mentorsList.contains(u);
     }
 
     public boolean removeTeam(Team t) {
@@ -127,5 +141,12 @@ public class Hackathon {
 
     public void addTask(@NonNull Task t){
         taskList.add(t);
+    }
+
+
+    public void addJudge(UtenteRegistrato member) {
+    }
+
+    public void removeJudge(UtenteRegistrato member) {
     }
 }
