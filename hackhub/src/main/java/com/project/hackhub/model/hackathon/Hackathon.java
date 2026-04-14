@@ -62,6 +62,9 @@ public class Hackathon {
     @OneToMany
     private List<Task> taskList = new ArrayList<>();
 
+    @OneToOne
+    private Team winner;
+
 
     // Copy constructor
     public Hackathon(Hackathon other) {
@@ -114,12 +117,12 @@ public class Hackathon {
     }
 
     //Da cambiare più avanti in modo che ritorni una Map<Team, Valutazione> in caso
-    public String getTeamsGrades() {
-        StringBuilder res = new StringBuilder();
+    public List<String> getTeamsGrades() {
+        List<String> grades = new ArrayList<>();
         for(Team t : this.teamsList){
-            res.append("Valutazioni Team:\n").append(t.getName()).append(" : ").append(t.getGrade()).append("\n");
+            grades.add(t.getGrade());
         }
-        return res.toString();
+        return grades;
     }
 
     public void addTask(@NonNull Task t){

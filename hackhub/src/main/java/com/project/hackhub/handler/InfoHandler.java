@@ -33,13 +33,13 @@ public class InfoHandler {
      * @param hackathonId a unique id associated to a certain Hackathon
      * @param utenteId a unique id associate to the user that wants to access the report
      * @return a Report of the Hackathon if the hackathonId is mapped to a Hackathon
-     * * @throws NoSuchElementException if hackathonId is not mapped to a Hackathon
+     * * @throws IllegalArgumentException if hackathonId is not mapped to a Hackathon
      * @author Chiara Marinucci
      */
     public Report getHackathonReport(UUID hackathonId, UUID utenteId){
         Hackathon h = hackathonRepository.findById(hackathonId).orElse(null);
         if (h == null)
-            throw new NoSuchElementException("Hackathon given does not exist");
+            throw new IllegalArgumentException("Hackathon given does not exist");
 
         UtenteRegistrato u = utenteRegistratoRepository.findById(utenteId).orElse(null);
 

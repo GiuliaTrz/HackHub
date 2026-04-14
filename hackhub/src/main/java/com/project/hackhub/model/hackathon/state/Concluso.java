@@ -23,6 +23,7 @@ public class Concluso implements HackathonState {
         r.setCoordinator(h.getCoordinator());
         r.setJudge(h.getJudge());
         r.setMentorsList(h.getMentorsList());
+        r.setWinner(h.getWinner());
 
         return r;
     }

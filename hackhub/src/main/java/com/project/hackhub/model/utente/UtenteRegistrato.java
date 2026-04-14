@@ -13,7 +13,7 @@ import java.util.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class UtenteRegistrato implements Utente {
+public class UtenteRegistrato {
 
     @Id @GeneratedValue
     @Getter private final UUID id = UUID.randomUUID();;
@@ -71,7 +71,6 @@ public class UtenteRegistrato implements Utente {
         invitationsList.remove(i);
     }
 
-    @Override
     public boolean hasPermission(Permission p, Hackathon h){
         return this.getState(h).hasPermission(p);
 }
