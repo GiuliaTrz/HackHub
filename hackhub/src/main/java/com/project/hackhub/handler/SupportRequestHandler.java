@@ -3,6 +3,7 @@ package com.project.hackhub.handler;
 import com.project.hackhub.dto.AidRequestDTO;
 import com.project.hackhub.model.calendar.CalendarAdapter;
 import com.project.hackhub.model.calendar.Slot;
+import com.project.hackhub.model.hackathon.Hackathon;
 import com.project.hackhub.model.hackathon.state.HackathonStateType;
 import com.project.hackhub.model.team.AidRequestType;
 import com.project.hackhub.model.team.Team;
@@ -10,19 +11,23 @@ import com.project.hackhub.model.team.AidRequest;
 import com.project.hackhub.model.utente.UtenteRegistrato;
 import com.project.hackhub.model.utente.state.Permission;
 import com.project.hackhub.repository.HackathonRepository;
+import com.project.hackhub.repository.UtenteRegistratoRepository;
 import lombok.NonNull;
 
 import java.util.List;
+import java.util.UUID;
 
 public class SupportRequestHandler {
 
     private final CalendarAdapter calendarAdapter;
     private final HackathonRepository hackathonRepository;
 
+    private final UtenteRegistratoRepository utenteRepository;
 
-    public SupportRequestHandler(CalendarAdapter calendarAdapter, HackathonRepository hackathonRepository) {
+    public SupportRequestHandler(CalendarAdapter calendarAdapter, HackathonRepository hackathonRepository, UtenteRegistratoRepository utenteRepository) {
         this.calendarAdapter = calendarAdapter;
         this.hackathonRepository = hackathonRepository;
+        this.utenteRepository = utenteRepository;
     }
 
     /**
@@ -106,5 +111,61 @@ public class SupportRequestHandler {
             return false;
         List<AidRequest> aidRequests = dto.team().getHackathon().getAidRequests();
         return aidRequests.stream().noneMatch(a -> a.getTeam().equals(dto.team()));
+    }
+
+    /**
+     * Elimina una richiesta di supporto. Si assume che al massimo ci sia una richiesta per team.
+     * @param requesterId ID utente (team leader o mentore)
+     * @param hackathonId ID hackathon
+     * @param teamId      ID team
+     * @author Giulia Trozzi
+     */
+    public void deleteSupportRequest(UUID requesterId, UUID hackathonId, UUID teamId) {
+        UtenteRegistrato requester = utenteRepository.findById(requesterId)
+                .orElseThrow(() -> new IllegalArgumentException("Utente non trovato"));
+        Hackathon hackathon = hackathonRepository.findById(hackathonId)
+                .orElseThrow(() -> new IllegalArgumentException("Hackathon non trovato"));
+
+        Team team = hackathon.getTeamsList().stream()
+                .filter(t -> t.getId().equals(teamId))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Team non trovato nell'hackathon"));
+
+        boolean isTeamLeader = team.getTeamLeader().getId().equals(requesterId);
+        boolean isMentor = hackathon.getMentorsList().contains(requester);
+        if (!isTeamLeader && !isMentor) {
+            throw new UnsupportedOperationException("Solo team leader o mentore possono eliminare la richiesta");
+        }
+
+        AidRequest toRemove = hackathon.getAidRequests().stream()
+                .filter(r -> r.getTeam().equals(team))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Nessuna richiesta attiva per questo team"));
+
+        hackathon.getAidRequests().remove(toRemove);
+        team.setPendingCallProposal(false);
+        hackathonRepository.save(hackathon);
+    }
+
+    /**
+     * Visualizza tutte le richieste di supporto di un hackathon.
+     * @param viewerId    ID utente (mentore o organizzatore)
+     * @param hackathonId ID hackathon
+     * @return lista di AidRequest
+     * @author Giulia Trozzi
+     */
+    public List<AidRequest> getAllSupportRequests(UUID viewerId, UUID hackathonId) {
+        UtenteRegistrato viewer = utenteRepository.findById(viewerId)
+                .orElseThrow(() -> new IllegalArgumentException("Utente non trovato"));
+        Hackathon hackathon = hackathonRepository.findById(hackathonId)
+                .orElseThrow(() -> new IllegalArgumentException("Hackathon non trovato"));
+
+        boolean isMentor = hackathon.getMentorsList().contains(viewer);
+        boolean isOrganizer = viewer.equals(hackathon.getCoordinator());
+
+        if (!isMentor && !isOrganizer) {
+            throw new UnsupportedOperationException("Permessi insufficienti per visualizzare le richieste");
+        }
+        return hackathon.getAidRequests();
     }
 }

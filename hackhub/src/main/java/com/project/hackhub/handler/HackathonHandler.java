@@ -178,6 +178,7 @@ public class HackathonHandler {
      * @param staffMemberId ID utente da modificare
      * @param role nuovo ruolo ("ORGANIZER", "MENTOR", "JUDGE")
      * @param add true per aggiungere, false per rimuovere
+     * @author Giulia Trozzi
      */
     public void modifyStaff(UUID editorId, UUID hackathonId, UUID staffMemberId, String role, boolean add) {
         UtenteRegistrato editor = utenteRepository.findById(editorId)
