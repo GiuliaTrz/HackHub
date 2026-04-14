@@ -49,7 +49,7 @@ public class AccountHandler {
     public UtenteRegistrato updateAccount(UUID userId, Anagrafica nuovaAnagrafica) {
         UtenteRegistrato utente = utenteRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
-        // Verifica permessi: l'utente può modificare solo se stesso oppure è admin (aggiungere logica)
+        //l'utente può modificare solo se stesso oppure è admin (aggiungere logica)
         utente.setAnagrafica(nuovaAnagrafica);
         return utenteRepository.save(utente);
     }
@@ -63,7 +63,7 @@ public class AccountHandler {
         if (!utenteRepository.existsById(userId)) {
             throw new IllegalArgumentException("User not found");
         }
-        // Eventuali controlli di permessi (solo admin o l'utente stesso)
+        //eventuali controlli di permessi (solo admin o l'utente stesso)
         utenteRepository.deleteById(userId);
     }
 }

@@ -144,4 +144,9 @@ public class Hackathon {
     }
 
 
+    public void addJudge(UtenteRegistrato member) {
+    }
+
+    public void removeJudge(UtenteRegistrato member) {
+    }
 }
