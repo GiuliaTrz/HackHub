@@ -92,6 +92,17 @@ public class Hackathon {
         mentorsList.add(u);
     }
 
+    public void removeMentor(UtenteRegistrato u) {
+        if (u == null)
+            throw new IllegalArgumentException("Mentor nullo.");
+        if (!mentorsList.contains(u))
+            throw new IllegalStateException("Mentor non presente nella lista.");
+        mentorsList.remove(u);
+    }
+    public boolean isMentor(UtenteRegistrato u) {
+        return mentorsList.contains(u);
+    }
+
     public boolean removeTeam(Team t) {
         if (t == null)
             throw new IllegalArgumentException("Team nullo.");
@@ -128,4 +139,6 @@ public class Hackathon {
     public void addTask(@NonNull Task t){
         taskList.add(t);
     }
+
+
 }
