@@ -14,7 +14,7 @@ import java.util.List;
 @Getter
 public final class PublicReport extends Report {
 
-    private List<String> teamsGrades;
+    private final List<String> teamsGrades;
 
     public PublicReport(String name, String ruleBook, Prenotazione reservation, HackathonState state, Soldi moneyPrize, int maxTeamDimension, Team winner, List<String> teamsGrades) {
         super(name, ruleBook, reservation, state, moneyPrize, maxTeamDimension, winner);

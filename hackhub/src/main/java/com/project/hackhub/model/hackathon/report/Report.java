@@ -4,15 +4,13 @@ import com.project.hackhub.model.hackathon.Prenotazione;
 import com.project.hackhub.model.hackathon.Soldi;
 import com.project.hackhub.model.hackathon.state.HackathonState;
 import com.project.hackhub.model.team.Team;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-import java.util.List;
 
 /**
- * Interface for all Hackathon report representations.
+ * Abstracts class for all Hackathon report representations.
  *
- * <p>Implemented by different DTOs representing the same underlying data
+ * <p>Extended by different final classes representing the same underlying data
  * exposed with different visibility levels depending on user permissions.</p>
  */
 @Getter

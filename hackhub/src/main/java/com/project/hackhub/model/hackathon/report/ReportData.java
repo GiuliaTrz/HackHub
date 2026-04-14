@@ -14,7 +14,7 @@ import java.time.LocalDate;
 import java.util.List;
 /**
  * Intermediate aggregated data model used to construct different
- * Report DTOs.
+ * Report final classes.
  *
  * <p>This class collects all domain information required by the report
  * builders before transforming it into a specific representation
