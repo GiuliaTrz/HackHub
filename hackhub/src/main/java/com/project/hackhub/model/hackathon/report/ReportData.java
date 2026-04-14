@@ -26,7 +26,6 @@ import java.util.List;
 @Getter @Setter
 public class ReportData {
     private String name;
-    private String description;
     private String ruleBook;
     private LocalDate expiredSubscriptionsDate;
     private int maxTeamDimension;
@@ -40,4 +39,5 @@ public class ReportData {
     private List<String> teamsGrades;
     private List<AidRequest> aidRequests;
     private List<Infraction> infractions;
+    private Team winner;
 }

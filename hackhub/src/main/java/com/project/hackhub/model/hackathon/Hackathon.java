@@ -62,6 +62,9 @@ public class Hackathon {
     @OneToMany
     private List<Task> taskList = new ArrayList<>();
 
+    @OneToOne
+    private Team winner;
+
 
     // Copy constructor
     public Hackathon(Hackathon other) {

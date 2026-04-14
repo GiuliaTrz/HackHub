@@ -28,8 +28,8 @@ public final class StaffReport extends Report {
     private final LocalDate expiredSubsciprionsDate;
     private final List<Infraction> infractions;
 
-    public StaffReport(String name, int maxTeamDimension, Soldi moneyPrize, HackathonState state, Prenotazione reservation, String ruleBook, List<Team> teams, List<UtenteRegistrato> mentors, UtenteRegistrato coordinator, UtenteRegistrato judge, List<String> teamsGrades, List<AidRequest> aidRequests, LocalDate expiredSubsciprionsDate, List<Infraction> infractions) {
-        super(name, maxTeamDimension, moneyPrize, state, reservation, ruleBook);
+    public StaffReport(String name, String ruleBook, Prenotazione reservation, HackathonState state, Soldi moneyPrize, int maxTeamDimension, Team winner, List<Team> teams, List<UtenteRegistrato> mentors, UtenteRegistrato coordinator, UtenteRegistrato judge, List<String> teamsGrades, List<AidRequest> aidRequests, LocalDate expiredSubsciprionsDate, List<Infraction> infractions) {
+        super(name, ruleBook, reservation, state, moneyPrize, maxTeamDimension, winner);
         this.teams = teams;
         this.mentors = mentors;
         this.coordinator = coordinator;

@@ -19,11 +19,12 @@ public class HackathonReportAssembler {
        public PublicReport buildPublic(ReportData data) {
         return new PublicReport(
                 data.getName(),
-                data.getMaxTeamDimension(),
-                data.getMoneyPrice(),
-                data.getState(),
-                data.getReservation(),
                 data.getRuleBook(),
+                data.getReservation(),
+                data.getState(),
+                data.getMoneyPrice(),
+                data.getMaxTeamDimension(),
+                data.getWinner(),
                 data.getTeamsGrades()
         );
     }
@@ -37,11 +38,12 @@ public class HackathonReportAssembler {
     public DetailedReport buildDetailed(ReportData data) {
         return new DetailedReport(
                 data.getName(),
-                data.getMaxTeamDimension(),
-                data.getMoneyPrice(),
-                data.getState(),
-                data.getReservation(),
                 data.getRuleBook(),
+                data.getReservation(),
+                data.getState(),
+                data.getMoneyPrice(),
+                data.getMaxTeamDimension(),
+                data.getWinner(),
                 data.getCoordinator(),
                 data.getJudge(),
                 data.getMentorsList()
@@ -57,11 +59,12 @@ public class HackathonReportAssembler {
     public StaffReport buildStaff(ReportData data) {
         return new StaffReport(
                 data.getName(),
-                data.getMaxTeamDimension(),
-                data.getMoneyPrice(),
-                data.getState(),
-                data.getReservation(),
                 data.getRuleBook(),
+                data.getReservation(),
+                data.getState(),
+                data.getMoneyPrice(),
+                data.getMaxTeamDimension(),
+                data.getWinner(),
                 data.getTeamsList(),
                 data.getMentorsList(),
                 data.getCoordinator(),

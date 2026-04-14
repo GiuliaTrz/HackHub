@@ -21,6 +21,8 @@ public class InCorso implements HackathonState {
         r.setCoordinator(h.getCoordinator());
         r.setJudge(h.getJudge());
         r.setMentorsList(h.getMentorsList());
+        r.setAidRequests(h.getAidRequests());
+        r.setInfractions(h.getInfractions());
 
         return r;
     }

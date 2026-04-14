@@ -3,6 +3,7 @@ package com.project.hackhub.model.hackathon.report;
 import com.project.hackhub.model.hackathon.Prenotazione;
 import com.project.hackhub.model.hackathon.Soldi;
 import com.project.hackhub.model.hackathon.state.HackathonState;
+import com.project.hackhub.model.team.Team;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -23,13 +24,15 @@ public abstract class Report {
     private final HackathonState state;
     private final Soldi moneyPrize;
     private final int maxTeamDimension;
+    private final Team winner;
 
-    public Report(String name, int maxTeamDimension, Soldi moneyPrize, HackathonState state, Prenotazione reservation, String ruleBook) {
+    public Report(String name, String ruleBook, Prenotazione reservation, HackathonState state, Soldi moneyPrize, int maxTeamDimension, Team winner) {
         this.name = name;
-        this.maxTeamDimension = maxTeamDimension;
-        this.moneyPrize = moneyPrize;
-        this.state = state;
-        this.reservation = reservation;
         this.ruleBook = ruleBook;
+        this.reservation = reservation;
+        this.state = state;
+        this.moneyPrize = moneyPrize;
+        this.maxTeamDimension = maxTeamDimension;
+        this.winner = winner;
     }
 }
