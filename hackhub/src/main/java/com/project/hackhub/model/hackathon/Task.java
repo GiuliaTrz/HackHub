@@ -17,12 +17,9 @@ public class Task {
     private UUID id;
     private String description;
     private String title;
-    @Embedded
-    private FileTemplate submission;
 
     public Task(String title, String description, FileTemplate f){
         this.title = title;
         this.description = description;
-        this.submission = f;
     }
 }
