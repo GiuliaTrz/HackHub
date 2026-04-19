@@ -19,4 +19,7 @@ public interface HackathonRepository extends JpaRepository<Hackathon, UUID> {
 
     @Query("SELECT h FROM Hackathon h WHERE h.expiredSubscriptionsDate < :now\n AND h.stateType = HackathonStateType.IN_ISCRIZIONE")
     List<Hackathon> getExpiredSubscriptions(@Param("now") LocalDateTime now);
+
+    @Query("SELECT h FROM Hackathon h WHERE h.reservation.timeInterval.endDate < :now\n AND h.stateType = HackathonStateType.IN_CORSO")
+    List<Hackathon> getExpiredSubmissions(LocalDateTime now);
 }
