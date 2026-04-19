@@ -27,6 +27,18 @@ public class SubmissionHandler {
         this.taskRepository = taskRepository;
     }
 
+    /**
+     * Processes a task submission from a team leader for a specific hackathon task.
+     * @param teamLeader   UUID of the user attempting to send the submission.
+     * @param team         UUID of the team the submission belongs to.
+     * @param task         UUID of the task being completed.
+     * @param fileTemplate The submission content/template to be stored.
+     * @return true if the submission was successful, false otherwise.
+     * @throws IllegalArgumentException if the leader, team, or task ID does not exist,
+     * or if the provided user is not the designated leader of the team.
+     * @throws IllegalStateException    if the hackathon is not currently in the "IN_CORSO" state.
+     * @author Chiara Marinucci
+     */
     public boolean sendSubmission(UUID teamLeader, UUID team, UUID task, FileTemplate fileTemplate){
         UtenteRegistrato leader = utenteRegistratoRepository.findById(teamLeader).orElseThrow(()-> new IllegalArgumentException("teamLeader can't be null"));
         Team t = teamRepository.findById(team).orElseThrow(()-> new IllegalArgumentException("Team can't be null"));
