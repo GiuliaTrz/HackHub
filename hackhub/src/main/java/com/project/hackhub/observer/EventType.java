@@ -17,6 +17,7 @@ public enum EventType {
     MODIFICA_HACKATHON(Hackathon .class),
 
     //giuste
+    ESPULSIONE_TEAM(Hackathon .class),
     ELIMINAZIONE_TEAM(Team .class),
     NUOVO_LEADER(Team .class),
     INVITO_UTENTE(Invito .class);
