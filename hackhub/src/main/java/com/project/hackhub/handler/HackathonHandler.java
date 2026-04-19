@@ -1,17 +1,10 @@
 package com.project.hackhub.handler;
 
-import com.project.hackhub.dto.HackathonDTO;
 import com.project.hackhub.model.hackathon.Hackathon;
-import com.project.hackhub.model.hackathon.Prenotazione;
-import com.project.hackhub.model.hackathon.builder.Director;
-import com.project.hackhub.model.hackathon.builder.HackathonBuilder;
-import com.project.hackhub.model.hackathon.builder.HackathonBuilderMemento;
 import com.project.hackhub.model.utente.UtenteRegistrato;
 import com.project.hackhub.model.utente.state.Permission;
 import com.project.hackhub.model.utente.state.UserStateType;
-import com.project.hackhub.repository.HackathonBuilderMementoRepository;
 import com.project.hackhub.repository.HackathonRepository;
-import com.project.hackhub.repository.PrenotazioneRepository;
 import com.project.hackhub.repository.UtenteRegistratoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
