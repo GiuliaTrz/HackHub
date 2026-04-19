@@ -13,9 +13,7 @@ import lombok.NonNull;
 import lombok.Setter;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Setter @Getter
 @NoArgsConstructor
@@ -144,10 +142,10 @@ public class Hackathon {
     }
 
     //Da cambiare più avanti in modo che ritorni una Map<Team, Valutazione> in caso
-    public List<String> getTeamsGrades() {
-        List<String> grades = new ArrayList<>();
+    public Map<Team, Float> getTeamsGrades() {
+        Map<Team, Float> grades = new HashMap<>();
         for(Team t : this.teamsList){
-            grades.add(t.getGrade());
+            grades.put(t, t.getGrade());
         }
         return grades;
     }

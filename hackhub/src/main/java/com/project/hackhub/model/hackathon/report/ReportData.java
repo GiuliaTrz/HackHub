@@ -12,6 +12,8 @@ import lombok.Setter;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
+
 /**
  * Intermediate aggregated data model used to construct different
  * Report final classes.
@@ -36,7 +38,7 @@ public class ReportData {
     private UtenteRegistrato judge;
     private UtenteRegistrato coordinator;
     private Prenotazione reservation;
-    private List<String> teamsGrades;
+    private Map<Team, Float> teamsGrades;
     private List<AidRequest> aidRequests;
     private List<Infraction> infractions;
     private Team winner;
