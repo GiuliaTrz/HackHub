@@ -26,11 +26,11 @@ public class Submission {
 
     private LocalDateTime timestamp;
 
-    private float grade;
+    private Float grade;
 
     public Submission(Team team, Task task, FileTemplate fileTemplate){
         if (team == null || task == null || fileTemplate == null )
-            throw new IllegalArgumentException("Invalid submission; can't have null arguments");
+            throw new IllegalArgumentException("Invalid submission: can't have null arguments");
         this.team = team;
         this.task = task;
         this.fileTemplate = fileTemplate;
