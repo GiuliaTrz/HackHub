@@ -34,6 +34,7 @@ public class InvitationHandler {
      * @throws UnsupportedOperationException if the user that initiated the operation does not
      * have permission to cancel the invitation or if the {@link com.project.hackhub.model.hackathon.Hackathon}
      * is not {@link HackathonStateType#IN_ISCRIZIONE}
+     * @author Giorgia Branchesi
      */
     public void inviteUser(UUID user, UUID team) {
 
