@@ -42,7 +42,7 @@ public class GradeHandler {
         Team t = s.getTeam();
         if(!t.getHackathon().getState().getStateType().equals(HackathonStateType.IN_VALUTAZIONE))
             throw new IllegalStateException("Hackathon is not IN_VALUTAZIONE");
-        if(!j.hasPermission(Permission.STAFF_PERMISSION, t.getHackathon()))
+        if(!j.hasPermission(Permission.CAN_GRADE_SUBMISSION, t.getHackathon()))
             throw new IllegalArgumentException("User does not have required permission");
         s.setGrade(grade);
         submissionRepository.save(s);
