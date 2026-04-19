@@ -3,6 +3,7 @@ package com.project.hackhub.handler;
 import com.project.hackhub.model.hackathon.Hackathon;
 import com.project.hackhub.model.hackathon.state.HackathonState;
 import com.project.hackhub.model.hackathon.state.HackathonStateType;
+import com.project.hackhub.model.team.Infraction;
 import com.project.hackhub.model.team.Team;
 import com.project.hackhub.model.utente.UtenteRegistrato;
 import com.project.hackhub.model.utente.state.Permission;
@@ -80,4 +81,31 @@ public class InfractionHandler {
         EventManager.getInstance().notify(EventType.ESPULSIONE_TEAM, teamMembers, h);
         teamRepository.delete(t);
     }
+
+    /**
+     * Lets a coordinator handle an infraction
+     * @param coordinator the coordinator
+     * @param team the team that committed the infraciton
+     * @throws IllegalArgumentException if any of the parameters are null, if the coordinator
+     * does not have the permission, if it does not exist an infraction committed
+     * by that team or if the Hackathon is not in {@link HackathonStateType#IN_CORSO} o {@link HackathonStateType#IN_VALUTAZIONE}
+     */
+    public void handleInfraction(UUID coordinator, UUID team) {
+
+        UtenteRegistrato coord = userRepository.findById(coordinator).orElseThrow(
+                () -> new IllegalArgumentException("coordinator cannot be null"));
+        Team t = teamRepository.findById(team).orElseThrow(
+                () -> new IllegalArgumentException("team to expel cannot be null"));
+        Hackathon h = t.getHackathon();
+        Infraction i = hackathonRepository.findInfractionByTeam(h, t).orElseThrow(
+                () -> new IllegalArgumentException("infraction does not exist"));
+
+        if(!coord.hasPermission(Permission.CAN_MANAGE_INFRACTIONS, h)
+                && !(h.getStateType().equals(HackathonStateType.IN_CORSO) ||
+                h.getStateType().equals(HackathonStateType.IN_VALUTAZIONE)))
+            throw new UnsupportedOperationException("cannot perform this action");
+
+        //TODO MESSAGGIO AD API "ESPELLI O PENALIZZA TEAM"
+    }
+
 }
