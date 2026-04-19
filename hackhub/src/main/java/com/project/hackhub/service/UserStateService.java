@@ -1,6 +1,7 @@
 package com.project.hackhub.service;
 
 import com.project.hackhub.model.hackathon.Hackathon;
+import com.project.hackhub.model.team.Invito;
 import com.project.hackhub.model.utente.UtenteRegistrato;
 import com.project.hackhub.model.utente.state.UserState;
 import com.project.hackhub.model.utente.state.UserStateFactory;
@@ -11,7 +12,7 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public final class UserStateService {
 
-    private static UtenteRegistratoRepository utenteRegistratoRepository;
+    private static UtenteRegistratoRepository userRepository;
 
 
     /**
@@ -38,7 +39,14 @@ public final class UserStateService {
         else {
             user.removeReservation(hackathon.getReservation());
         }
-        utenteRegistratoRepository.save(user);
+        userRepository.save(user);
+    }
+
+    public static void addInvitation(UtenteRegistrato user, Invito invitation) {
+
+        user.addInvitation(invitation);
+        userRepository.save(user);
+
     }
 
 }

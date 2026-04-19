@@ -1,8 +1,8 @@
 package com.project.hackhub.model.hackathon.builder;
 
 import com.project.hackhub.dto.HackathonDTO;
+import com.project.hackhub.handler.HackathonCreationHandler;
 import com.project.hackhub.model.utente.UtenteRegistrato;
-import com.project.hackhub.handler.HackathonHandler;
 import lombok.NonNull;
 
 import java.util.ArrayList;
@@ -15,12 +15,12 @@ import java.util.List;
  */
 public class Director {
 
-    @NonNull private Builder builder;
-    @NonNull private final HackathonHandler hackathonHandler;
+    @NonNull private final Builder builder;
+    @NonNull private final HackathonCreationHandler hackathonCreationHandler;
 
-    public Director(@NonNull Builder b, @NonNull HackathonHandler hackathonHandler) {
+    public Director(@NonNull Builder b, @NonNull HackathonCreationHandler hackathonCreationHandler) {
         this.builder = b;
-        this.hackathonHandler = hackathonHandler;
+        this.hackathonCreationHandler = hackathonCreationHandler;
     }
 
     /**
@@ -50,7 +50,7 @@ public class Director {
 
     private void setReservation(HackathonDTO dto) {
         if (dto.reservation() != null &&
-                hackathonHandler.isReservationAvailable(dto)) {
+                hackathonCreationHandler.isReservationAvailable(dto.reservation())) {
 
             builder.setReservation(dto.reservation());
         }
@@ -87,10 +87,6 @@ public class Director {
         builder.setExpiredSubscriptionDate(dto.expiredSubscriptionsDate());
         builder.setMoneyPrice(dto.moneyPrice());
         builder.setMaxTeamDimension(dto.maxTeamDimension());
-    }
-
-    public void changeBuilder(@NonNull Builder b) {
-        this.builder = b;
     }
 
 }
