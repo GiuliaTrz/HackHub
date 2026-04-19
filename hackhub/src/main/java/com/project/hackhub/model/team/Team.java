@@ -17,6 +17,7 @@ import java.util.UUID;
 @Entity
 @NoArgsConstructor
 public class Team {
+
     private String name;
 
     @Id

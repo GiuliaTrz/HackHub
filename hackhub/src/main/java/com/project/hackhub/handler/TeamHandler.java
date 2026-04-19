@@ -61,34 +61,6 @@ public class TeamHandler {
         invitoRepo.delete(i);
     }
 
-    /**
-     * Changes the leader of a team
-     * @param newLeader the new leader
-     * @param t the {@link Team}
-     * @throws IllegalArgumentException if any of the parameters are null
-     * @throws UnsupportedOperationException if the {@link Hackathon} is not in {@link HackathonStateType#IN_ISCRIZIONE} state
-     * or the user does not have permission to do the action
-     * @author Giorgia Branchesi
-     */
-    public void chooseNewTeamLeader(UtenteRegistrato newLeader, Team t){
-
-        if(newLeader == null)
-            throw new IllegalArgumentException("new leader cannot be null");
-        if(t == null)
-            throw new IllegalArgumentException("team cannot be null");
-        if(!newLeader.isAvailable(t.getHackathon().getReservation()))
-            throw new IllegalArgumentException("user is not available in said reservation");
-
-        if(t.getTeamLeader().hasPermission(Permission.CAN_MODIFY_LEADER, t.getHackathon())
-                || t.getHackathon().getState().getStateType().equals(HackathonStateType.IN_ISCRIZIONE))
-            throw new UnsupportedOperationException("Cannot choose new Leader");
-
-        UtenteRegistrato oldLeader = t.getTeamLeader();
-        t.setTeamLeader(newLeader);
-        teamRepository.save(t);
-        EventManager notifier = EventManager.getInstance();
-        notifier.notify(EventType.NUOVO_LEADER, List.of(oldLeader, newLeader), t);
-    }
 
     /**
      * Creates a new {@link Team} in a given {@link Hackathon} with a specified leader.
