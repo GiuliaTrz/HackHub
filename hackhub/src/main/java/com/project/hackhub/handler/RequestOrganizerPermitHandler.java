@@ -8,7 +8,7 @@ import lombok.AllArgsConstructor;
 import java.util.UUID;
 
 @AllArgsConstructor
-public class RequestOrganizerPermit {
+public class RequestOrganizerPermitHandler {
 
     private final UtenteRegistratoRepository userRepository;
 
