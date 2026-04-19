@@ -21,6 +21,7 @@ public class InValutazione implements HackathonState {
         r.setCoordinator(h.getCoordinator());
         r.setJudge(h.getJudge());
         r.setMentorsList(h.getMentorsList());
+        r.setInfractions(h.getInfractions());
 
         return r;
     }

@@ -2,8 +2,12 @@ package com.project.hackhub.model.team;
 
 import com.project.hackhub.model.hackathon.Hackathon;
 import jakarta.persistence.Embeddable;
+import jakarta.persistence.Entity;
 import jakarta.persistence.OneToOne;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.Id;
+
+import java.util.spi.ToolProvider;
 
 @Embeddable
 @NoArgsConstructor
@@ -37,4 +41,5 @@ public class AidRequest {
     public Team getTeam() {
         return this.team;
     }
+
 }

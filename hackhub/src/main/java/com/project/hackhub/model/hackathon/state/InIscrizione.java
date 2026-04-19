@@ -22,6 +22,7 @@ public class InIscrizione implements HackathonState {
         r.setCoordinator(h.getCoordinator());
         r.setJudge(h.getJudge());
         r.setMentorsList(h.getMentorsList());
+        r.setMaxTeamDimension(h.getMaxTeamDimension());
 
         return r;
     }

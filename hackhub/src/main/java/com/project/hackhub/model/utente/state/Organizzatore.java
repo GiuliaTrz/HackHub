@@ -15,7 +15,9 @@ public class Organizzatore extends UserState {
                 Permission.CAN_MANAGE_INFRACTIONS,
                 Permission.CAN_ADD_MENTOR,
                 Permission.CAN_ADD_JUDGE,
-                Permission.DETAILED_INFO));
+                Permission.DETAILED_INFO,
+                Permission.STAFF_PERMISSION));
+
     }
 
 }

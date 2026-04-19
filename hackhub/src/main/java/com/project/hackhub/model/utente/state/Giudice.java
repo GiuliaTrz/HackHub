@@ -9,7 +9,10 @@ import java.util.Set;
 
 public class Giudice extends UserState {
     public Giudice() {
-        super(EnumSet.of(Permission.CAN_GRADE_SUBMISSION, Permission.DETAILED_INFO));
+        super(EnumSet.of(Permission.CAN_GRADE_SUBMISSION,
+                Permission.DETAILED_INFO,
+                Permission.STAFF_PERMISSION));
+
     }
 
 

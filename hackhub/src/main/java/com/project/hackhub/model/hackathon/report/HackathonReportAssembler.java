@@ -1,8 +1,5 @@
 package com.project.hackhub.model.hackathon.report;
 
-import com.project.hackhub.dto.DetailedReport;
-import com.project.hackhub.dto.PublicReport;
-import com.project.hackhub.dto.StaffReport;
 import com.project.hackhub.model.hackathon.Hackathon;
 import com.project.hackhub.model.utente.UtenteRegistrato;
 import com.project.hackhub.model.utente.state.Permission;
@@ -22,11 +19,12 @@ public class HackathonReportAssembler {
        public PublicReport buildPublic(ReportData data) {
         return new PublicReport(
                 data.getName(),
-                data.getDescription(),
                 data.getRuleBook(),
                 data.getReservation(),
                 data.getState(),
                 data.getMoneyPrice(),
+                data.getMaxTeamDimension(),
+                data.getWinner(),
                 data.getTeamsGrades()
         );
     }
@@ -40,11 +38,12 @@ public class HackathonReportAssembler {
     public DetailedReport buildDetailed(ReportData data) {
         return new DetailedReport(
                 data.getName(),
-                data.getDescription(),
                 data.getRuleBook(),
-                data.getState(),
                 data.getReservation(),
+                data.getState(),
                 data.getMoneyPrice(),
+                data.getMaxTeamDimension(),
+                data.getWinner(),
                 data.getCoordinator(),
                 data.getJudge(),
                 data.getMentorsList()
@@ -60,16 +59,20 @@ public class HackathonReportAssembler {
     public StaffReport buildStaff(ReportData data) {
         return new StaffReport(
                 data.getName(),
-                data.getDescription(),
                 data.getRuleBook(),
+                data.getReservation(),
                 data.getState(),
                 data.getMoneyPrice(),
+                data.getMaxTeamDimension(),
+                data.getWinner(),
                 data.getTeamsList(),
                 data.getMentorsList(),
                 data.getCoordinator(),
                 data.getJudge(),
-                data.getReservation(),
-                data.getTeamsGrades()
+                data.getTeamsGrades(),
+                data.getAidRequests(),
+                data.getExpiredSubscriptionsDate(),
+                data.getInfractions()
         );
     }
 
