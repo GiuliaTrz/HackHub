@@ -22,45 +22,7 @@ import static com.project.hackhub.service.UserStateService.changeUserState;
 @AllArgsConstructor
 public class TeamHandler {
 
-    private final UtenteRegistratoRepository userRepository;
     private final TeamRepository teamRepository;
-    private final HackathonHandler hackathonHandler;
-    private final UtenteRegistratoHandler userHandler;
-    private final InvitoRepository invitoRepo;
-
-    /**
-     * Adds a user to the Team and deletes its invitation
-     * @param i the invitation
-     * @throws IllegalArgumentException if the invitation is null
-     * @author Giorgia Branchesi
-     */
-    public void acceptInvitation(Invito i) {
-
-        if(i == null)
-            throw new IllegalArgumentException("the invitation cannot be null");
-
-        i.getMittente().addTeamMember(i.getDestinatario());
-        removeInvitation(i);
-    }
-
-    /**
-     * Deletes the invitation for a user
-     *
-     * @param i the invitation
-     * @throws IllegalArgumentException if the invitation is null
-     * @author Giorgia Branchesi
-     */
-    public void removeInvitation(Invito i) {
-
-        if(i == null)
-            throw new IllegalArgumentException("the invitation cannot be null");
-
-        Team t = i.getMittente();
-        t.removeInvitationFromList(i);
-        teamRepository.save(t);
-        invitoRepo.delete(i);
-    }
-
 
     /**
      * Creates a new {@link Team} in a given {@link Hackathon} with a specified leader.
@@ -88,6 +50,7 @@ public class TeamHandler {
         team.setHackathon(hackathon);
         team.addTeamMember(leader); // aggiunge il leader alla lista membri
         team.setTeamLeader(leader);
+        changeUserState(leader, true, hackathon, UserStateType.TEAM_LEADER);
 
         // Salva il team nel DB
         teamRepository.save(team);
