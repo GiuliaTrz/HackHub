@@ -1,21 +1,11 @@
 package com.project.hackhub.handler;
 
-import com.project.hackhub.exceptions.UserNotAvailableException;
 import com.project.hackhub.model.hackathon.Hackathon;
-import com.project.hackhub.model.hackathon.state.HackathonStateType;
-import com.project.hackhub.model.team.Invito;
 import com.project.hackhub.model.team.Team;
 import com.project.hackhub.model.utente.UtenteRegistrato;
-import com.project.hackhub.model.utente.state.Permission;
 import com.project.hackhub.model.utente.state.UserStateType;
-import com.project.hackhub.observer.EventManager;
-import com.project.hackhub.observer.EventType;
-import com.project.hackhub.repository.InvitoRepository;
 import com.project.hackhub.repository.TeamRepository;
-import com.project.hackhub.repository.UtenteRegistratoRepository;
 import lombok.AllArgsConstructor;
-
-import java.util.List;
 
 import static com.project.hackhub.service.UserStateService.changeUserState;
 
@@ -61,7 +51,7 @@ public class TeamHandler {
     /**
      * Removes a member from a {@link Team}.
      * This method cannot remove the team leader; to change or remove the leader, use the appropriate handler method.
-     * The user's state is updated via {@link UtenteRegistratoHandler} before removal.
+     * The user's state is updated via {@link com.project.hackhub.service.UserStateService} before removal.
      * The team is then updated in the database.
      *
      * @param user the {@link UtenteRegistrato} to be removed from the team; must not be null
