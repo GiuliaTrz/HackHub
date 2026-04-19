@@ -3,11 +3,9 @@ package com.project.hackhub.observer;
 import com.project.hackhub.model.team.Invito;
 import com.project.hackhub.model.utente.UtenteRegistrato;
 import com.project.hackhub.service.UserStateService;
-import lombok.AllArgsConstructor;
 
 import java.util.List;
 
-@AllArgsConstructor
 public class InvitoUtenteListener implements EventListener{
 
     /**

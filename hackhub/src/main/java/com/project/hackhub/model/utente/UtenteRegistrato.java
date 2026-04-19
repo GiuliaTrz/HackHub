@@ -24,6 +24,8 @@ public class UtenteRegistrato {
     @Embedded
     @Setter @NonNull private Anagrafica anagrafica;
 
+    @Setter private boolean organizer = false;
+
     @Embedded
     private final UserState defaultState = new DefaultState();
 
