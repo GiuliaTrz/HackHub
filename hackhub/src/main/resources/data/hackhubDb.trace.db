@@ -194,3 +194,9 @@ alter table if exists hackathon_aid_requests add column end timestamp(6) [42001-
 2026-04-20 17:39:21.257346+02:00 jdbc[3]: exception
 org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "alter table if exists hackathon_aid_requests add column [*]end timestamp(6)"; expected "identifier"; SQL statement:
 alter table if exists hackathon_aid_requests add column end timestamp(6) [42001-240]
+2026-04-20 19:37:35.529473+02:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "alter table if exists hackathon_aid_requests add column [*]end timestamp(6)"; expected "identifier"; SQL statement:
+alter table if exists hackathon_aid_requests add column end timestamp(6) [42001-240]
+2026-04-20 19:41:09.612323+02:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "alter table if exists hackathon_aid_requests add column [*]end timestamp(6)"; expected "identifier"; SQL statement:
+alter table if exists hackathon_aid_requests add column end timestamp(6) [42001-240]
