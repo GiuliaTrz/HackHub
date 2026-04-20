@@ -1,6 +1,6 @@
 package com.project.hackhub.handler;
 
-import com.project.hackhub.model.hackathon.FileTemplate;
+import com.project.hackhub.model.team.FileTemplate;
 import com.project.hackhub.model.hackathon.Task;
 import com.project.hackhub.model.hackathon.state.HackathonStateType;
 import com.project.hackhub.model.team.Submission;

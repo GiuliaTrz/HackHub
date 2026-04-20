@@ -1,7 +1,7 @@
 package com.project.hackhub.handler;
 
 import com.project.hackhub.dto.HackathonDTO;
-import com.project.hackhub.model.hackathon.FileTemplate;
+import com.project.hackhub.model.team.FileTemplate;
 import com.project.hackhub.model.hackathon.Hackathon;
 import com.project.hackhub.model.hackathon.Prenotazione;
 import com.project.hackhub.model.hackathon.Task;

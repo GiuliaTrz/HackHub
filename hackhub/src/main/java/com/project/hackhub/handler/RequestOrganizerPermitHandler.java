@@ -1,6 +1,6 @@
 package com.project.hackhub.handler;
 
-import com.project.hackhub.model.hackathon.FileTemplate;
+import com.project.hackhub.model.team.FileTemplate;
 import com.project.hackhub.model.utente.UtenteRegistrato;
 import com.project.hackhub.repository.UtenteRegistratoRepository;
 import lombok.AllArgsConstructor;
