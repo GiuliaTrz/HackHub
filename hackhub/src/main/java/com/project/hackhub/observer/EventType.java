@@ -20,7 +20,8 @@ public enum EventType {
     ESPULSIONE_TEAM(Hackathon .class),
     ELIMINAZIONE_TEAM(Team .class),
     NUOVO_LEADER(Team .class),
-    INVITO_UTENTE(Invito .class);
+    INVITO_UTENTE(Invito .class),
+    PENALIZZAZIONE_TEAM(Hackathon .class);
 
     @Getter private final Class<?> entityClass;
 

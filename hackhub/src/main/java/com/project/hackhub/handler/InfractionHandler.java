@@ -18,6 +18,8 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.UUID;
 
+import static com.project.hackhub.observer.EventType.PENALIZZAZIONE_TEAM;
+
 @Component
 @RequiredArgsConstructor
 public class InfractionHandler {
@@ -100,7 +102,7 @@ public class InfractionHandler {
         Infraction i = hackathonRepository.findInfractionByTeam(h, t).orElseThrow(
                 () -> new IllegalArgumentException("infraction does not exist"));
 
-        if(!coord.hasPermission(Permission.CAN_MANAGE_INFRACTIONS, h)
+        if (!coord.hasPermission(Permission.CAN_MANAGE_INFRACTIONS, h)
                 && !(h.getStateType().equals(HackathonStateType.IN_CORSO) ||
                 h.getStateType().equals(HackathonStateType.IN_VALUTAZIONE)))
             throw new UnsupportedOperationException("cannot perform this action");
@@ -108,4 +110,33 @@ public class InfractionHandler {
         //TODO MESSAGGIO AD API "ESPELLI O PENALIZZA TEAM"
     }
 
+    /**
+     * Lets a coordinator penalize a team
+     * @param coordinator the coordinator
+     * @param team the team to penalize
+     * @param points point to remove from the team final grade
+     * @throws IllegalArgumentException if any of the parameters are null, if the coordinator
+     * does not have the permission, if it does not exist an infraction committed
+     * by that team or if the Hackathon is not in {@link HackathonStateType#IN_CORSO} o {@link HackathonStateType#IN_VALUTAZIONE}
+     */
+    public void penalizeTeam(UUID coordinator, UUID team, float points) {
+
+        UtenteRegistrato coord = userRepository.findById(coordinator).orElseThrow(
+                () -> new IllegalArgumentException("coordinator cannot be null"));
+        Team t = teamRepository.findById(team).orElseThrow(
+                () -> new IllegalArgumentException("team to expel cannot be null"));
+        if(points <= 0) throw new IllegalArgumentException("number of points invalid");
+        Hackathon h = t.getHackathon();
+
+        if (!coord.hasPermission(Permission.CAN_PENALIZE_TEAM, h)
+                && !(h.getStateType().equals(HackathonStateType.IN_CORSO) ||
+                h.getStateType().equals(HackathonStateType.IN_VALUTAZIONE)))
+            throw new UnsupportedOperationException("cannot perform this action");
+
+        Float grade = t.getGrade();
+        grade = grade - points;
+        t.setGrade(grade);
+        teamRepository.save(t);
+        EventManager.getInstance().notify(PENALIZZAZIONE_TEAM, t.getTeamMembersList(), h);
+    }
 }

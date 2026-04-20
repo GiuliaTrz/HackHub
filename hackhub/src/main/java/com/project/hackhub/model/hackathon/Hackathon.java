@@ -68,6 +68,7 @@ public class Hackathon {
     private Team winner;
 
     public Hackathon(Hackathon other) {
+
         if (other == null)
             throw new IllegalArgumentException("Hackathon nullo.");
 
@@ -117,7 +118,7 @@ public class Hackathon {
         return mentorsList.contains(u);
     }
 
-    public boolean removeTeam(Team t) {
+    public void removeTeam(Team t) {
         if (t == null)
             throw new IllegalArgumentException("Team nullo.");
 
@@ -154,10 +155,12 @@ public class Hackathon {
         taskList.add(t);
     }
 
+    public void removeInfraction(Infraction i) {
 
-    public void addJudge(UtenteRegistrato member) {
+        if(i == null)
+            throw new IllegalArgumentException("infraction to remove cannot be null");
+
+        this.infractions.remove(i);
     }
 
-    public void removeJudge(UtenteRegistrato member) {
-    }
 }
