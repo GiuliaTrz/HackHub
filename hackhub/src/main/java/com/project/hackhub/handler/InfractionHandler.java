@@ -1,5 +1,6 @@
 package com.project.hackhub.handler;
 
+import com.project.hackhub.dto.InfractionDTO;
 import com.project.hackhub.model.hackathon.Hackathon;
 import com.project.hackhub.model.hackathon.state.HackathonState;
 import com.project.hackhub.model.hackathon.state.HackathonStateType;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.UUID;
 
+import static com.project.hackhub.observer.EventType.ILLECITO;
 import static com.project.hackhub.observer.EventType.PENALIZZAZIONE_TEAM;
 
 @Component
@@ -78,6 +80,7 @@ public class InfractionHandler {
             throw new UnsupportedOperationException("cannot perform this action");
 
         h.removeTeam(t);
+        h.removeInfractionByTeam(t);
         hackathonRepository.save(h);
         List<UtenteRegistrato> teamMembers = t.getTeamMembersList();
         EventManager.getInstance().notify(EventType.ESPULSIONE_TEAM, teamMembers, h);
@@ -133,10 +136,51 @@ public class InfractionHandler {
                 h.getStateType().equals(HackathonStateType.IN_VALUTAZIONE)))
             throw new UnsupportedOperationException("cannot perform this action");
 
+        h.removeInfractionByTeam(t);
+        hackathonRepository.save(h);
         Float grade = t.getGrade();
         grade = grade - points;
         t.setGrade(grade);
         teamRepository.save(t);
         EventManager.getInstance().notify(PENALIZZAZIONE_TEAM, t.getTeamMembersList(), h);
+    }
+
+    /**
+     * Reports an {@link Infraction} committed by a {@link Team}
+     * @param mentor the mentor that wants to report the infraction
+     * @param dto the dto with the information regarding the infraction
+     * @throws IllegalArgumentException if the parameters are null, if the dto is not valid
+     * if the mentor does not have the permission to perform such operation or if the {@link Hackathon} is not
+     * in {@link HackathonStateType#IN_CORSO} or {@link HackathonStateType#IN_VALUTAZIONE}
+     */
+    public void reportInfraction(UUID mentor, InfractionDTO dto) {
+
+        UtenteRegistrato m = userRepository.findById(mentor).orElseThrow(
+                () -> new IllegalArgumentException("mentor cannt be null"));
+        if(dto == null) throw new IllegalArgumentException("dto cannot be null");
+        if(!checkInfractionData(dto)) throw new IllegalArgumentException("dto is not valid");
+        Hackathon h = dto.team().getHackathon();
+        if(!m.hasPermission(Permission.CAN_REPORT_INFRACTION, h) ||
+                h.getStateType().equals(HackathonStateType.IN_ISCRIZIONE) ||
+                h.getStateType().equals(HackathonStateType.CONCLUSO))
+            throw new IllegalArgumentException("cannot perform this operation");
+
+        Infraction infraction = new Infraction(dto.team(), dto.description(), dto.type());
+        h.addInfraction(infraction);
+        hackathonRepository.save(h);
+        EventManager.getInstance().notify(ILLECITO, List.of(h.getCoordinator()), h);
+    }
+
+    /**
+     * Checks if the information in the DTO is completed and can be used to report a new {@link Infraction}
+     * @param dto the dto containing the information
+     * @return true if the dto is complete ad valid, false if not
+     * @author Giorgia Branchesi
+     */
+    private boolean checkInfractionData(InfractionDTO dto) {
+
+        if(dto.team() == null) return false;
+        if(dto.description() == null || dto.description().isEmpty()) return false;
+        return dto.type() != null;
     }
 }

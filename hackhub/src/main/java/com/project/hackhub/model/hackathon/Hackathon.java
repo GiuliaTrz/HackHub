@@ -122,7 +122,7 @@ public class Hackathon {
         if (t == null)
             throw new IllegalArgumentException("Team nullo.");
 
-        return teamsList.remove(t);
+        teamsList.remove(t);
     }
 
     public void addTeam(Team t) {
@@ -136,8 +136,6 @@ public class Hackathon {
     }
 
     public boolean addAidRequest(@NonNull AidRequest a) {
-        if (a == null)
-            throw new IllegalArgumentException("Richiesta nulla.");
 
         return aidRequests.add(a);
     }
@@ -155,12 +153,24 @@ public class Hackathon {
         taskList.add(t);
     }
 
-    public void removeInfraction(Infraction i) {
+    public void removeInfractionByTeam(Team t) {
 
+        if(t == null)
+            throw new IllegalArgumentException("team cannot be null");
+
+        for(Infraction i : this.infractions) {
+            if(i.getITeam().equals(t)) {
+                this.infractions.remove(i);
+                return;
+            }
+        }
+    }
+
+    public void addInfraction(Infraction i) {
         if(i == null)
             throw new IllegalArgumentException("infraction to remove cannot be null");
 
-        this.infractions.remove(i);
+        this.infractions.add(i);
     }
 
 }

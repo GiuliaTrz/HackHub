@@ -3,6 +3,7 @@ package com.project.hackhub.model.team;
 import com.project.hackhub.model.hackathon.Hackathon;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.ManyToOne;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
@@ -12,14 +13,13 @@ import java.util.UUID;
 public class Infraction {
 
     @ManyToOne
+    @Getter
     private Team iTeam;
-
     private String iDescription;
-    //Si potrebbe anche mettere una enum per i tipi di infrazione volendo
     private String iType;
     private LocalDateTime timestamp;
 
-    public Infraction(UUID id, Team team, String description, String type){
+    public Infraction(Team team, String description, String type){
         this.iTeam = team;
         this.iDescription = description;
         this.iType = type;
