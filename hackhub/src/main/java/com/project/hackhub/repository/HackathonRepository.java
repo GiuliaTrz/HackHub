@@ -29,4 +29,6 @@ public interface HackathonRepository extends JpaRepository<Hackathon, UUID> {
     @Query(" SELECT i FROM Hackathon h JOIN h.infractions i WHERE h = :hackathon AND i.iTeam = :team")
     Optional<Infraction> findInfractionByTeam(@Param("hackathon") Hackathon h,
                                               @Param("team") Team t);
+    @Query("SELECT t FROM Hackathon h JOIN h.teamsList t WHERE t.id = :team")
+    Optional<Team> findByTeamId(@Param("team")UUID team);
 }
