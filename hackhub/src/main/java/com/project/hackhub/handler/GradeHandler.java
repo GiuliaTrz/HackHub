@@ -54,10 +54,10 @@ public class GradeHandler {
      * @param t The Team to update.
      */
     private void updateTeamFinalGrade(Team t){
-            List<Submission> allSubmissions = submissionRepository.findByTeamId(t.getId());
+            List<Submission> allSubmissions = submissionRepository.findLatestSubmissionsByTeamId(t.getId());
             boolean isEverythingGraded = allSubmissions.stream()
                     .allMatch(sub -> sub.getGrade() != null);
-            if(isEverythingGraded){
+            if(isEverythingGraded && !allSubmissions.isEmpty()){
                 float sum = 0;
                 for (Submission sub : allSubmissions)
                     sum += sub.getGrade();

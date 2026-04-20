@@ -12,10 +12,8 @@ import com.project.hackhub.repository.TaskRepository;
 import com.project.hackhub.repository.TeamRepository;
 import com.project.hackhub.repository.UtenteRegistratoRepository;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 public class SubmissionHandler {
     private final TeamRepository teamRepository;
@@ -58,31 +56,41 @@ public class SubmissionHandler {
     }
 
 
-    /**
-     * Returns a list of all most recent submissions sent by a Team.
-     * @param judge UUID of the user attempting to view the list
-     * @param team  UUID of the team whose submissions are of interest
-     * @return a list of all most recent submissions sent by a Team
-     */
-    public List<Submission> viewSubmissions(UUID judge, UUID team){
-        UtenteRegistrato j = utenteRegistratoRepository.findById(judge).orElseThrow(()-> new IllegalArgumentException("judge not found"));
-        Team t = teamRepository.findById(team).orElseThrow(()-> new IllegalArgumentException("Team not found"));
-        if(!t.getHackathon().getState().getStateType().equals(HackathonStateType.IN_VALUTAZIONE))
-            throw new IllegalStateException("Hackathon is not IN_VALUTAZIONE");
-        if(!j.hasPermission(Permission.STAFF_PERMISSION, t.getHackathon()))
-            throw new IllegalArgumentException("User does not have required permission");
 
-        List<Submission> submissions = this.submissionRepository.findByTeamId(team);
-        //returns only the most recent Submission for each Task
-        return submissions.stream()
-                .collect(Collectors.collectingAndThen(
-                        Collectors.toMap(
-                                s -> s.getTask().getId(),
-                                s -> s,
-                                (s1, s2) -> s1.getTimestamp().isAfter(s2.getTimestamp()) ? s1 : s2
-                        ),
-                        map -> new ArrayList<>(map.values())
-                ));
+    /**
+     * Returns a list of all most recent submissions sent by a Team according to the user's permissions.
+     * Staff can view Submissions before and after they have been evaluated, in Hackathon's states IN_VALUTAZIONE
+     * and CONCLUSO.
+     * A Team Member will only get access to its own team's submissions once the hackathon's state
+     * is "CONCLUSO" to check the given grade for each submission.
+     * @param user the user attempting to view the list
+     * @param team  the team whose submissions are of interest
+     * @return a list of all most recent submissions sent by a Team
+     * @author Chiara Marinucci
+     */
+    public List<Submission> getTeamSubmissions(UUID user, UUID team){
+        UtenteRegistrato u = utenteRegistratoRepository.findById(user)
+                .orElseThrow(()-> new IllegalArgumentException("staff not found"));
+        Team t = teamRepository.findById(team)
+                .orElseThrow(()-> new IllegalArgumentException("Team not found"));
+        if(u.hasPermission(Permission.STAFF_PERMISSION, t.getHackathon()))
+            return getSubmissionsAsStaff(u, t);
+        else if(u.hasPermission(Permission.TEAM_PERMISSION, t.getHackathon())
+                && t.getTeamMembersList().contains(u))
+            return getSubmissionsAsTeamMember(u, t);
+        else throw new IllegalArgumentException("user does not have the required permission");
+    }
+    private List<Submission> getSubmissionsAsStaff(UtenteRegistrato staff, Team t){
+        if(t.getHackathon().getState().getStateType() != HackathonStateType.IN_VALUTAZIONE &&
+                t.getHackathon().getState().getStateType() != HackathonStateType.CONCLUSO)
+            throw new IllegalStateException("Hackathon state is not IN_VALUTAZIONE or CONCLUSO");
+        return this.submissionRepository.findLatestSubmissionsByTeamId(t.getId());
+    }
+
+    private List<Submission> getSubmissionsAsTeamMember(UtenteRegistrato m, Team t) {
+        if(t.getHackathon().getState().getStateType() != HackathonStateType.CONCLUSO)
+            throw new IllegalStateException("Hackathon state is not CONCLUSO");
+        return this.submissionRepository.findLatestSubmissionsByTeamId(t.getId());
     }
 
 }

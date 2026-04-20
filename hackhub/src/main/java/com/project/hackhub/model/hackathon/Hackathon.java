@@ -122,7 +122,7 @@ public class Hackathon {
         if (t == null)
             throw new IllegalArgumentException("Team nullo.");
 
-        teamsList.remove(t);
+        return teamsList.remove(t);
     }
 
     public void addTeam(Team t) {
