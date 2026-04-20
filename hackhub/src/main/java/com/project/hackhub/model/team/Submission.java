@@ -1,6 +1,5 @@
 package com.project.hackhub.model.team;
 
-import com.project.hackhub.model.hackathon.FileTemplate;
 import com.project.hackhub.model.hackathon.Task;
 import jakarta.persistence.*;
 import lombok.Getter;

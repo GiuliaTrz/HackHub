@@ -1,7 +1,6 @@
 package com.project.hackhub.model.utente.state;
 
 import java.util.EnumSet;
-import java.util.List;
 
 public class DefaultState extends UserState {
 

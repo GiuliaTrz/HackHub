@@ -1,6 +1,6 @@
 package com.project.hackhub.model.hackathon;
 
-import jakarta.persistence.Embedded;
+import com.project.hackhub.model.team.FileTemplate;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;

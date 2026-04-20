@@ -118,7 +118,7 @@ public class Hackathon {
         return mentorsList.contains(u);
     }
 
-    public void removeTeam(Team t) {
+    public boolean removeTeam(Team t) {
         if (t == null)
             throw new IllegalArgumentException("Team nullo.");
 

@@ -1,7 +1,6 @@
 package com.project.hackhub.model.team;
 
 import com.project.hackhub.model.hackathon.Hackathon;
-import com.project.hackhub.model.team.Invito;
 import com.project.hackhub.model.utente.UtenteRegistrato;
 import jakarta.persistence.*;
 import lombok.Getter;

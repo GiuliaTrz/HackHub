@@ -1,4 +1,4 @@
-package com.project.hackhub.model.hackathon;
+package com.project.hackhub.model.team;
 
 import jakarta.persistence.Embeddable;
 

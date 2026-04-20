@@ -1,12 +1,6 @@
 package com.project.hackhub.model.utente.state;
 
-import com.project.hackhub.dto.HackathonDTO;
-import com.project.hackhub.model.team.Infraction;
-import com.project.hackhub.model.utente.UtenteRegistrato;
-
 import java.util.EnumSet;
-import java.util.List;
-import java.util.Set;
 
 public class Organizzatore extends UserState {
 
