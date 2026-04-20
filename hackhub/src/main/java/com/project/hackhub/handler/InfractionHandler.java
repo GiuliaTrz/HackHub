@@ -110,6 +110,15 @@ public class InfractionHandler {
         //TODO MESSAGGIO AD API "ESPELLI O PENALIZZA TEAM"
     }
 
+    /**
+     * Lets a coordinator penalize a team
+     * @param coordinator the coordinator
+     * @param team the team to penalize
+     * @param points point to remove from the team final grade
+     * @throws IllegalArgumentException if any of the parameters are null, if the coordinator
+     * does not have the permission, if it does not exist an infraction committed
+     * by that team or if the Hackathon is not in {@link HackathonStateType#IN_CORSO} o {@link HackathonStateType#IN_VALUTAZIONE}
+     */
     public void penalizeTeam(UUID coordinator, UUID team, float points) {
 
         UtenteRegistrato coord = userRepository.findById(coordinator).orElseThrow(
@@ -126,10 +135,7 @@ public class InfractionHandler {
 
         Float grade = t.getGrade();
         grade = grade - points;
-        if(grade < 0)
-            t.setGrade(0F);
-        else
-            t.setGrade(grade);
+        t.setGrade(grade);
         teamRepository.save(t);
         EventManager.getInstance().notify(PENALIZZAZIONE_TEAM, t.getTeamMembersList(), h);
     }
