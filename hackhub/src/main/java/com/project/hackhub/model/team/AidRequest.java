@@ -3,6 +3,7 @@ package com.project.hackhub.model.team;
 import com.project.hackhub.model.hackathon.Hackathon;
 import com.project.hackhub.service.calendar.Slot;
 import jakarta.persistence.Embeddable;
+import jakarta.persistence.Embedded;
 import jakarta.persistence.OneToOne;
 import lombok.NoArgsConstructor;
 
@@ -12,6 +13,7 @@ public class AidRequest {
 
     private String description;
     private AidRequestType type;
+    @Embedded
     private Slot slot;
 
     @OneToOne

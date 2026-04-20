@@ -12,7 +12,6 @@ import com.project.hackhub.model.utente.UtenteRegistrato;
 import com.project.hackhub.model.utente.state.Permission;
 import com.project.hackhub.repository.HackathonRepository;
 import com.project.hackhub.repository.UtenteRegistratoRepository;
-import lombok.NonNull;
 
 import java.util.List;
 import java.util.UUID;
@@ -89,20 +88,22 @@ public class SupportRequestHandler {
      * @param leader the id of a registered user performing the request.
      * @param dto data transfer object containing team and request details.
      * @return {@code true} if the request is successfully created and saved.
-     * {@code false} if hackathon is not in state "IN_CORSO", data is invalid or the team already has a pending request.
+     * {@code false} if data is invalid or the team already has a pending request.
      * @throws IllegalArgumentException if dto or team is null
+     * @throws IllegalStateException if hackathon is not in state "IN_CORSO"
      * @throws UnsupportedOperationException if the user lacks required permission.
      * @author Chiara Marinucci
      */
-    public boolean sendAidRequest(UUID leader,@NonNull AidRequestDTO dto){
+    public boolean sendAidRequest(UUID leader, AidRequestDTO dto){
+        if(dto == null) return false;
         UtenteRegistrato u =  this.utenteRepository.findById(leader)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
         if(dto.team().getHackathon().getState().getStateType() != HackathonStateType.IN_CORSO)
-
-            if (!u.hasPermission(Permission.CAN_SEND_AID_REQUEST, dto.team().getHackathon()))
-                throw new UnsupportedOperationException("Azione non permessa");
-            if (checkAidRequestData(dto)) {
-                AidRequest aidRequest = new AidRequest(dto.team(), dto.type(), dto.description());
+                throw new IllegalStateException("Hackathon is not IN_CORSO");
+        if (!u.hasPermission(Permission.CAN_SEND_AID_REQUEST, dto.team().getHackathon()))
+                throw new UnsupportedOperationException("User does not have required permission");
+        if (checkAidRequestData(dto)) {
+                AidRequest aidRequest = new AidRequest(dto.team(), dto.type(), dto.description(), null);
                 dto.team().getHackathon().addAidRequest(aidRequest);
                 dto.team().setPendingCallProposal(true);
                 hackathonRepository.save(dto.team().getHackathon());
