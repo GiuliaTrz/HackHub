@@ -1,0 +1,11 @@
+# Default ignored files
+/shelf/
+/.idea/workspace.xml
+
+target/
+.idea/
+*.class
+
+# Database H2
+*.mv.db
+*.trace.db
