@@ -19,7 +19,7 @@ public class SceltaVincitoreListener implements EventListener{
         if(usersList == null || usersList.isEmpty())
             return;
         if(message == null) throw new IllegalArgumentException("message needed");
-        if(entity == null) throw new IllegalArgumentException("invitation cannot be null");
+        if(entity == null) throw new IllegalArgumentException("Hackathon cannot be null");
 
         Hackathon hackathon = (Hackathon) entity;
         for(UtenteRegistrato u: usersList) {
