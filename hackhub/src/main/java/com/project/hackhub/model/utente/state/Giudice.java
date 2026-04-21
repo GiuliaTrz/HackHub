@@ -6,7 +6,8 @@ public class Giudice extends UserState {
     public Giudice() {
         super(EnumSet.of(Permission.CAN_GRADE_SUBMISSION,
                 Permission.DETAILED_INFO,
-                Permission.STAFF_PERMISSION));
+                Permission.STAFF_PERMISSION,
+                Permission.CAN_CHOOSE_WINNER));
 
     }
 

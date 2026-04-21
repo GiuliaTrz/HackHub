@@ -10,7 +10,6 @@ public enum EventType {
 
     //le varie class sono da cambiare, le ho messe solo per reference
     ELIMINAZIONE_HACKATHON(Hackathon .class),
-    SCELTA_VINCITORE(Hackathon .class),
     RIMOZIONE_DA_TEAM(Hackathon .class),
     PROCLAMAZIONE_VINCITORE(Hackathon .class),
     ILLECITO(Hackathon .class),
@@ -21,7 +20,8 @@ public enum EventType {
     ELIMINAZIONE_TEAM(Team .class),
     NUOVO_LEADER(Team .class),
     INVITO_UTENTE(Invito .class),
-    PENALIZZAZIONE_TEAM(Hackathon .class);
+    PENALIZZAZIONE_TEAM(Hackathon .class),
+    SCELTA_VINCITORE(Hackathon .class);
 
     @Getter private final Class<?> entityClass;
 
