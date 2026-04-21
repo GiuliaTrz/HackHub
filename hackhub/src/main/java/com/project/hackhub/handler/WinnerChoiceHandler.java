@@ -2,6 +2,8 @@ package com.project.hackhub.handler;
 
 import com.project.hackhub.exceptions.MultipleWinnersException;
 import com.project.hackhub.model.hackathon.Hackathon;
+import com.project.hackhub.model.hackathon.state.HackathonState;
+import com.project.hackhub.model.hackathon.state.HackathonStateFactory;
 import com.project.hackhub.model.hackathon.state.HackathonStateType;
 import com.project.hackhub.model.team.Team;
 import com.project.hackhub.model.utente.UtenteRegistrato;
@@ -10,12 +12,10 @@ import com.project.hackhub.observer.EventManager;
 import com.project.hackhub.repository.HackathonRepository;
 import com.project.hackhub.repository.TeamRepository;
 import com.project.hackhub.repository.UtenteRegistratoRepository;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-
-import static com.project.hackhub.observer.EventType.PENALIZZAZIONE_TEAM;
+import static com.project.hackhub.observer.EventType.PROCLAMAZIONE_VINCITORE;
 import static com.project.hackhub.observer.EventType.SCELTA_VINCITORE;
 
 public class WinnerChoiceHandler {
@@ -23,11 +23,13 @@ public class WinnerChoiceHandler {
     private final HackathonRepository hackathonRepository;
     private final UtenteRegistratoRepository utenteRegistratoRepository;
     private final TeamRepository teamRepository;
+    private final HackathonStateFactory hackathonStateFactory;
 
-    public WinnerChoiceHandler(HackathonRepository hackathonRepository, UtenteRegistratoRepository utenteRegistratoRepository, TeamRepository teamRepository) {
+    public WinnerChoiceHandler(HackathonRepository hackathonRepository, UtenteRegistratoRepository utenteRegistratoRepository, TeamRepository teamRepository, HackathonStateFactory hackathonStateFactory) {
         this.hackathonRepository = hackathonRepository;
         this.utenteRegistratoRepository = utenteRegistratoRepository;
         this.teamRepository = teamRepository;
+        this.hackathonStateFactory = hackathonStateFactory;
     }
 
     private List<Team> getTeamsWithMaxGrade(UUID hackathon){
@@ -110,4 +112,46 @@ public class WinnerChoiceHandler {
         toBeNotified.add(h.getCoordinator());
         EventManager.getInstance().notify(SCELTA_VINCITORE,toBeNotified , h);
     }
+
+    /**
+     * Allows a coordinator to officially declare, if present, a winner. This action will change
+     * the Hackathon's state to CONCLUSO.
+     * @param hackathon the id of the Hackathon of interest
+     * @param coord the id of the user
+     * @throws IllegalArgumentException if the coordinator or the Hackathon are not found, or if the coordinator
+     * lacks required permission for the action.
+     * @throws IllegalStateException if the Hackathon's state is not IN_VALUTAZIONE
+     * @author Chiara Marinucci
+     */
+    public void proclaimWinner(UUID hackathon, UUID coord){
+        UtenteRegistrato c = this.utenteRegistratoRepository.findById(coord)
+                .orElseThrow(() -> new IllegalArgumentException("coordinator not found"));
+        Hackathon h = this.hackathonRepository.findById(hackathon)
+                .orElseThrow(() -> new IllegalArgumentException("Hackathon not found"));
+        if(h.getState().getStateType()!= HackathonStateType.IN_VALUTAZIONE)
+            throw new IllegalStateException("Hackathon must be in state IN_VALUTAZIONE");
+        if(!c.hasPermission(Permission.CAN_PROCLAIM_WINNER, h))
+            throw new IllegalArgumentException("user does not have required permission");
+
+        if(h.getWinner()!= null){
+            List<UtenteRegistrato> toBeNotified = new ArrayList<>();
+            for(Team t : h.getTeamsList()){
+            toBeNotified.addAll(t.getTeamMembersList());
+            }
+            EventManager.getInstance().notify(PROCLAMAZIONE_VINCITORE,toBeNotified , h);
+        }
+        setConcluso(h);
+    }
+
+    /**
+     * Helper method that create the new state CONCLUSO to set in the Hackathon state and saves changes.
+     * @param h the Hackathon of interest
+     */
+    private void setConcluso(Hackathon h) {
+        HackathonState newState = this.hackathonStateFactory.createState(HackathonStateType.CONCLUSO);
+        h.setState(newState);
+        this.hackathonRepository.save(h);
+    }
+
+
 }
