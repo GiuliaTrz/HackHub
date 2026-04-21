@@ -10,6 +10,8 @@ import com.project.hackhub.observer.EventManager;
 import com.project.hackhub.repository.HackathonRepository;
 import com.project.hackhub.repository.TeamRepository;
 import com.project.hackhub.repository.UtenteRegistratoRepository;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -72,7 +74,9 @@ public class WinnerChoiceHandler {
         if(winners.size() == 1) {
             h.setWinner(winners.getFirst());
             this.hackathonRepository.save(h);
-            EventManager.getInstance().notify(SCELTA_VINCITORE, winners.getFirst().getTeamMembersList(), h);
+            List<UtenteRegistrato> toBeNotified = new ArrayList<>();
+            toBeNotified.add(h.getCoordinator());
+            EventManager.getInstance().notify(SCELTA_VINCITORE,toBeNotified , h);
         }
         else if (winners.isEmpty())
             throw new IllegalArgumentException("There are no winners");
@@ -102,6 +106,8 @@ public class WinnerChoiceHandler {
                     " outside of the teams with highest grade for the Hackathon"));
         h.setWinner(team);
         this.hackathonRepository.save(h);
-        EventManager.getInstance().notify(SCELTA_VINCITORE, team.getTeamMembersList(), h);
+        List<UtenteRegistrato> toBeNotified = new ArrayList<>();
+        toBeNotified.add(h.getCoordinator());
+        EventManager.getInstance().notify(SCELTA_VINCITORE,toBeNotified , h);
     }
 }
