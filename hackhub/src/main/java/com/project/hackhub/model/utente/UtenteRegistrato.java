@@ -6,8 +6,10 @@ import com.project.hackhub.model.team.Invito;
 import com.project.hackhub.model.utente.state.DefaultState;
 import com.project.hackhub.model.utente.state.Permission;
 import com.project.hackhub.model.utente.state.UserState;
-import jakarta.persistence.*;
+import com.project.hackhub.model.utente.state.UserStateFactory;
+import com.project.hackhub.model.utente.state.UserStateType;
 import lombok.*;
+import jakarta.persistence.*;
 import java.util.*;
 
 @NoArgsConstructor
@@ -15,7 +17,7 @@ import java.util.*;
 public class UtenteRegistrato {
 
     @Id @GeneratedValue
-    @Getter private final UUID id = UUID.randomUUID();;
+    @Getter private UUID id;
 
     @OneToMany
     private Set<Invito> invitationsList = new LinkedHashSet<>();
@@ -27,11 +29,12 @@ public class UtenteRegistrato {
 
     @Setter private boolean organizer = false;
 
-    @Embedded
-    private final UserState defaultState = new DefaultState();
+    @Transient
+    private final UserStateFactory factory = new UserStateFactory();
 
     @ElementCollection @CollectionTable(name = "StateInHackathon")
-    private Map<Prenotazione, UserState> stateInHackathon = new HashMap<>();
+    @MapKeyJoinColumn(name = "prenotazione_id")
+    private Map<Prenotazione, UserStateType> stateInHackathon = new HashMap<>();
 
     public UtenteRegistrato(@NonNull Anagrafica a, String passwordHash){
         this.anagrafica = a;
@@ -39,12 +42,14 @@ public class UtenteRegistrato {
     }
 
     public UserState getState(Hackathon hackathon){
-        if (hackathon == null) return defaultState;
-        return stateInHackathon.getOrDefault(hackathon.getReservation(), new DefaultState());
+        if (hackathon == null) return new DefaultState();
+        UserStateType type = stateInHackathon.get(hackathon.getReservation());
+        if (type == null) return new DefaultState();
+        return factory.createUserState(type);
     }
 
-    public void setState(Prenotazione prenotazione, UserState newState){
-        this.stateInHackathon.put(prenotazione, newState);
+    public void setState(Prenotazione prenotazione, UserStateType newStateType){
+        this.stateInHackathon.put(prenotazione, newStateType);
     }
 
     public void removeReservation(Prenotazione p){

@@ -10,11 +10,9 @@ import java.util.List;
 import java.util.Set;
 
 @NoArgsConstructor
-@Embeddable
 public abstract class UserState {
 
     protected Set<Permission> permissions;
-
 
     protected UserState(Set<Permission> permissions) {
         this.permissions = (permissions == null)? Collections.emptySet() : permissions;

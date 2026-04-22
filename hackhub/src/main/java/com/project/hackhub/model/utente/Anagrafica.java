@@ -2,6 +2,7 @@ package com.project.hackhub.model.utente;
 
 import com.project.hackhub.model.hackathon.Localita;
 import jakarta.persistence.Embeddable;
+import jakarta.persistence.Embedded;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
