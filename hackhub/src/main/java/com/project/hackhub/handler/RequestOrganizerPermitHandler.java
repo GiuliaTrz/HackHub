@@ -13,7 +13,7 @@ public class RequestOrganizerPermitHandler {
     private final UtenteRegistratoRepository userRepository;
 
     /**
-     * Handles the request of a user to get a permit to organize an Hackathon
+     * Handles the request of a user to get a permit to organize a Hackathon
      * @param user the user that's requesting the permit
      * @param f the fileTemplate loaded
      * @throws IllegalArgumentException if the user is null or if the fileTemplate is not valid

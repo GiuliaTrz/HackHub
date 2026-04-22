@@ -8,7 +8,9 @@ import com.project.hackhub.model.utente.state.UserStateFactory;
 import com.project.hackhub.model.utente.state.UserStateType;
 import com.project.hackhub.repository.UtenteRegistratoRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Service;
 
+@Service
 @AllArgsConstructor
 public final class UserStateService {
 
