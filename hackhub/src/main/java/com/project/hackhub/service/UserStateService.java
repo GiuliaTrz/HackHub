@@ -3,7 +3,6 @@ package com.project.hackhub.service;
 import com.project.hackhub.model.hackathon.Hackathon;
 import com.project.hackhub.model.team.Invito;
 import com.project.hackhub.model.utente.UtenteRegistrato;
-import com.project.hackhub.model.utente.state.UserState;
 import com.project.hackhub.model.utente.state.UserStateFactory;
 import com.project.hackhub.model.utente.state.UserStateType;
 import com.project.hackhub.repository.UtenteRegistratoRepository;
@@ -34,10 +33,9 @@ public final class UserStateService {
         if(state == null) throw new IllegalArgumentException("state cannot be null");
 
         UserStateFactory factory = new UserStateFactory();
-        UserState concreteState = factory.createUserState(state);
 
         if (toAdd)
-            user.setState(hackathon.getReservation(), concreteState);
+            user.setState(hackathon.getReservation(), state);
         else {
             user.removeReservation(hackathon.getReservation());
         }

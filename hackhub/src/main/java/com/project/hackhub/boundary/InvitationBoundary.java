@@ -16,7 +16,7 @@ public class InvitationBoundary {
 
     private final InvitationHandler invitationHandler;
 
-    @PostMapping("{team}/invite/{user}")
+    @PostMapping("/{team}/invite/{user}")
     public ResponseEntity<Void> inviteUser(
             @AuthenticationPrincipal UUID teamLeader,
             @PathVariable UUID user,

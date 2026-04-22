@@ -18,14 +18,13 @@ public class AuthenticationHandler {
     private final PasswordEncoder passwordEncoder;
     private final ServiceJwt serviceJwt;
 
-
     @Transactional
-    public AuthResponse attivaAutenticazione(LoginDTO dto) {
-        UtenteRegistrato utente = userRepository.findByAnagrafica_UserName(dto.username())
-                .orElseThrow(() -> new IllegalArgumentException("username invalid"));
-        if (!passwordEncoder.matches(dto.password(), utente.getPasswordHash()))
+    public AuthResponse authenticateUser(LoginDTO dto) {
+        UtenteRegistrato user = userRepository.findByAnagrafica_UserName(dto.userName())
+                .orElseThrow(() -> new IllegalArgumentException("userName invalid"));
+        if (!passwordEncoder.matches(dto.password(), user.getPasswordHash()))
             throw new IllegalArgumentException("Password not valid");
-        String token = serviceJwt.generateToken(utente);
+        String token = serviceJwt.generateToken(user);
         return new AuthResponse(token, "Bearer");
     }
 }
