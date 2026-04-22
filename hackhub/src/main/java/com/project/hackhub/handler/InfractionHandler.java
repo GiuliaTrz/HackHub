@@ -153,6 +153,7 @@ public class InfractionHandler {
      * if the mentor does not have the permission to perform such operation or if the {@link Hackathon} is not
      * in {@link HackathonStateType#IN_CORSO} or {@link HackathonStateType#IN_VALUTAZIONE}
      */
+
     public void reportInfraction(UUID mentor, InfractionDTO dto) {
 
         UtenteRegistrato m = userRepository.findById(mentor).orElseThrow(

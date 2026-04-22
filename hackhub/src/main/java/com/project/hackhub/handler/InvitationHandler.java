@@ -12,10 +12,12 @@ import com.project.hackhub.repository.InvitoRepository;
 import com.project.hackhub.repository.TeamRepository;
 import com.project.hackhub.repository.UtenteRegistratoRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.UUID;
 
+@Component
 @AllArgsConstructor
 public class InvitationHandler {
 
@@ -36,8 +38,11 @@ public class InvitationHandler {
      * is not {@link HackathonStateType#IN_ISCRIZIONE}
      * @author Giorgia Branchesi
      */
-    public void inviteUser(UUID user, UUID team) {
+    public void inviteUser(UUID teamLeader, UUID user, UUID team) {
 
+        UtenteRegistrato teamLeader1 = utenteRegistratoRepo.findById(teamLeader).orElseThrow(
+                () -> new IllegalArgumentException("Team leader does not exist")
+        );
         UtenteRegistrato userToInvite = utenteRegistratoRepo.findById(user).orElseThrow(
                 () -> new IllegalArgumentException("User to invite does not exist")
         );
@@ -45,13 +50,12 @@ public class InvitationHandler {
         Team t = teamRepository.findById(team).orElseThrow(
                 () -> new IllegalArgumentException("team does not exist")
         );
-        // Check if hackathon is open for registration and if team leader has permission
+
         if (!t.getHackathon().getState().getStateType().equals(HackathonStateType.IN_ISCRIZIONE)
-                || !t.getTeamLeader().hasPermission(Permission.CAN_INVITE_USERS, t.getHackathon()))
+                || !teamLeader1.hasPermission(Permission.CAN_INVITE_USERS, t.getHackathon()))
             throw new UnsupportedOperationException("Action not allowed.");
 
-        // Check if user is available
-        if (userToInvite.isAvailable(t.getHackathon().getReservation())) {
+       if (userToInvite.isAvailable(t.getHackathon().getReservation())) {
             Invito invitation = new Invito(t, userToInvite);
             invitoRepository.save(invitation);
             t.addInvitation(invitation);
