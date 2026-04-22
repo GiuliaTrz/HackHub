@@ -11,7 +11,6 @@ import lombok.*;
 import java.util.*;
 
 @NoArgsConstructor
-@AllArgsConstructor
 @Entity
 public class UtenteRegistrato {
 
@@ -24,6 +23,8 @@ public class UtenteRegistrato {
     @Embedded
     @Setter @NonNull private Anagrafica anagrafica;
 
+    @Getter private String passwordHash;
+
     @Setter private boolean organizer = false;
 
     @Embedded
@@ -32,8 +33,9 @@ public class UtenteRegistrato {
     @ElementCollection @CollectionTable(name = "StateInHackathon")
     private Map<Prenotazione, UserState> stateInHackathon = new HashMap<>();
 
-    public UtenteRegistrato(@NonNull Anagrafica a){
+    public UtenteRegistrato(@NonNull Anagrafica a, String passwordHash){
         this.anagrafica = a;
+        this.passwordHash = passwordHash;
     }
 
     public UserState getState(Hackathon hackathon){
@@ -77,4 +79,15 @@ public class UtenteRegistrato {
         return this.getState(h).hasPermission(p);
 }
 
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        UtenteRegistrato that = (UtenteRegistrato) o;
+        return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
+    }
 }

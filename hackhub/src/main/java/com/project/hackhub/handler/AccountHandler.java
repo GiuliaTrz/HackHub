@@ -22,7 +22,7 @@ public class AccountHandler {
      *
      * @author Giulia Trozzi
      */
-    public UtenteRegistrato createAccount(Anagrafica anagrafica) {
+    public UtenteRegistrato createAccount(Anagrafica anagrafica, String password) {
         // Validazione campi obbligatori
         if (anagrafica.getEmail() == null || anagrafica.getEmail().isBlank()) {
             throw new IllegalArgumentException("Email is required");
@@ -35,7 +35,7 @@ public class AccountHandler {
             throw new IllegalArgumentException("Email already registered");
         }
 
-        UtenteRegistrato nuovoUtente = new UtenteRegistrato(anagrafica);
+        UtenteRegistrato nuovoUtente = new UtenteRegistrato(anagrafica, password);
         return utenteRepository.save(nuovoUtente);
     }
 
