@@ -1,5 +1,6 @@
 package com.project.hackhub.handler;
 
+import com.project.hackhub.dto.HackathonCreationResponse;
 import com.project.hackhub.dto.HackathonDTO;
 import com.project.hackhub.model.team.FileTemplate;
 import com.project.hackhub.model.hackathon.Hackathon;
@@ -11,12 +12,15 @@ import com.project.hackhub.model.hackathon.builder.HackathonBuilderMemento;
 import com.project.hackhub.model.utente.UtenteRegistrato;
 import com.project.hackhub.model.utente.state.UserStateType;
 import com.project.hackhub.repository.*;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Component;
 
 import java.util.UUID;
 
 import static com.project.hackhub.service.UserStateService.changeUserState;
 
+@Component
 @AllArgsConstructor
 public class HackathonCreationHandler {
 
@@ -27,6 +31,7 @@ public class HackathonCreationHandler {
     private final PrenotazioneRepository prenotazioneRepository;
     private final UtenteRegistratoRepository userRepository;
 
+    @Transactional
     public void insertTask(String title, String description, FileTemplate f, UUID hackathonId){
         Hackathon h = hackathonRepository.findById(hackathonId).orElseThrow(() -> new IllegalArgumentException("Hackathon can't null"));
         Task t = new Task(title, description, f);
@@ -66,10 +71,11 @@ public class HackathonCreationHandler {
      *
      * @param dto the list of attributes needed to create a Hackathon
      * @throws IllegalArgumentException if the dto given is {@code null}
-     *
+     * @return the response of the creation,
      * @author Giorgia Branchesi
      */
-    public void createHackathon(HackathonDTO dto, UUID coordinator) {
+    @Transactional
+    public HackathonCreationResponse createHackathon(HackathonDTO dto, UUID coordinator) {
 
         if(dto == null) throw new IllegalArgumentException("HackathonDTO cannot be null");
 
@@ -87,12 +93,15 @@ public class HackathonCreationHandler {
             updateStaffState(hackathon);
             hackathonRepo.save(hackathon);
 
-            hackathonBuilderMementoRepo.removeHackathonBuilderMementoByAuthor(coordinatorU);
+            hackathonBuilderMementoRepo.findByAuthor(coordinatorU)
+                    .ifPresent(memento -> hackathonBuilderMementoRepo.removeHackathonBuilderMementoByAuthor(coordinatorU));
+            return new HackathonCreationResponse(true, "hackathon created successfully");
         }
         else
         {
             HackathonBuilderMemento memento =  hackathonBuilder.saveMemento();
             hackathonBuilderMementoRepo.save(memento);
+            return new HackathonCreationResponse(false, "hackathon creation suspended, missing information");
         }
     }
 

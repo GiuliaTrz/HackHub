@@ -9,6 +9,7 @@ import com.project.hackhub.repository.HackathonRepository;
 import com.project.hackhub.repository.InvitoRepository;
 import com.project.hackhub.repository.TeamRepository;
 import com.project.hackhub.repository.UtenteRegistratoRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -31,6 +32,7 @@ public class TeamHandler {
      * @param teamName nome del team
      * @return il team creato e salvato
      */
+    @Transactional
     public Team createTeam(UUID creatorId, UUID hackathonId, String teamName) {
         UtenteRegistrato creator = userRepository.findById(creatorId)
                 .orElseThrow(() -> new IllegalArgumentException("Creator not found"));
