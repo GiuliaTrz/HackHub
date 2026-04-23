@@ -27,7 +27,7 @@ public class UtenteRegistrato {
 
     @Getter private String passwordHash;
 
-    @Setter private boolean organizer = false;
+    @Getter @Setter private boolean organizer = false;
 
     @Transient
     private final UserStateFactory factory = new UserStateFactory();

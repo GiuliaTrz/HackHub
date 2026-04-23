@@ -5,6 +5,7 @@ import com.project.hackhub.model.utente.UtenteRegistrato;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.UUID;
 
@@ -14,10 +15,12 @@ public class HackathonBuilderMemento implements Memento {
     @Id @GeneratedValue
     private UUID id;
 
-    @ManyToOne
+    @Setter
+    @OneToOne
+    @JoinColumn(unique = true)
     private UtenteRegistrato author;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     private Hackathon hackathon;
 
     public HackathonBuilderMemento(Hackathon hackathon) {

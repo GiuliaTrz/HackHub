@@ -3,10 +3,12 @@ package com.project.hackhub.model.hackathon.builder;
 import com.project.hackhub.dto.HackathonDTO;
 import com.project.hackhub.handler.HackathonCreationHandler;
 import com.project.hackhub.model.utente.UtenteRegistrato;
+import com.project.hackhub.repository.UtenteRegistratoRepository;
 import lombok.NonNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Director class to orchestrate the use of a {@link Builder}
@@ -17,10 +19,12 @@ public class Director {
 
     @NonNull private final Builder builder;
     @NonNull private final HackathonCreationHandler hackathonCreationHandler;
+    private final UtenteRegistratoRepository userRepository;
 
-    public Director(@NonNull Builder b, @NonNull HackathonCreationHandler hackathonCreationHandler) {
+    public Director(@NonNull Builder b, @NonNull HackathonCreationHandler hackathonCreationHandler, UtenteRegistratoRepository userRepository) {
         this.builder = b;
         this.hackathonCreationHandler = hackathonCreationHandler;
+        this.userRepository = userRepository;
     }
 
     /**
@@ -57,11 +61,13 @@ public class Director {
     }
 
     private void setJudge(HackathonDTO dto) {
-        if (dto.judge() != null &&
-                dto.reservation() != null &&
-                dto.judge().isAvailable(dto.reservation())) {
 
-            builder.setJudge(dto.judge());
+        if (dto.judge() != null) {
+            UtenteRegistrato j = userRepository.findById(dto.judge()).orElse(null);
+
+            if (dto.reservation() != null && j != null && j.isAvailable(dto.reservation())) {
+                builder.setJudge(j);
+            }
         }
     }
 
@@ -72,9 +78,12 @@ public class Director {
 
         List<UtenteRegistrato> validMentors = new ArrayList<>();
 
-        for (UtenteRegistrato mentor : dto.mentorsList()) {
-            if (mentor != null && mentor.isAvailable(dto.reservation())) {
-                validMentors.add(mentor);
+        for (UUID m : dto.mentorsList()) {
+            if(m != null) {
+                UtenteRegistrato mentor = userRepository.findById(m).orElse(null);
+                if (mentor != null && mentor.isAvailable(dto.reservation())) {
+                    validMentors.add(mentor);
+                }
             }
         }
 

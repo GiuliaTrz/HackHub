@@ -9,13 +9,12 @@ import com.project.hackhub.repository.HackathonRepository;
 import com.project.hackhub.repository.InvitoRepository;
 import com.project.hackhub.repository.TeamRepository;
 import com.project.hackhub.repository.UtenteRegistratoRepository;
+import com.project.hackhub.service.UserStateService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.UUID;
-
-import static com.project.hackhub.service.UserStateService.changeUserState;
 
 @Component
 @RequiredArgsConstructor
@@ -24,6 +23,7 @@ public class TeamHandler {
     private final UtenteRegistratoRepository userRepository;
     private final TeamRepository teamRepository;
     private final HackathonRepository hackathonRepository;
+    private final UserStateService userStateService;
 
     /**
      * Crea un nuovo team. L'utente che crea diventa Team Leader.
@@ -130,7 +130,7 @@ public class TeamHandler {
         if (!team.getTeamMembersList().contains(user))
             throw new IllegalStateException("User is not a member of the team.");
 
-        changeUserState(user, false, team.getHackathon(), UserStateType.DEFAULT_STATE);
+        userStateService.changeUserState(user, false, team.getHackathon(), UserStateType.DEFAULT_STATE);
         team.removeTeamMember(user);
         teamRepository.save(team);
     }

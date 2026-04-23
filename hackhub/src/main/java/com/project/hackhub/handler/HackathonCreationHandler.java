@@ -12,13 +12,12 @@ import com.project.hackhub.model.hackathon.builder.HackathonBuilderMemento;
 import com.project.hackhub.model.utente.UtenteRegistrato;
 import com.project.hackhub.model.utente.state.UserStateType;
 import com.project.hackhub.repository.*;
+import com.project.hackhub.service.UserStateService;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.UUID;
-
-import static com.project.hackhub.service.UserStateService.changeUserState;
 
 @Component
 @AllArgsConstructor
@@ -30,6 +29,7 @@ public class HackathonCreationHandler {
     private final HackathonBuilderMementoRepository hackathonBuilderMementoRepo;
     private final PrenotazioneRepository prenotazioneRepository;
     private final UtenteRegistratoRepository userRepository;
+    private final UserStateService userStateService;
 
     @Transactional
     public void insertTask(String title, String description, FileTemplate f, UUID hackathonId){
@@ -81,12 +81,16 @@ public class HackathonCreationHandler {
 
         UtenteRegistrato coordinatorU = userRepository.findById(coordinator).orElseThrow(
                 () -> new IllegalArgumentException("coordinator cannot be null"));
+//        if(!coordinatorU.isOrganizer())
+//            throw new IllegalArgumentException("user is not an organizer");
 
         HackathonBuilder hackathonBuilder = createHackathonBuilder();
-        hackathonBuilderMementoRepo.findByAuthor(coordinatorU).ifPresent(hackathonBuilder::restoreMemento);
+        var existingMemento = hackathonBuilderMementoRepo.findByAuthor(coordinatorU);
+        existingMemento.ifPresent(hackathonBuilder::restoreMemento);
 
         populateBuilder(dto, hackathonBuilder);
         if(hackathonBuilder.isComplete()) {
+            prenotazioneRepository.save(dto.reservation());
             hackathonBuilder.setState();
             hackathonBuilder.setCoordinator(coordinatorU);
             Hackathon hackathon = hackathonBuilder.getProduct();
@@ -99,8 +103,15 @@ public class HackathonCreationHandler {
         }
         else
         {
-            HackathonBuilderMemento memento =  hackathonBuilder.saveMemento();
-            hackathonBuilderMementoRepo.save(memento);
+            if (existingMemento.isPresent()) {
+                // Update existing memento instead of creating a new one
+                hackathonBuilder.updateMemento(existingMemento.get());
+                hackathonBuilderMementoRepo.save(existingMemento.get());
+            } else {
+                // Create new memento on first incomplete submission
+                HackathonBuilderMemento memento = hackathonBuilder.saveMemento(coordinatorU);
+                hackathonBuilderMementoRepo.save(memento);
+            }
             return new HackathonCreationResponse(false, "hackathon creation suspended, missing information");
         }
     }
@@ -112,11 +123,11 @@ public class HackathonCreationHandler {
      * @author Giorgia Branchesi
      */
     private void updateStaffState(Hackathon hackathon) {
-        changeUserState(hackathon.getJudge(), true, hackathon, UserStateType.GIUDICE);
-        changeUserState(hackathon.getCoordinator(), true, hackathon, UserStateType.ORGANIZZATORE);
+        userStateService.changeUserState(hackathon.getJudge(), true, hackathon, UserStateType.GIUDICE);
+        userStateService.changeUserState(hackathon.getCoordinator(), true, hackathon, UserStateType.ORGANIZZATORE);
         if(hackathon.getMentorsList() != null) {
             for (UtenteRegistrato mentor : hackathon.getMentorsList()) {
-                changeUserState(mentor, true, hackathon, UserStateType.MENTORE);
+                userStateService.changeUserState(mentor, true, hackathon, UserStateType.MENTORE);
             }
         }
     }
@@ -131,7 +142,7 @@ public class HackathonCreationHandler {
      */
     private void populateBuilder(HackathonDTO dto, HackathonBuilder builder){
 
-        Director director = new Director(builder, this);
+        Director director = new Director(builder, this, userRepository);
         director.populateBuilder(dto);
     }
 }

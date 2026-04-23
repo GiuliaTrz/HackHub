@@ -14,7 +14,7 @@ public interface Builder {
     void setRuleBook(String r);
     void setState();
     void setState(HackathonState state);
-    void setMaxTeamDimension(int num);
+    void setMaxTeamDimension(Integer num);
     void setReservation(Prenotazione p);
     void setMoneyPrice(Soldi p);
     void addMentorsList(List<UtenteRegistrato> mentorsList);

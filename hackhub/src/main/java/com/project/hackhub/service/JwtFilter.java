@@ -40,7 +40,7 @@ public class JwtFilter extends OncePerRequestFilter {
                     UtenteRegistrato user = userRepository.findById(userId).orElse(null);
                     if (user != null) {
                         servizioJwt.validateToken(token, user);
-                        UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(user,
+                        UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(user.getId(),
                                 null, Collections.emptyList());
                         auth.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                         SecurityContextHolder.getContext().setAuthentication(auth);

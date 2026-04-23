@@ -15,6 +15,7 @@ public class TeamPartecipationHandler {
 
     private final TeamRepository teamRepository;
     private final UtenteRegistratoRepository userRepository;
+    private final UserStateService userStateService;
 
     /**
      * Removes a user from a team
@@ -36,7 +37,7 @@ public class TeamPartecipationHandler {
             throw new UnsupportedOperationException("cannot leave team! " +
                     "Must change team leader of delete hackathon participation!");
 
-        UserStateService.changeUserState(user1, false, t.getHackathon(), UserStateType.DEFAULT_STATE);
+        userStateService.changeUserState(user1, false, t.getHackathon(), UserStateType.DEFAULT_STATE);
         t.removeTeamMember(user1);
         teamRepository.save(t);
     }

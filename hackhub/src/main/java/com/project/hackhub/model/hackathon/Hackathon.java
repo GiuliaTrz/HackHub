@@ -29,7 +29,7 @@ public class Hackathon {
 
     private String ruleBook;
     private LocalDate expiredSubscriptionsDate;
-    private int maxTeamDimension;
+    private Integer maxTeamDimension;
 
     @Embedded
     private HackathonState state;
@@ -52,7 +52,7 @@ public class Hackathon {
     @OneToOne
     private UtenteRegistrato coordinator;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.PERSIST)
     private Prenotazione reservation;
 
     @ElementCollection
@@ -67,21 +67,6 @@ public class Hackathon {
     @OneToOne
     private Team winner;
 
-    public Hackathon(Hackathon other) {
-
-        if (other == null)
-            throw new IllegalArgumentException("Hackathon nullo.");
-
-        this.name = other.name;
-        this.ruleBook = other.ruleBook;
-        this.maxTeamDimension = other.maxTeamDimension;
-        this.reservation = other.reservation;
-        this.moneyPrice = other.moneyPrice;
-        this.mentorsList = new ArrayList<>(other.mentorsList);
-        this.expiredSubscriptionsDate = other.expiredSubscriptionsDate;
-        this.judge = other.judge;
-        this.infractions = new ArrayList<>(other.infractions);
-    }
 
     public void addMentor(UtenteRegistrato u) {
         if (u == null)
@@ -173,4 +158,26 @@ public class Hackathon {
         this.infractions.add(i);
     }
 
+    /**
+     * Copies all the values from another Hackathon instance to this one
+     *
+     * @param other the Hackathon to copy values from
+     */
+    public void copyFrom(Hackathon other) {
+        if (other == null) {
+            throw new IllegalArgumentException("Hackathon to copy from cannot be null.");
+        }
+
+        this.name = other.name;
+        this.ruleBook = other.ruleBook;
+        this.maxTeamDimension = other.maxTeamDimension;
+        this.reservation = other.reservation;
+        this.moneyPrice = other.moneyPrice;
+        this.mentorsList = new ArrayList<>(other.mentorsList);
+        this.expiredSubscriptionsDate = other.expiredSubscriptionsDate;
+        this.judge = other.judge;
+        this.state = other.state;
+        this.stateType = other.stateType;
+        this.coordinator = other.coordinator;
+    }
 }

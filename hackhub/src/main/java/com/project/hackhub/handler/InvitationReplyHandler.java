@@ -9,11 +9,10 @@ import com.project.hackhub.model.utente.state.UserStateType;
 import com.project.hackhub.repository.InvitoRepository;
 import com.project.hackhub.repository.TeamRepository;
 import com.project.hackhub.repository.UtenteRegistratoRepository;
+import com.project.hackhub.service.UserStateService;
 import lombok.AllArgsConstructor;
 
 import java.util.UUID;
-
-import static com.project.hackhub.service.UserStateService.changeUserState;
 
 @AllArgsConstructor
 public class InvitationReplyHandler {
@@ -21,6 +20,7 @@ public class InvitationReplyHandler {
     private final InvitoRepository invitationRepository;
     private final TeamRepository teamRepository;
     private final UtenteRegistratoRepository userRepository;
+    private final UserStateService userStateService;
 
     /**
      * Deletes the invitation for a user
@@ -62,7 +62,7 @@ public class InvitationReplyHandler {
             throw new UnsupportedOperationException("cannot perform operation");
 
         addressee.removeInvitation(i);
-        changeUserState(addressee, true, h, UserStateType.MEMBRO_DEL_TEAM);
+        userStateService.changeUserState(addressee, true, h, UserStateType.MEMBRO_DEL_TEAM);
         i.getMittente().addTeamMember(addressee);
         removeInvitation(invitation);
     }

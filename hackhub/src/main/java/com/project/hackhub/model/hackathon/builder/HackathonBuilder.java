@@ -54,9 +54,9 @@ public class HackathonBuilder implements Builder {
     }
 
     @Override
-    public void setMaxTeamDimension(int num) {
+    public void setMaxTeamDimension(Integer num) {
 
-        if(num > 1 && num < 20)
+        if(num != null && num > 1 && num < 20)
             hackathon.setMaxTeamDimension(num);
     }
 
@@ -99,9 +99,29 @@ public class HackathonBuilder implements Builder {
         return this.hackathon;
     }
 
-    public HackathonBuilderMemento saveMemento() {
-        Hackathon memento = new Hackathon(this.hackathon);
-        return new HackathonBuilderMemento((memento));
+    /**
+     * Saves or updates the current builder state as a memento
+     *
+     * @param author the author of the memento
+     * @return a new HackathonBuilderMemento or updates an existing one
+     */
+    public HackathonBuilderMemento saveMemento(UtenteRegistrato author) {
+        Hackathon memento = new Hackathon();
+        memento.copyFrom(this.hackathon);
+        HackathonBuilderMemento mementoInstance = new HackathonBuilderMemento(memento);
+        mementoInstance.setAuthor(author);
+        return mementoInstance;
+    }
+
+    /**
+     * Updates an existing memento with the current builder state
+     *
+     * @param existingMemento the memento to update
+     */
+    public void updateMemento(HackathonBuilderMemento existingMemento) {
+        if (existingMemento != null) {
+            existingMemento.getState().copyFrom(this.hackathon);
+        }
     }
 
     public void restoreMemento(HackathonBuilderMemento hackathonBuilderMemento){
