@@ -10,10 +10,12 @@ import com.project.hackhub.observer.EventType;
 import com.project.hackhub.repository.TeamRepository;
 import com.project.hackhub.repository.UtenteRegistratoRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.UUID;
 
+@Component
 @AllArgsConstructor
 public class TeamLeaderChoiceHandler {
 
