@@ -17,9 +17,6 @@ import java.util.UUID;
 @Repository
 public interface HackathonRepository extends JpaRepository<Hackathon, UUID> {
 
-    @Query("SELECT h.id FROM Hackathon  h WHERE h.state != :state")
-    List<UUID> findIdByStateNot(@Param("state")HackathonStateType hackathonStateType);
-
     @Query("SELECT h FROM Hackathon h WHERE h.expiredSubscriptionsDate < :now\n AND h.stateType = HackathonStateType.IN_ISCRIZIONE")
     List<Hackathon> getExpiredSubscriptions(@Param("now") LocalDateTime now);
 

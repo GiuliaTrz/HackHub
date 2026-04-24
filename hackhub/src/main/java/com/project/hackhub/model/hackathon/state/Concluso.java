@@ -9,8 +9,6 @@ public class Concluso implements HackathonState {
         return HackathonStateType.CONCLUSO;
     }
 
-
-
     @Override
     public ReportData getReportData(Hackathon h){
         ReportData r = new ReportData();

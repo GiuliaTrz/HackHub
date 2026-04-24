@@ -6,12 +6,11 @@ import com.project.hackhub.model.utente.state.Permission;
 import com.project.hackhub.model.utente.state.UserStateType;
 import com.project.hackhub.repository.HackathonRepository;
 import com.project.hackhub.repository.UtenteRegistratoRepository;
+import com.project.hackhub.service.UserStateService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.UUID;
-
-import static com.project.hackhub.service.UserStateService.changeUserState;
 
 @Component
 @RequiredArgsConstructor
@@ -19,6 +18,7 @@ public class StaffHandler {
 
     private final HackathonRepository hackathonRepository;
     private final UtenteRegistratoRepository utenteRepository;
+    private final UserStateService userStateService;
 
     /**
      * Aggiunge un utente come mentore all'hackathon.
@@ -46,7 +46,7 @@ public class StaffHandler {
         }
 
         hackathon.addMentor(mentor);
-        changeUserState(mentor, true, hackathon, UserStateType.MENTORE);
+        userStateService.changeUserState(mentor, true, hackathon, UserStateType.MENTORE);
         hackathonRepository.save(hackathon);
         utenteRepository.save(mentor);
     }
@@ -75,7 +75,7 @@ public class StaffHandler {
         }
 
         hackathon.removeMentor(mentor);
-        changeUserState(mentor, false, hackathon, UserStateType.DEFAULT_STATE);
+        userStateService.changeUserState(mentor, false, hackathon, UserStateType.DEFAULT_STATE);
         hackathonRepository.save(hackathon);
         utenteRepository.save(mentor);
     }
@@ -124,7 +124,7 @@ public class StaffHandler {
         }
 
         assignRoleToUser(targetUser, hackathon, targetState);
-        changeUserState(targetUser, true, hackathon, targetState);
+        userStateService.changeUserState(targetUser, true, hackathon, targetState);
 
         hackathonRepository.save(hackathon);
         utenteRepository.save(targetUser);
@@ -164,7 +164,7 @@ public class StaffHandler {
                 if (hackathon.getJudge() != null) {
                     UtenteRegistrato oldJudge = hackathon.getJudge();
                     hackathon.setJudge(null);
-                    changeUserState(oldJudge, false, hackathon, UserStateType.DEFAULT_STATE);
+                    userStateService.changeUserState(oldJudge, false, hackathon, UserStateType.DEFAULT_STATE);
                 }
                 hackathon.setJudge(user);
             }

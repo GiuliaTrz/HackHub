@@ -13,8 +13,7 @@ import org.springframework.stereotype.Service;
 @AllArgsConstructor
 public final class UserStateService {
 
-    private static UtenteRegistratoRepository userRepository;
-
+    private final UtenteRegistratoRepository userRepository;
 
     /**
      * Sets the given state on the given user and adds or removes the reservation of the Hackathon as needed
@@ -26,11 +25,11 @@ public final class UserStateService {
      * @throws IllegalArgumentException if any of the parameters are null
      * @author Giorgia Branchesi
      */
-    public static void changeUserState(UtenteRegistrato user, boolean toAdd, Hackathon hackathon, UserStateType state) {
+    public void changeUserState(UtenteRegistrato user, boolean toAdd, Hackathon hackathon, UserStateType state) {
 
-        if(user == null) throw new IllegalArgumentException("user cannot be null");
-        if(hackathon == null) throw new IllegalArgumentException("hackathon cannot be null");
-        if(state == null) throw new IllegalArgumentException("state cannot be null");
+        if (user == null) throw new IllegalArgumentException("user cannot be null");
+        if (hackathon == null) throw new IllegalArgumentException("hackathon cannot be null");
+        if (state == null) throw new IllegalArgumentException("state cannot be null");
 
         UserStateFactory factory = new UserStateFactory();
 
@@ -42,7 +41,7 @@ public final class UserStateService {
         userRepository.save(user);
     }
 
-    public static void addInvitation(UtenteRegistrato user, Invito invitation) {
+    public void addInvitation(UtenteRegistrato user, Invito invitation) {
 
         user.addInvitation(invitation);
         userRepository.save(user);
