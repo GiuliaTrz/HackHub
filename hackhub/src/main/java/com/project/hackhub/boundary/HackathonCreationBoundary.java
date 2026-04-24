@@ -2,17 +2,16 @@ package com.project.hackhub.boundary;
 
 import com.project.hackhub.dto.HackathonCreationResponse;
 import com.project.hackhub.dto.HackathonDTO;
+import com.project.hackhub.dto.TaskDTO;
 import com.project.hackhub.handler.HackathonCreationHandler;
+import com.project.hackhub.model.team.FileTemplate;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 
@@ -39,5 +38,15 @@ public class HackathonCreationBoundary {
             return ResponseEntity.status(HttpStatus.OK)
                     .body(result.message());
         }
+    }
+
+    @PostMapping("/{hackathonId}/task")
+    public ResponseEntity<Void> inserTask(
+            @AuthenticationPrincipal UUID coordinator,
+            @RequestBody TaskDTO taskDTO,
+            @PathVariable UUID hackathonId) {
+
+        hackathonCreationHandler.insertTask(coordinator, taskDTO, hackathonId);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 }

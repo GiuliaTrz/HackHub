@@ -2,6 +2,7 @@ package com.project.hackhub.model.hackathon;
 
 import com.project.hackhub.model.hackathon.state.HackathonState;
 import com.project.hackhub.model.hackathon.state.HackathonStateType;
+import com.project.hackhub.model.hackathon.state.HackathonStateFactory;
 import com.project.hackhub.model.team.Infraction;
 import com.project.hackhub.model.team.Team;
 import com.project.hackhub.model.team.AidRequest;
@@ -31,11 +32,11 @@ public class Hackathon {
     private LocalDate expiredSubscriptionsDate;
     private Integer maxTeamDimension;
 
-    @Embedded
-    private HackathonState state;
-
     @Enumerated(EnumType.STRING)
     private HackathonStateType stateType;
+
+    @Transient
+    private final HackathonStateFactory factory = new HackathonStateFactory();
 
     @OneToMany
     private List<Team> teamsList = new ArrayList<>();
@@ -78,12 +79,18 @@ public class Hackathon {
         mentorsList.add(u);
     }
 
+    public HackathonState getState() {
+        if (stateType == null) {
+            return null;
+        }
+        return factory.createState(stateType);
+    }
+
     public void setState(HackathonState state) {
 
         if(state == null)
             throw new IllegalArgumentException("state cannot be null");
 
-        this.state = state;
         this.stateType = state.getStateType();
     }
 

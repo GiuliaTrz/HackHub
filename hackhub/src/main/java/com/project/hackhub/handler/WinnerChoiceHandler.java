@@ -2,8 +2,6 @@ package com.project.hackhub.handler;
 
 import com.project.hackhub.exceptions.MultipleWinnersException;
 import com.project.hackhub.model.hackathon.Hackathon;
-import com.project.hackhub.model.hackathon.state.HackathonState;
-import com.project.hackhub.model.hackathon.state.HackathonStateFactory;
 import com.project.hackhub.model.hackathon.state.HackathonStateType;
 import com.project.hackhub.model.team.Team;
 import com.project.hackhub.model.utente.UtenteRegistrato;
@@ -23,13 +21,11 @@ public class WinnerChoiceHandler {
     private final HackathonRepository hackathonRepository;
     private final UtenteRegistratoRepository utenteRegistratoRepository;
     private final TeamRepository teamRepository;
-    private final HackathonStateFactory hackathonStateFactory;
 
-    public WinnerChoiceHandler(HackathonRepository hackathonRepository, UtenteRegistratoRepository utenteRegistratoRepository, TeamRepository teamRepository, HackathonStateFactory hackathonStateFactory) {
+    public WinnerChoiceHandler(HackathonRepository hackathonRepository, UtenteRegistratoRepository utenteRegistratoRepository, TeamRepository teamRepository) {
         this.hackathonRepository = hackathonRepository;
         this.utenteRegistratoRepository = utenteRegistratoRepository;
         this.teamRepository = teamRepository;
-        this.hackathonStateFactory = hackathonStateFactory;
     }
 
     private List<Team> getTeamsWithMaxGrade(UUID hackathon){
@@ -144,12 +140,11 @@ public class WinnerChoiceHandler {
     }
 
     /**
-     * Helper method that create the new state CONCLUSO to set in the Hackathon state and saves changes.
+     * Helper method that sets the Hackathon state to CONCLUSO and saves changes.
      * @param h the Hackathon of interest
      */
     private void setConcluso(Hackathon h) {
-        HackathonState newState = this.hackathonStateFactory.createState(HackathonStateType.CONCLUSO);
-        h.setState(newState);
+        h.setStateType(HackathonStateType.CONCLUSO);
         this.hackathonRepository.save(h);
     }
 

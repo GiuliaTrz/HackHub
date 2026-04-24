@@ -2,6 +2,9 @@ package com.project.hackhub.handler;
 
 import com.project.hackhub.dto.HackathonCreationResponse;
 import com.project.hackhub.dto.HackathonDTO;
+import com.project.hackhub.dto.TaskDTO;
+import com.project.hackhub.model.hackathon.state.HackathonState;
+import com.project.hackhub.model.hackathon.state.HackathonStateType;
 import com.project.hackhub.model.team.FileTemplate;
 import com.project.hackhub.model.hackathon.Hackathon;
 import com.project.hackhub.model.hackathon.Prenotazione;
@@ -22,6 +25,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import static com.project.hackhub.model.utente.state.Permission.CAN_ADD_TASK;
+
 @Component
 @AllArgsConstructor
 public class HackathonCreationHandler {
@@ -35,9 +40,18 @@ public class HackathonCreationHandler {
     private final UserStateService userStateService;
 
     @Transactional
-    public void insertTask(String title, String description, FileTemplate f, UUID hackathonId) {
-        Hackathon h = hackathonRepo.findById(hackathonId).orElseThrow(() -> new IllegalArgumentException("Hackathon can't null"));
-        Task t = new Task(title, description, f);
+    public void insertTask(UUID coordinator, TaskDTO taskDTO, UUID hackathonId) {
+
+        UtenteRegistrato c = userRepository.findById(coordinator)
+                .orElseThrow(() -> new IllegalArgumentException("Coordinator can't null"));
+
+        Hackathon h = hackathonRepo.findById(hackathonId)
+                .orElseThrow(() -> new IllegalArgumentException("Hackathon can't null"));
+
+        if(!c.hasPermission(CAN_ADD_TASK, h) && !h.getState().getStateType().equals(HackathonStateType.IN_ISCRIZIONE))
+            throw new UnsupportedOperationException("User doesn't have permission to add task or hackathon is not in iscrizione state");
+
+        Task t = new Task(taskDTO.title(), taskDTO.description(), taskDTO.template());
         this.taskRepository.save(t);
         h.addTask(t);
         this.hackathonRepo.save(h);

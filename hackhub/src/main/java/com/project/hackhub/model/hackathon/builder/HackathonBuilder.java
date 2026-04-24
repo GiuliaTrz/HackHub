@@ -58,18 +58,16 @@ public class HackathonBuilder implements Builder {
      */
     @Override
     public void setState() {
-        HackathonStateFactory factory = new HackathonStateFactory();
-        HackathonState state = factory.createState(HackathonStateType.IN_ISCRIZIONE);
-        hackathon.setState(state);
+        hackathon.setStateType(HackathonStateType.IN_ISCRIZIONE);
     }
 
     /**
-     * Sets the state of the hackathon.
-     * @param state the state to set
+     * Sets the state type of the hackathon.
+     * @param stateType the state type to set
      */
     @Override
-    public void setState(HackathonState state) {
-        hackathon.setState(state);
+    public void setStateType(HackathonStateType stateType) {
+        hackathon.setStateType(stateType);
     }
 
     /**

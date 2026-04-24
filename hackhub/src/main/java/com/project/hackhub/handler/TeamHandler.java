@@ -33,19 +33,16 @@ public class TeamHandler {
      * @return il team creato e salvato
      */
     @Transactional
-    public Team createTeam(UUID creatorId, UUID hackathonId, String teamName) {
+    public void createTeam(UUID creatorId, UUID hackathonId, String teamName) {
         UtenteRegistrato creator = userRepository.findById(creatorId)
                 .orElseThrow(() -> new IllegalArgumentException("Creator not found"));
         Hackathon hackathon = hackathonRepository.findById(hackathonId)
                 .orElseThrow(() -> new IllegalArgumentException("Hackathon not found"));
 
-        // Verifica permesso
         if (!creator.hasPermission(Permission.CAN_CREATE_TEAM, hackathon)) {
             throw new UnsupportedOperationException("User cannot create a team in this hackathon");
         }
-
-        // opzionale: verifico che l'utente non sia già in un team per questo hackathon
-        return createTeamInternal(teamName, creator, hackathon);
+        createTeamInternal(teamName, creator, hackathon);
     }
 
     /**
@@ -98,7 +95,7 @@ public class TeamHandler {
     /**
      * Metodo interno per la creazione del team (già esistente, adattato).
      */
-    private Team createTeamInternal(String name, UtenteRegistrato leader, Hackathon hackathon) {
+    private void createTeamInternal(String name, UtenteRegistrato leader, Hackathon hackathon) {
         if (name == null || name.isBlank())
             throw new IllegalArgumentException("Team name cannot be null or blank.");
         if (leader == null)
@@ -111,8 +108,9 @@ public class TeamHandler {
         team.setHackathon(hackathon);
         team.addTeamMember(leader);
         team.setTeamLeader(leader);
+        userStateService.changeUserState(leader, true, hackathon, UserStateType.TEAM_LEADER);
 
-        return teamRepository.save(team);
+        teamRepository.save(team);
     }
 
     /**
