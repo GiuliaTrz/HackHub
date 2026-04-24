@@ -17,12 +17,21 @@ public class InvitationBoundary {
     private final InvitationHandler invitationHandler;
 
     @PostMapping("/{team}/invite/{user}")
-    public ResponseEntity<Void> inviteUser(
+    public ResponseEntity<String> inviteUser(
             @AuthenticationPrincipal UUID teamLeader,
             @PathVariable UUID user,
             @PathVariable UUID team) {
         invitationHandler.inviteUser(teamLeader, user, team);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok("user invited");
+    }
+
+    @DeleteMapping("/cancel/{invitation}")
+    public ResponseEntity<Void> cancelInvitation(
+            @PathVariable UUID invitation,
+            @AuthenticationPrincipal UUID teamMember
+    ) {
+        invitationHandler.cancelInvitation(teamMember, invitation);
+        return ResponseEntity.noContent().build();
     }
 
 }
