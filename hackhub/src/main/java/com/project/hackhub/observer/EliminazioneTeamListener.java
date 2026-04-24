@@ -3,12 +3,17 @@ package com.project.hackhub.observer;
 import com.project.hackhub.model.team.Team;
 import com.project.hackhub.model.utente.UtenteRegistrato;
 import com.project.hackhub.model.utente.state.UserStateType;
+import com.project.hackhub.service.UserStateService;
+import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-import static com.project.hackhub.service.UserStateService.changeUserState;
-
+@Component
+@AllArgsConstructor
 public class EliminazioneTeamListener implements EventListener{
+
+    private final UserStateService userStateService;
 
     /**
      * Gets the {@link EventType} supported by this listener
@@ -40,7 +45,7 @@ public class EliminazioneTeamListener implements EventListener{
 
         Team team = (Team) entity;
         for(UtenteRegistrato u: usersList) {
-            changeUserState(u, false, team.getHackathon(), UserStateType.DEFAULT_STATE);
+            userStateService.changeUserState(u, false, team.getHackathon(), UserStateType.DEFAULT_STATE);
         }
         //TODO, il messaggio è da restituire quando facciamo la chiamata API! Gli utenti da notificare sono tutti i membri del team
     }

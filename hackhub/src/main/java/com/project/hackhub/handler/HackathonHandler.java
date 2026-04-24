@@ -6,12 +6,11 @@ import com.project.hackhub.model.utente.state.Permission;
 import com.project.hackhub.model.utente.state.UserStateType;
 import com.project.hackhub.repository.HackathonRepository;
 import com.project.hackhub.repository.UtenteRegistratoRepository;
+import com.project.hackhub.service.UserStateService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.UUID;
-
-import static com.project.hackhub.service.UserStateService.changeUserState;
 
 @Component
 @RequiredArgsConstructor
@@ -19,6 +18,7 @@ public class HackathonHandler {
 
     private final HackathonRepository hackathonRepo;
     private final UtenteRegistratoRepository utenteRepository; // <-- AGGIUNTO
+    private final UserStateService userStateService;
 
     /**
      * Elimina un hackathon (solo organizzatore con permessi globali).
@@ -94,22 +94,22 @@ public class HackathonHandler {
                         throw new IllegalStateException("Hackathon ha già un organizzatore.");
                     }
                     hackathon.setCoordinator(member);
-                    changeUserState(member, true, hackathon, UserStateType.ORGANIZZATORE);
+                    userStateService.changeUserState(member, true, hackathon, UserStateType.ORGANIZZATORE);
                 } else {
                     if (hackathon.getCoordinator() == null || !hackathon.getCoordinator().getId().equals(staffMemberId)) {
                         throw new IllegalArgumentException("L'utente non è l'organizzatore di questo hackathon");
                     }
                     hackathon.setCoordinator(null);
-                    changeUserState(member, false, hackathon, UserStateType.DEFAULT_STATE);
+                    userStateService.changeUserState(member, false, hackathon, UserStateType.DEFAULT_STATE);
                 }
                 break;
             case "MENTOR":
                 if (add) {
                     hackathon.addMentor(member);
-                    changeUserState(member, true, hackathon, UserStateType.MENTORE);
+                    userStateService.changeUserState(member, true, hackathon, UserStateType.MENTORE);
                 } else {
                     hackathon.removeMentor(member);
-                    changeUserState(member, false, hackathon, UserStateType.DEFAULT_STATE);
+                    userStateService.changeUserState(member, false, hackathon, UserStateType.DEFAULT_STATE);
                 }
                 break;
             case "JUDGE":
@@ -117,16 +117,16 @@ public class HackathonHandler {
                     if (hackathon.getJudge() != null) {
                         UtenteRegistrato oldJudge = hackathon.getJudge();
                         hackathon.setJudge(null);
-                        changeUserState(oldJudge, false, hackathon, UserStateType.DEFAULT_STATE);
+                        userStateService.changeUserState(oldJudge, false, hackathon, UserStateType.DEFAULT_STATE);
                     }
                     hackathon.setJudge(member);
-                    changeUserState(member, true, hackathon, UserStateType.GIUDICE);
+                    userStateService.changeUserState(member, true, hackathon, UserStateType.GIUDICE);
                 } else {
                     if (hackathon.getJudge() == null || !hackathon.getJudge().getId().equals(staffMemberId)) {
                         throw new IllegalArgumentException("L'utente non è il giudice di questo hackathon");
                     }
                     hackathon.setJudge(null);
-                    changeUserState(member, false, hackathon, UserStateType.DEFAULT_STATE);
+                    userStateService.changeUserState(member, false, hackathon, UserStateType.DEFAULT_STATE);
                 }
                 break;
             default:

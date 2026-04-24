@@ -2,7 +2,6 @@ package com.project.hackhub.handler;
 
 import com.project.hackhub.dto.InfractionDTO;
 import com.project.hackhub.model.hackathon.Hackathon;
-import com.project.hackhub.model.hackathon.state.HackathonState;
 import com.project.hackhub.model.hackathon.state.HackathonStateType;
 import com.project.hackhub.model.team.Infraction;
 import com.project.hackhub.model.team.Team;

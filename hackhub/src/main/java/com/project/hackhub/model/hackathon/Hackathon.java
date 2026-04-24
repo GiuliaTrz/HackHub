@@ -2,6 +2,7 @@ package com.project.hackhub.model.hackathon;
 
 import com.project.hackhub.model.hackathon.state.HackathonState;
 import com.project.hackhub.model.hackathon.state.HackathonStateType;
+import com.project.hackhub.model.hackathon.state.HackathonStateFactory;
 import com.project.hackhub.model.team.Infraction;
 import com.project.hackhub.model.team.Team;
 import com.project.hackhub.model.team.AidRequest;
@@ -29,13 +30,13 @@ public class Hackathon {
 
     private String ruleBook;
     private LocalDate expiredSubscriptionsDate;
-    private int maxTeamDimension;
-
-    @Embedded
-    private HackathonState state;
+    private Integer maxTeamDimension;
 
     @Enumerated(EnumType.STRING)
     private HackathonStateType stateType;
+
+    @Transient
+    private final HackathonStateFactory factory = new HackathonStateFactory();
 
     @OneToMany
     private List<Team> teamsList = new ArrayList<>();
@@ -52,7 +53,7 @@ public class Hackathon {
     @OneToOne
     private UtenteRegistrato coordinator;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.PERSIST)
     private Prenotazione reservation;
 
     @ElementCollection
@@ -67,21 +68,6 @@ public class Hackathon {
     @OneToOne
     private Team winner;
 
-    public Hackathon(Hackathon other) {
-
-        if (other == null)
-            throw new IllegalArgumentException("Hackathon nullo.");
-
-        this.name = other.name;
-        this.ruleBook = other.ruleBook;
-        this.maxTeamDimension = other.maxTeamDimension;
-        this.reservation = other.reservation;
-        this.moneyPrice = other.moneyPrice;
-        this.mentorsList = new ArrayList<>(other.mentorsList);
-        this.expiredSubscriptionsDate = other.expiredSubscriptionsDate;
-        this.judge = other.judge;
-        this.infractions = new ArrayList<>(other.infractions);
-    }
 
     public void addMentor(UtenteRegistrato u) {
         if (u == null)
@@ -93,12 +79,18 @@ public class Hackathon {
         mentorsList.add(u);
     }
 
+    public HackathonState getState() {
+        if (stateType == null) {
+            return null;
+        }
+        return factory.createState(stateType);
+    }
+
     public void setState(HackathonState state) {
 
         if(state == null)
             throw new IllegalArgumentException("state cannot be null");
 
-        this.state = state;
         this.stateType = state.getStateType();
     }
 
@@ -140,7 +132,6 @@ public class Hackathon {
         return aidRequests.add(a);
     }
 
-    //Da cambiare più avanti in modo che ritorni una Map<Team, Valutazione> in caso
     public Map<Team, Float> getTeamsGrades() {
         Map<Team, Float> grades = new HashMap<>();
         for(Team t : this.teamsList){
@@ -172,5 +163,4 @@ public class Hackathon {
 
         this.infractions.add(i);
     }
-
 }

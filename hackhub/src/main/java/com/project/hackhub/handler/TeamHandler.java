@@ -9,12 +9,12 @@ import com.project.hackhub.repository.HackathonRepository;
 import com.project.hackhub.repository.InvitoRepository;
 import com.project.hackhub.repository.TeamRepository;
 import com.project.hackhub.repository.UtenteRegistratoRepository;
+import com.project.hackhub.service.UserStateService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.UUID;
-
-import static com.project.hackhub.service.UserStateService.changeUserState;
 
 @Component
 @RequiredArgsConstructor
@@ -23,6 +23,7 @@ public class TeamHandler {
     private final UtenteRegistratoRepository userRepository;
     private final TeamRepository teamRepository;
     private final HackathonRepository hackathonRepository;
+    private final UserStateService userStateService;
 
     /**
      * Crea un nuovo team. L'utente che crea diventa Team Leader.
@@ -31,19 +32,17 @@ public class TeamHandler {
      * @param teamName nome del team
      * @return il team creato e salvato
      */
-    public Team createTeam(UUID creatorId, UUID hackathonId, String teamName) {
+    @Transactional
+    public void createTeam(UUID creatorId, UUID hackathonId, String teamName) {
         UtenteRegistrato creator = userRepository.findById(creatorId)
                 .orElseThrow(() -> new IllegalArgumentException("Creator not found"));
         Hackathon hackathon = hackathonRepository.findById(hackathonId)
                 .orElseThrow(() -> new IllegalArgumentException("Hackathon not found"));
 
-        // Verifica permesso
         if (!creator.hasPermission(Permission.CAN_CREATE_TEAM, hackathon)) {
             throw new UnsupportedOperationException("User cannot create a team in this hackathon");
         }
-
-        // opzionale: verifico che l'utente non sia già in un team per questo hackathon
-        return createTeamInternal(teamName, creator, hackathon);
+        createTeamInternal(teamName, creator, hackathon);
     }
 
     /**
@@ -96,7 +95,7 @@ public class TeamHandler {
     /**
      * Metodo interno per la creazione del team (già esistente, adattato).
      */
-    private Team createTeamInternal(String name, UtenteRegistrato leader, Hackathon hackathon) {
+    private void createTeamInternal(String name, UtenteRegistrato leader, Hackathon hackathon) {
         if (name == null || name.isBlank())
             throw new IllegalArgumentException("Team name cannot be null or blank.");
         if (leader == null)
@@ -109,8 +108,9 @@ public class TeamHandler {
         team.setHackathon(hackathon);
         team.addTeamMember(leader);
         team.setTeamLeader(leader);
+        userStateService.changeUserState(leader, true, hackathon, UserStateType.TEAM_LEADER);
 
-        return teamRepository.save(team);
+        teamRepository.save(team);
     }
 
     /**
@@ -128,7 +128,7 @@ public class TeamHandler {
         if (!team.getTeamMembersList().contains(user))
             throw new IllegalStateException("User is not a member of the team.");
 
-        changeUserState(user, false, team.getHackathon(), UserStateType.DEFAULT_STATE);
+        userStateService.changeUserState(user, false, team.getHackathon(), UserStateType.DEFAULT_STATE);
         team.removeTeamMember(user);
         teamRepository.save(team);
     }
