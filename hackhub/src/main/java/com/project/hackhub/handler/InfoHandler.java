@@ -7,10 +7,13 @@ import com.project.hackhub.model.hackathon.report.HackathonReportAssembler;
 import com.project.hackhub.model.utente.UtenteRegistrato;
 import com.project.hackhub.repository.HackathonRepository;
 import com.project.hackhub.repository.UtenteRegistratoRepository;
+import org.springframework.stereotype.Component;
+
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.UUID;
 
+@Component
 public class InfoHandler {
     private final HackathonRepository hackathonRepository;
     private final UtenteRegistratoRepository utenteRegistratoRepository;
