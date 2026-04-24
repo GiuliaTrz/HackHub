@@ -1,6 +1,7 @@
 package com.project.hackhub.handler;
 
 
+import com.project.hackhub.dto.GradeDTO;
 import com.project.hackhub.model.hackathon.state.HackathonStateType;
 import com.project.hackhub.model.team.Submission;
 import com.project.hackhub.model.team.Team;
@@ -9,9 +10,12 @@ import com.project.hackhub.model.utente.state.Permission;
 import com.project.hackhub.repository.SubmissionRepository;
 import com.project.hackhub.repository.TeamRepository;
 import com.project.hackhub.repository.UtenteRegistratoRepository;
+import org.springframework.stereotype.Service;
+
 import java.util.List;
 import java.util.UUID;
 
+@Service
 public class GradeHandler {
 
     private final SubmissionRepository submissionRepository;
@@ -29,12 +33,12 @@ public class GradeHandler {
      * Grades a specific submission after validating judge permissions and Hackathon state.     *
      * @param judge UUID of the user performing the evaluation.
      * @param submissionId UUID of the submission to be graded.
-     * @param grade The score to assign.
+     * @param dto the record containing the grade to assign to the submission.
      * @throws IllegalArgumentException if entities are not found or permissions are missing.
      * @throws IllegalStateException if the Hackathon is not in the evaluation phase.
      * @author Chiara Marinucci
      */
-    public void gradeSubmission(UUID judge, UUID submissionId, float grade) {
+    public void gradeSubmission(UUID judge, UUID submissionId, GradeDTO dto) {
         UtenteRegistrato j = utenteRegistratoRepository.findById(judge)
                 .orElseThrow(()-> new IllegalArgumentException("judge not found"));
         Submission s = submissionRepository.findById(submissionId)
@@ -44,8 +48,9 @@ public class GradeHandler {
             throw new IllegalStateException("Hackathon is not IN_VALUTAZIONE");
         if(!j.hasPermission(Permission.CAN_GRADE_SUBMISSION, t.getHackathon()))
             throw new IllegalArgumentException("User does not have required permission");
-        s.setGrade(grade);
+        s.setGrade(dto.grade());
         submissionRepository.save(s);
+        updateTeamFinalGrade(t);
         }
 
     /**
