@@ -27,13 +27,19 @@ public class InfoBoundary {
      * @return a list of all hackathons
      */
     @GetMapping("/hackathons")
-    public ResponseEntity<List<Hackathon>> getAllHackathon() {
+    public ResponseEntity<List<UUID>> getAllHackathon() {
         return ResponseEntity.ok(infoHandler.getAllHackathon());
     }
-
+    /**
+     * Endpoint for getting a report of a given hackathon for a user based on hackathon's state
+     * and the user's permissions
+     * @param hackathonId
+     * @param userId
+     * @return a report
+     */
     @GetMapping("/report")
     public ResponseEntity<Report> getHackathonReport(@RequestParam(name = "hId") UUID hackathonId,
-                                            @RequestParam(name = "uId")UUID userId){
+                                            @RequestParam(name = "uId", required = false)UUID userId){
         return ResponseEntity.ok(infoHandler.getHackathonReport(hackathonId, userId));
     }
 

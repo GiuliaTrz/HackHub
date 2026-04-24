@@ -21,6 +21,7 @@ public class HackathonReportAssembler {
                 data.getName(),
                 data.getRuleBook(),
                 data.getReservation(),
+                data.getExpiredSubscriptionsDate(),
                 data.getState(),
                 data.getMoneyPrice(),
                 data.getMaxTeamDimension(),
@@ -40,6 +41,7 @@ public class HackathonReportAssembler {
                 data.getName(),
                 data.getRuleBook(),
                 data.getReservation(),
+                data.getExpiredSubscriptionsDate(),
                 data.getState(),
                 data.getMoneyPrice(),
                 data.getMaxTeamDimension(),
@@ -88,13 +90,13 @@ public class HackathonReportAssembler {
      * @author Chiara Marinucci
      */
     public Report build(ReportData data, Hackathon h, UtenteRegistrato u) {
-
-        if (u == null || !u.hasPermission(Permission.TEAM_PERMISSION, h))
+        if (u == null)
             return buildPublic(data);
-
         if (u.hasPermission(Permission.STAFF_PERMISSION, h))
             return buildStaff(data);
-
-        return buildDetailed(data);
+        if (u.hasPermission(Permission.TEAM_PERMISSION, h))
+            return buildDetailed(data);
+        //registered user that is not part of the hackathon
+        return buildPublic(data);
     }
 }
