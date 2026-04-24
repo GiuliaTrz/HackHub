@@ -1,5 +1,6 @@
 package com.project.hackhub.handler;
 
+import com.project.hackhub.dto.SubmissionDTO;
 import com.project.hackhub.model.team.FileTemplate;
 import com.project.hackhub.model.hackathon.Task;
 import com.project.hackhub.model.hackathon.state.HackathonStateType;
@@ -11,10 +12,13 @@ import com.project.hackhub.repository.SubmissionRepository;
 import com.project.hackhub.repository.TaskRepository;
 import com.project.hackhub.repository.TeamRepository;
 import com.project.hackhub.repository.UtenteRegistratoRepository;
+import jakarta.transaction.Transactional;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.UUID;
 
+@Service
 public class SubmissionHandler {
     private final TeamRepository teamRepository;
     private final UtenteRegistratoRepository utenteRegistratoRepository;
@@ -30,29 +34,29 @@ public class SubmissionHandler {
 
     /**
      * Processes a task submission from a team leader for a specific hackathon task.
-     * @param teamLeader UUID of the user attempting to send the submission.
-     * @param team UUID of the team the submission belongs to.
-     * @param task UUID of the task being completed.
-     * @param fileTemplate The submission content/template to be stored.
-     * @return true if the submission was successful, false otherwise.
+     *
+     * @param teamLeader   UUID of the user attempting to send the submission.
+     * @param dto          Data transfer object containing the submission details,
+     *                    including team ID, task ID, and file information.
      * @throws IllegalArgumentException if the leader, team, or task ID does not exist,
      * or if the provided user is not the designated leader of the team.
      * @throws IllegalStateException    if the hackathon is not currently in the "IN_CORSO" state.
      * @author Chiara Marinucci
      */
-    public boolean sendSubmission(UUID teamLeader, UUID team, UUID task, FileTemplate fileTemplate){
+    @Transactional
+    public void sendSubmission(UUID teamLeader, SubmissionDTO dto){
         UtenteRegistrato leader = utenteRegistratoRepository.findById(teamLeader).orElseThrow(()-> new IllegalArgumentException("teamLeader not found"));
-        Team t = teamRepository.findById(team).orElseThrow(()-> new IllegalArgumentException("Team not found"));
-        Task ta = taskRepository.findById(task).orElseThrow(()-> new IllegalArgumentException("Task can't be null"));
+        Team t = teamRepository.findById(dto.teamId()).orElseThrow(()-> new IllegalArgumentException("Team not found"));
+        Task ta = taskRepository.findById(dto.taskId()).orElseThrow(()-> new IllegalArgumentException("Task can't be null"));
         if(!t.getTeamLeader().equals(leader)) throw new IllegalArgumentException("TeamLeader doesn't match the given Team");
         if(!t.getHackathon().getState().getStateType().equals(HackathonStateType.IN_CORSO)) throw new IllegalStateException("Hackathon is not IN_CORSO");
         if(leader.hasPermission(Permission.CAN_SEND_SUBMISSION, t.getHackathon())){
-                Submission s = new Submission(t, ta, fileTemplate);
+            FileTemplate ft = new FileTemplate();
+            ft.setFileName(dto.fileName());
+                Submission s = new Submission(t, ta, ft);
                 this.submissionRepository.save(s);
-                return true;
         }
 
-        return false;
     }
 
 

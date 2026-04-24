@@ -3,9 +3,7 @@ package com.project.hackhub.handler;
 import com.project.hackhub.dto.HackathonCreationResponse;
 import com.project.hackhub.dto.HackathonDTO;
 import com.project.hackhub.dto.TaskDTO;
-import com.project.hackhub.model.hackathon.state.HackathonState;
 import com.project.hackhub.model.hackathon.state.HackathonStateType;
-import com.project.hackhub.model.team.FileTemplate;
 import com.project.hackhub.model.hackathon.Hackathon;
 import com.project.hackhub.model.hackathon.Prenotazione;
 import com.project.hackhub.model.hackathon.Task;
@@ -20,8 +18,6 @@ import com.project.hackhub.service.UserStateService;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
