@@ -2,12 +2,15 @@ package com.project.hackhub.model.hackathon.builder;
 
 import com.project.hackhub.dto.HackathonDTO;
 import com.project.hackhub.handler.HackathonCreationHandler;
+import com.project.hackhub.model.hackathon.Prenotazione;
 import com.project.hackhub.model.utente.UtenteRegistrato;
 import com.project.hackhub.repository.UtenteRegistratoRepository;
 import lombok.NonNull;
+import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -17,28 +20,19 @@ import java.util.UUID;
  */
 public class Director {
 
-    @NonNull private final Builder builder;
-    @NonNull private final HackathonCreationHandler hackathonCreationHandler;
+    private final Builder builder;
     private final UtenteRegistratoRepository userRepository;
 
-    public Director(@NonNull Builder b, @NonNull HackathonCreationHandler hackathonCreationHandler, UtenteRegistratoRepository userRepository) {
-        this.builder = b;
-        this.hackathonCreationHandler = hackathonCreationHandler;
+    public Director(Builder builder, UtenteRegistratoRepository userRepository) {
+        this.builder = builder;
         this.userRepository = userRepository;
     }
 
-    /**
-     * populates the builder from a dto given
-     *
-     * @param dto the dto given
-     * @throws IllegalArgumentException if the dto is {@code null}
-     * @author Giorgia Branchesi
-     */
     public void populateBuilder(HackathonDTO dto) {
 
-        if (dto == null) throw new IllegalArgumentException("dto cannot be null");
-
-        builder.reset();
+        if (dto == null) {
+            throw new IllegalArgumentException("dto cannot be null");
+        }
 
         setBasicInfo(dto);
         setReservation(dto);
@@ -48,54 +42,49 @@ public class Director {
     }
 
     private void setBasicInfo(HackathonDTO dto) {
-        builder.setName(dto.name());
-        builder.setRuleBook(dto.ruleBook());
+        if (dto.name() != null)
+            builder.setName(dto.name());
+
+        if (dto.ruleBook() != null)
+            builder.setRuleBook(dto.ruleBook());
     }
 
     private void setReservation(HackathonDTO dto) {
-        if (dto.reservation() != null &&
-                hackathonCreationHandler.isReservationAvailable(dto.reservation())) {
-
+        if (dto.reservation() != null)
             builder.setReservation(dto.reservation());
-        }
     }
 
     private void setJudge(HackathonDTO dto) {
+        if (dto.judge() == null) return;
 
-        if (dto.judge() != null) {
-            UtenteRegistrato j = userRepository.findById(dto.judge()).orElse(null);
-
-            if (dto.reservation() != null && j != null && j.isAvailable(dto.reservation())) {
-                builder.setJudge(j);
-            }
-        }
+        userRepository.findById(dto.judge())
+                .ifPresent(builder::setJudge);
     }
 
     private void setMentors(HackathonDTO dto) {
 
-        if (dto.mentorsList() == null || dto.reservation() == null)
-            return;
+        if (dto.mentorsList() == null) return;
 
-        List<UtenteRegistrato> validMentors = new ArrayList<>();
+        List<UtenteRegistrato> mentors = dto.mentorsList().stream()
+                .map(userRepository::findById)
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .toList();
 
-        for (UUID m : dto.mentorsList()) {
-            if(m != null) {
-                UtenteRegistrato mentor = userRepository.findById(m).orElse(null);
-                if (mentor != null && mentor.isAvailable(dto.reservation())) {
-                    validMentors.add(mentor);
-                }
-            }
-        }
-
-        if (!validMentors.isEmpty()) {
-            builder.addMentorsList(validMentors);
+        if (!mentors.isEmpty()) {
+            builder.addMentorsList(mentors);
         }
     }
 
     private void setAdditionalInfo(HackathonDTO dto) {
-        builder.setExpiredSubscriptionDate(dto.expiredSubscriptionsDate());
-        builder.setMoneyPrice(dto.moneyPrice());
-        builder.setMaxTeamDimension(dto.maxTeamDimension());
-    }
 
+        if (dto.expiredSubscriptionsDate() != null)
+            builder.setExpiredSubscriptionDate(dto.expiredSubscriptionsDate());
+
+        if (dto.moneyPrice() != null)
+            builder.setMoneyPrice(dto.moneyPrice());
+
+        if (dto.maxTeamDimension() != null)
+            builder.setMaxTeamDimension(dto.maxTeamDimension());
+    }
 }

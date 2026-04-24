@@ -125,7 +125,6 @@ public class Hackathon {
         return aidRequests.add(a);
     }
 
-    //Da cambiare più avanti in modo che ritorni una Map<Team, Valutazione> in caso
     public Map<Team, Float> getTeamsGrades() {
         Map<Team, Float> grades = new HashMap<>();
         for(Team t : this.teamsList){
@@ -156,28 +155,5 @@ public class Hackathon {
             throw new IllegalArgumentException("infraction to remove cannot be null");
 
         this.infractions.add(i);
-    }
-
-    /**
-     * Copies all the values from another Hackathon instance to this one
-     *
-     * @param other the Hackathon to copy values from
-     */
-    public void copyFrom(Hackathon other) {
-        if (other == null) {
-            throw new IllegalArgumentException("Hackathon to copy from cannot be null.");
-        }
-
-        this.name = other.name;
-        this.ruleBook = other.ruleBook;
-        this.maxTeamDimension = other.maxTeamDimension;
-        this.reservation = other.reservation;
-        this.moneyPrice = other.moneyPrice;
-        this.mentorsList = new ArrayList<>(other.mentorsList);
-        this.expiredSubscriptionsDate = other.expiredSubscriptionsDate;
-        this.judge = other.judge;
-        this.state = other.state;
-        this.stateType = other.stateType;
-        this.coordinator = other.coordinator;
     }
 }
