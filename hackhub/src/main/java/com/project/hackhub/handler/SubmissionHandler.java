@@ -11,10 +11,13 @@ import com.project.hackhub.repository.SubmissionRepository;
 import com.project.hackhub.repository.TaskRepository;
 import com.project.hackhub.repository.TeamRepository;
 import com.project.hackhub.repository.UtenteRegistratoRepository;
+import jakarta.transaction.Transactional;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.UUID;
 
+@Service
 public class SubmissionHandler {
     private final TeamRepository teamRepository;
     private final UtenteRegistratoRepository utenteRegistratoRepository;
@@ -40,6 +43,7 @@ public class SubmissionHandler {
      * @throws IllegalStateException    if the hackathon is not currently in the "IN_CORSO" state.
      * @author Chiara Marinucci
      */
+    @Transactional
     public boolean sendSubmission(UUID teamLeader, UUID team, UUID task, FileTemplate fileTemplate){
         UtenteRegistrato leader = utenteRegistratoRepository.findById(teamLeader).orElseThrow(()-> new IllegalArgumentException("teamLeader not found"));
         Team t = teamRepository.findById(team).orElseThrow(()-> new IllegalArgumentException("Team not found"));
