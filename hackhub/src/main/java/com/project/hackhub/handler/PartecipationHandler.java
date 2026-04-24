@@ -9,10 +9,13 @@ import com.project.hackhub.observer.EventManager;
 import com.project.hackhub.observer.EventType;
 import com.project.hackhub.repository.TeamRepository;
 import com.project.hackhub.repository.UtenteRegistratoRepository;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Component;
 
 import java.util.UUID;
 
+@Component
 @AllArgsConstructor
 public class PartecipationHandler {
 
@@ -27,6 +30,7 @@ public class PartecipationHandler {
      * or the user does not have permission to do the action
      * @author Giorgia Branchesi
      */
+    @Transactional
     public void unsubscribeTeam(UUID team, UUID user){
 
         Team t = teamRepository.findById(team).orElseThrow(() ->
