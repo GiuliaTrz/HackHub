@@ -10,12 +10,15 @@ import com.project.hackhub.observer.EventManager;
 import com.project.hackhub.repository.HackathonRepository;
 import com.project.hackhub.repository.TeamRepository;
 import com.project.hackhub.repository.UtenteRegistratoRepository;
+import org.springframework.stereotype.Service;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import static com.project.hackhub.observer.EventType.PROCLAMAZIONE_VINCITORE;
 import static com.project.hackhub.observer.EventType.SCELTA_VINCITORE;
 
+@Service
 public class WinnerChoiceHandler {
 
     private final HackathonRepository hackathonRepository;
@@ -92,17 +95,18 @@ public class WinnerChoiceHandler {
      * if the team is not among the tied winners list.
      * @author Chiara Marinucci
      */
-    public void chooseWinner(UUID judge, UUID hackathon, Team team){
+    public void chooseWinner(UUID judge, UUID hackathon, UUID team){
         Hackathon h = checkValid(judge, hackathon);
-        if(!team.getHackathon().getId().equals(hackathon))
+        Team t = this.teamRepository.findById(team).orElseThrow(() -> new IllegalArgumentException("team not found"));
+        if(!t.getHackathon().getId().equals(hackathon))
             throw new IllegalArgumentException("The given team is not registered to the Hackathon");
         List<Team> tiedWinners = getTeamsWithMaxGrade(hackathon);
         boolean isContained = tiedWinners.stream()
-                .anyMatch(t -> t.getId().equals(team.getId()));
+                .anyMatch(t1 -> t1.getId().equals(team));
         if(!isContained)
             throw new IllegalArgumentException(("The winner team can't be chosen" +
                     " outside of the teams with highest grade for the Hackathon"));
-        h.setWinner(team);
+        h.setWinner(t);
         this.hackathonRepository.save(h);
         List<UtenteRegistrato> toBeNotified = new ArrayList<>();
         toBeNotified.add(h.getCoordinator());
