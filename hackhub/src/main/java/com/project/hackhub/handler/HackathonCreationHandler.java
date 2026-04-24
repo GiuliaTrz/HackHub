@@ -48,7 +48,7 @@ public class HackathonCreationHandler {
         Hackathon h = hackathonRepo.findById(hackathonId)
                 .orElseThrow(() -> new IllegalArgumentException("Hackathon can't null"));
 
-        if(!c.hasPermission(CAN_ADD_TASK, h) && !h.getState().getStateType().equals(HackathonStateType.IN_ISCRIZIONE))
+        if(!c.hasPermission(CAN_ADD_TASK, h) || !h.getState().getStateType().equals(HackathonStateType.IN_ISCRIZIONE))
             throw new UnsupportedOperationException("User doesn't have permission to add task or hackathon is not in iscrizione state");
 
         Task t = new Task(taskDTO.title(), taskDTO.description(), taskDTO.template());
