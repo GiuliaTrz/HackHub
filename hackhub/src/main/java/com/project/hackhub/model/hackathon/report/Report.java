@@ -1,10 +1,13 @@
 package com.project.hackhub.model.hackathon.report;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.project.hackhub.model.hackathon.Prenotazione;
 import com.project.hackhub.model.hackathon.Soldi;
 import com.project.hackhub.model.hackathon.state.HackathonState;
 import com.project.hackhub.model.team.Team;
 import lombok.Getter;
+
+import java.time.LocalDate;
 
 
 /**
@@ -14,20 +17,23 @@ import lombok.Getter;
  * exposed with different visibility levels depending on user permissions.</p>
  */
 @Getter
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public abstract class Report {
 
     private final String name;
     private final String ruleBook;
     private final Prenotazione reservation;
+    private final LocalDate expiredSubscriptionsDate;
     private final HackathonState state;
     private final Soldi moneyPrize;
     private final int maxTeamDimension;
     private final Team winner;
 
-    public Report(String name, String ruleBook, Prenotazione reservation, HackathonState state, Soldi moneyPrize, int maxTeamDimension, Team winner) {
+    public Report(String name, String ruleBook, Prenotazione reservation, LocalDate expiredSubscriptionsDate, HackathonState state, Soldi moneyPrize, int maxTeamDimension, Team winner) {
         this.name = name;
         this.ruleBook = ruleBook;
         this.reservation = reservation;
+        this.expiredSubscriptionsDate = expiredSubscriptionsDate;
         this.state = state;
         this.moneyPrize = moneyPrize;
         this.maxTeamDimension = maxTeamDimension;

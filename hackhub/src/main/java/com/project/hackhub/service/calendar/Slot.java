@@ -1,5 +1,6 @@
 package com.project.hackhub.service.calendar;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,7 +12,9 @@ import java.time.LocalDateTime;
 @Getter @Setter
 @NoArgsConstructor
 public class Slot {
+    @Column(name = "\"start\"")
     private LocalDateTime start;
+    @Column(name = "\"end\"")
     private LocalDateTime end;
 
     public Slot(LocalDateTime start, LocalDateTime end) {

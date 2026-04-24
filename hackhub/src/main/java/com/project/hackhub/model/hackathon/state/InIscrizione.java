@@ -3,6 +3,8 @@ package com.project.hackhub.model.hackathon.state;
 import com.project.hackhub.model.hackathon.Hackathon;
 import com.project.hackhub.model.hackathon.report.ReportData;
 
+import java.util.HashMap;
+
 public class InIscrizione implements HackathonState {
     @Override
     public HackathonStateType getStateType() {
@@ -18,11 +20,11 @@ public class InIscrizione implements HackathonState {
         r.setMoneyPrice(h.getMoneyPrice());
         r.setExpiredSubscriptionsDate(h.getExpiredSubscriptionsDate());
         r.setReservation(h.getReservation());
+        r.setMaxTeamDimension(h.getMaxTeamDimension());
         //dettagli
         r.setCoordinator(h.getCoordinator());
         r.setJudge(h.getJudge());
         r.setMentorsList(h.getMentorsList());
-        r.setMaxTeamDimension(h.getMaxTeamDimension());
 
         return r;
     }

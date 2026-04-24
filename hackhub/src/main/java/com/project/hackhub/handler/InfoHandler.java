@@ -7,10 +7,13 @@ import com.project.hackhub.model.hackathon.report.HackathonReportAssembler;
 import com.project.hackhub.model.utente.UtenteRegistrato;
 import com.project.hackhub.repository.HackathonRepository;
 import com.project.hackhub.repository.UtenteRegistratoRepository;
+import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.UUID;
 
+@Component
 public class InfoHandler {
     private final HackathonRepository hackathonRepository;
     private final UtenteRegistratoRepository utenteRegistratoRepository;
@@ -25,13 +28,18 @@ public class InfoHandler {
      * @return a list of all Hackathons
      * @author Chiara Marinucci
      */
-    public List<Hackathon> getAllHackathon() {return hackathonRepository.findAll();}
+    public List<UUID> getAllHackathon() {
+        List<Hackathon> list = this.hackathonRepository.findAll();
+        List<UUID> res = new ArrayList<>();
+        for(Hackathon h : list)
+            res.add(h.getId());
+        return res;}
 
     /**
      * Return a report containing information about a given Hackathon according to the state of the Hackathon
      * and the user's permissions.
      * @param hackathonId a unique id associated to a certain Hackathon
-     * @param utenteId a unique id associate to the user that wants to access the report
+     * @param utenteId a unique id associate to the user that wants to access the report (can be null for visitors)
      * @return a Report of the Hackathon if the hackathonId is mapped to a Hackathon
      * * @throws IllegalArgumentException if hackathonId is not mapped to a Hackathon
      * @author Chiara Marinucci
@@ -41,7 +49,10 @@ public class InfoHandler {
         if (h == null)
             throw new IllegalArgumentException("Hackathon given does not exist");
 
-        UtenteRegistrato u = utenteRegistratoRepository.findById(utenteId).orElse(null);
+        UtenteRegistrato u = null;
+        if (utenteId != null) {
+            u = utenteRegistratoRepository.findById(utenteId).orElse(null);
+        }
 
         ReportData data = h.getState().getReportData(h);
 
