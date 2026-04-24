@@ -1,5 +1,6 @@
 package com.project.hackhub.model.team;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.project.hackhub.model.hackathon.Task;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -17,8 +18,11 @@ public class Submission {
     @Id @GeneratedValue
     private UUID id;
     @ManyToOne
+    @JsonIgnoreProperties({"description"})
     private Task task;
     @ManyToOne
+    @JsonIgnoreProperties({"hackathon", "teamMembersList", "invitationList", "pendingCallProposal"
+    , "teamLeader"})
     private Team team;
     @Embedded
     private FileTemplate fileTemplate;

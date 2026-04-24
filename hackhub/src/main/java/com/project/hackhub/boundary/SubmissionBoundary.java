@@ -1,5 +1,6 @@
 package com.project.hackhub.boundary;
 
+import com.project.hackhub.dto.SubmissionDTO;
 import com.project.hackhub.handler.SubmissionHandler;
 import com.project.hackhub.model.team.FileTemplate;
 import com.project.hackhub.model.team.Submission;
@@ -22,20 +23,16 @@ public class SubmissionBoundary {
 
     /**
      * Allows user to send a submission associated to a team for a given task
-     * @param teamLeader id of the user
-     * @param team id of the team
-     * @param task if of the task
-     * @param fileTemplate the file template containing the submission file
+     * @param teamLeader id of the user sending the submission, must be the team leader
+     * @param dto the submission data transfer object containing the necessary information for the submission
      * @return a ResponseEntity with status CREATED if successful
      * @author Chiara Marinucci
      */
-    @PostMapping("/{teamId}/{taskId}")
+    @PostMapping("/send")
     public ResponseEntity<Void> sendSubmission(
             @AuthenticationPrincipal UUID teamLeader,
-            @PathVariable("teamId") UUID team,
-            @PathVariable("taskId") UUID task,
-            @RequestBody FileTemplate fileTemplate) {
-        submissionHandler.sendSubmission(teamLeader, team, task, fileTemplate);
+            @RequestBody SubmissionDTO dto) {
+        submissionHandler.sendSubmission(teamLeader, dto);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 

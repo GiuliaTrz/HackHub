@@ -41,7 +41,7 @@ public class HackathonCreationBoundary {
     }
 
     @PostMapping("/{hackathonId}/task")
-    public ResponseEntity<Void> inserTask(
+    public ResponseEntity<Void> insertTask(
             @AuthenticationPrincipal UUID coordinator,
             @RequestBody TaskDTO taskDTO,
             @PathVariable UUID hackathonId) {
