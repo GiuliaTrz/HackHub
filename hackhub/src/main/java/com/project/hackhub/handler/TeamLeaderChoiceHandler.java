@@ -42,11 +42,16 @@ public class TeamLeaderChoiceHandler {
         Team team = teamRepository.findById(t).orElseThrow
                 (() ->  new IllegalArgumentException("team cannot be null"));
 
-        if(!newLeaderU.isAvailable(team.getHackathon().getReservation()))
-            throw new IllegalArgumentException("user is not available in said reservation");
+        if(!team.getTeamMembersList().contains(newLeaderU))
+            throw new IllegalArgumentException("the new leader must be a member of the team");
 
-        if(oldLeaderU.hasPermission(Permission.CAN_MODIFY_LEADER, team.getHackathon())
-                || team.getHackathon().getState().getStateType().equals(HackathonStateType.IN_ISCRIZIONE))
+        if(team.getTeamMembersList().size() == 1)
+            throw new UnsupportedOperationException("Cannot choose new Leader with only one member");
+
+        if(!oldLeaderU.hasPermission(Permission.CAN_MODIFY_LEADER, team.getHackathon()))
+            throw new IllegalArgumentException("user does not have the permission to do this action");
+
+        if(!team.getHackathon().getState().getStateType().equals(HackathonStateType.IN_ISCRIZIONE))
             throw new UnsupportedOperationException("Cannot choose new Leader");
 
         team.setTeamLeader(newLeaderU);

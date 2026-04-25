@@ -53,13 +53,16 @@ public class Invito {
 
     @Override
     public boolean equals(Object o) {
+        if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Invito invito = (Invito) o;
-        return Objects.equals(id, invito.id);
+
+        Invito other = (Invito) o;
+
+        return id != null && id.equals(other.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(id);
+        return getClass().hashCode();
     }
 }

@@ -18,6 +18,8 @@ public abstract class UserState {
         this.permissions = (permissions == null)? Collections.emptySet() : permissions;
     }
 
+    public abstract UserStateType getType();
+
     public boolean hasPermission(Permission p) {
         return permissions.contains(p);
     }

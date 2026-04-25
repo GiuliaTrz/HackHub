@@ -4,6 +4,7 @@ import com.project.hackhub.handler.InfoHandler;
 import com.project.hackhub.model.hackathon.Hackathon;
 import com.project.hackhub.model.hackathon.report.Report;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -34,13 +35,9 @@ public class InfoBoundary {
      * @param userId
      * @return a report
      */
-    @GetMapping("/report")
-    public ResponseEntity<Report> getHackathonReport(@RequestParam(name ="hId") UUID hackathonId,
-                                            @RequestParam(name = "uId", required = false) UUID userId){
+    @GetMapping("/{hackathonId}/report")
+    public ResponseEntity<Report> getHackathonReport(@PathVariable UUID hackathonId,
+                                            @AuthenticationPrincipal UUID userId){
         return ResponseEntity.ok(infoHandler.getHackathonReport(hackathonId, userId));
     }
-
-
-
-
 }

@@ -13,4 +13,8 @@ public class MembroDelTeam extends UserState {
     }
 
 
+    @Override
+    public UserStateType getType() {
+        return UserStateType.MEMBRO_DEL_TEAM;
+    }
 }

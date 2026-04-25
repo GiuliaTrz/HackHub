@@ -58,7 +58,6 @@ public class InvitationHandler {
 
        if (userToInvite.isAvailable(t.getHackathon().getReservation())) {
             Invito invitation = new Invito(t, userToInvite);
-            invitoRepository.save(invitation);
             t.addInvitation(invitation);
             teamRepository.save(t);
             userToInvite.addInvitation(invitation);

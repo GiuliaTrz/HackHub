@@ -1,5 +1,6 @@
 package com.project.hackhub.model.hackathon.report;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.project.hackhub.model.hackathon.Prenotazione;
 import com.project.hackhub.model.hackathon.Soldi;
@@ -16,16 +17,22 @@ import java.util.Map;
 
 /**
  * Full report view intended for staff members.
- *
  */
 @Getter
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public final class StaffReport extends Report {
 
     private final List<Team> teams;
+
+    @JsonIgnoreProperties({"passwordHash", "organizer"})
     private final List<UtenteRegistrato> mentors;
+
+    @JsonIgnoreProperties({"passwordHash", "organizer"})
     private final UtenteRegistrato coordinator;
+
+    @JsonIgnoreProperties({"passwordHash", "organizer"})
     private final UtenteRegistrato judge;
+
     private final Map<Team, Float> teamsGrades;
     private final List<AidRequest> aidRequests;
     private final LocalDate expiredSubscriptionsDate;

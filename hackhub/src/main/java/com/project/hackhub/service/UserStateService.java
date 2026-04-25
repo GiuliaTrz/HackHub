@@ -31,8 +31,6 @@ public final class UserStateService {
         if (hackathon == null) throw new IllegalArgumentException("hackathon cannot be null");
         if (state == null) throw new IllegalArgumentException("state cannot be null");
 
-        UserStateFactory factory = new UserStateFactory();
-
         if (toAdd)
             user.setState(hackathon.getReservation(), state);
         else {
