@@ -4,12 +4,8 @@ import com.project.hackhub.dto.InfractionDTO;
 import com.project.hackhub.handler.InfractionHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 
@@ -29,6 +25,24 @@ public class InfractionBoundary {
         return ResponseEntity.ok().build();
     }
 
+     @DeleteMapping("/{team}/expel")
+    public ResponseEntity<String> expelTeam(
+            @AuthenticationPrincipal UUID coordinator,
+            @PathVariable UUID team) {
+
+        infractionHandler.expelTeam(team, coordinator);
+        return ResponseEntity.ok("team espulso con successo");
+    }
+
+    @PatchMapping("/{team}/penalize")
+    public ResponseEntity<String> penalizeTeam(
+            @AuthenticationPrincipal UUID coordinator,
+            @PathVariable UUID team,
+            @RequestBody float pointsToDeduct) {
+
+        infractionHandler.penalizeTeam(team, coordinator, pointsToDeduct);
+        return ResponseEntity.ok("team penalizzato di " + pointsToDeduct + " punti con successo");
+    }
 
 
 
