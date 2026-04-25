@@ -93,6 +93,8 @@ public class HackathonCreationHandler {
         UtenteRegistrato coordinator = userRepository.findById(coordinatorId)
                 .orElseThrow(() -> new IllegalArgumentException("Coordinator not found"));
 
+        if(!coordinator.isOrganizer()) throw new IllegalArgumentException("this user cannot organize hackathons!");
+
         // Initialize builder
         HackathonBuilder builder = new HackathonBuilder();
         builder.reset();
