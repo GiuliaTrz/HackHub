@@ -12,4 +12,8 @@ public class Giudice extends UserState {
     }
 
 
+    @Override
+    public UserStateType getType() {
+        return UserStateType.GIUDICE;
+    }
 }

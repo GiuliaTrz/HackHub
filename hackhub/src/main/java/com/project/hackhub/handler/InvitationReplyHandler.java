@@ -62,7 +62,11 @@ public class InvitationReplyHandler {
         UtenteRegistrato addressee = i.getDestinatario();
         Hackathon h = i.getMittente().getHackathon();
 
-        if(!u.hasPermission(Permission.CAN_ACCEPT_INVITATION, h) || !h.getState().getStateType().equals(HackathonStateType.IN_ISCRIZIONE)
+        String s = u.getState(h).getType().toString();
+        if(!u.hasPermission(Permission.CAN_ACCEPT_INVITATION, h)) {
+           throw new IllegalArgumentException("user does not have permission " + s ); }
+
+        if(!h.getState().getStateType().equals(HackathonStateType.IN_ISCRIZIONE)
                 || !addressee.isAvailable(h.getReservation()))
             throw new UnsupportedOperationException("cannot perform operation");
 

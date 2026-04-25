@@ -12,4 +12,8 @@ public class Mentore extends UserState {
     }
 
 
+    @Override
+    public UserStateType getType() {
+        return UserStateType.MENTORE;
+    }
 }
