@@ -1,0 +1,56 @@
+package com.project.hackhub.boundary;
+
+import com.project.hackhub.dto.InfractionDTO;
+import com.project.hackhub.handler.InfractionHandler;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.UUID;
+
+@RestController
+@RequestMapping("api/infraction")
+@RequiredArgsConstructor
+public class InfractionBoundary {
+
+    private final InfractionHandler infractionHandler;
+
+    @PostMapping("/report")
+    public ResponseEntity<Void> reportInfraction(
+            @AuthenticationPrincipal UUID mentor,
+            @RequestBody InfractionDTO dto) {
+
+        infractionHandler.reportInfraction(mentor, dto);
+        return ResponseEntity.ok().build();
+    }
+
+     @DeleteMapping("/{team}/expel")
+    public ResponseEntity<String> expelTeam(
+            @AuthenticationPrincipal UUID coordinator,
+            @PathVariable UUID team) {
+
+        infractionHandler.expelTeam(team, coordinator);
+        return ResponseEntity.ok("team espulso con successo");
+    }
+
+    @PatchMapping("/{team}/penalize")
+    public ResponseEntity<String> penalizeTeam(
+            @AuthenticationPrincipal UUID coordinator,
+            @PathVariable UUID team,
+            @RequestBody float pointsToDeduct) {
+
+        infractionHandler.penalizeTeam(team, coordinator, pointsToDeduct);
+        return ResponseEntity.ok("team penalizzato di " + pointsToDeduct + " punti con successo");
+    }
+
+    @PostMapping("/handle")
+    public ResponseEntity<String> handleInfraction(
+            @AuthenticationPrincipal UUID coordinator,
+            @RequestBody UUID team) {
+
+        infractionHandler.handleInfraction(team, coordinator);
+        return ResponseEntity.ok("infrazione presente! Penalizza o espelli team");
+    }
+
+}

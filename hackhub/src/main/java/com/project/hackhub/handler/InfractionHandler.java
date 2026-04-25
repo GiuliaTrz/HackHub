@@ -12,6 +12,7 @@ import com.project.hackhub.observer.EventType;
 import com.project.hackhub.repository.HackathonRepository;
 import com.project.hackhub.repository.TeamRepository;
 import com.project.hackhub.repository.UtenteRegistratoRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -38,6 +39,7 @@ public class InfractionHandler {
      * @param infractionIndex posizione della segnalazione nella lista
      * @author Giulia Trozzi
      */
+    @Transactional
     public void deleteInfraction(UUID deleterId, UUID hackathonId, int infractionIndex) {
         UtenteRegistrato deleter = userRepository.findById(deleterId)
                 .orElseThrow(() -> new IllegalArgumentException("Utente non trovato"));
@@ -67,6 +69,7 @@ public class InfractionHandler {
      * or if the coordinator does not have the permission to expel the team
      * @author Giorgia Branchesi
      */
+    @Transactional
     public void expelTeam(UUID team, UUID coordinator) {
 
         UtenteRegistrato coord = userRepository.findById(coordinator).orElseThrow(() -> new IllegalArgumentException("coordinator cannot be null"));
@@ -74,8 +77,8 @@ public class InfractionHandler {
         Hackathon h = t.getHackathon();
 
         if(!coord.hasPermission(Permission.CAN_EXPEL_TEAM, h)
-            && !(h.getStateType().equals(HackathonStateType.IN_CORSO) ||
-                h.getStateType().equals(HackathonStateType.IN_VALUTAZIONE)))
+           || !(h.getStateType().equals(HackathonStateType.IN_CORSO) ||
+                !h.getStateType().equals(HackathonStateType.IN_VALUTAZIONE)))
             throw new UnsupportedOperationException("cannot perform this action");
 
         h.removeTeam(t);
@@ -94,6 +97,7 @@ public class InfractionHandler {
      * does not have the permission, if it does not exist an infraction committed
      * by that team or if the Hackathon is not in {@link HackathonStateType#IN_CORSO} o {@link HackathonStateType#IN_VALUTAZIONE}
      */
+    @Transactional
     public void handleInfraction(UUID coordinator, UUID team) {
 
         UtenteRegistrato coord = userRepository.findById(coordinator).orElseThrow(
@@ -105,11 +109,11 @@ public class InfractionHandler {
                 () -> new IllegalArgumentException("infraction does not exist"));
 
         if (!coord.hasPermission(Permission.CAN_MANAGE_INFRACTIONS, h)
-                && !(h.getStateType().equals(HackathonStateType.IN_CORSO) ||
-                h.getStateType().equals(HackathonStateType.IN_VALUTAZIONE)))
+                || !(h.getStateType().equals(HackathonStateType.IN_CORSO) ||
+                !h.getStateType().equals(HackathonStateType.IN_VALUTAZIONE)))
             throw new UnsupportedOperationException("cannot perform this action");
 
-        //TODO MESSAGGIO AD API "ESPELLI O PENALIZZA TEAM"
+        //MESSAGGIO AD API "ESPELLI O PENALIZZA TEAM"
     }
 
     /**
@@ -121,6 +125,7 @@ public class InfractionHandler {
      * does not have the permission, if it does not exist an infraction committed
      * by that team or if the Hackathon is not in {@link HackathonStateType#IN_CORSO} o {@link HackathonStateType#IN_VALUTAZIONE}
      */
+    @Transactional
     public void penalizeTeam(UUID coordinator, UUID team, float points) {
 
         UtenteRegistrato coord = userRepository.findById(coordinator).orElseThrow(
@@ -131,8 +136,8 @@ public class InfractionHandler {
         Hackathon h = t.getHackathon();
 
         if (!coord.hasPermission(Permission.CAN_PENALIZE_TEAM, h)
-                && !(h.getStateType().equals(HackathonStateType.IN_CORSO) ||
-                h.getStateType().equals(HackathonStateType.IN_VALUTAZIONE)))
+                || !(h.getStateType().equals(HackathonStateType.IN_CORSO) ||
+                !h.getStateType().equals(HackathonStateType.IN_VALUTAZIONE)))
             throw new UnsupportedOperationException("cannot perform this action");
 
         h.removeInfractionByTeam(t);
@@ -152,20 +157,22 @@ public class InfractionHandler {
      * if the mentor does not have the permission to perform such operation or if the {@link Hackathon} is not
      * in {@link HackathonStateType#IN_CORSO} or {@link HackathonStateType#IN_VALUTAZIONE}
      */
-
+    @Transactional
     public void reportInfraction(UUID mentor, InfractionDTO dto) {
 
         UtenteRegistrato m = userRepository.findById(mentor).orElseThrow(
                 () -> new IllegalArgumentException("mentor cannt be null"));
         if(dto == null) throw new IllegalArgumentException("dto cannot be null");
         if(!checkInfractionData(dto)) throw new IllegalArgumentException("dto is not valid");
-        Hackathon h = dto.team().getHackathon();
+        Team t = teamRepository.findById(dto.team()).orElseThrow(
+                () -> new IllegalArgumentException("team cannot be null"));
+        Hackathon h = t.getHackathon();
         if(!m.hasPermission(Permission.CAN_REPORT_INFRACTION, h) ||
                 h.getStateType().equals(HackathonStateType.IN_ISCRIZIONE) ||
                 h.getStateType().equals(HackathonStateType.CONCLUSO))
             throw new IllegalArgumentException("cannot perform this operation");
 
-        Infraction infraction = new Infraction(dto.team(), dto.description(), dto.type());
+        Infraction infraction = new Infraction(t, dto.description(), dto.type());
         h.addInfraction(infraction);
         hackathonRepository.save(h);
         EventManager.getInstance().notify(ILLECITO, List.of(h.getCoordinator()), h);

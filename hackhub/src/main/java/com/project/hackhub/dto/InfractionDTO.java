@@ -1,5 +1,5 @@
 package com.project.hackhub.dto;
 
-import com.project.hackhub.model.team.Team;
+import java.util.UUID;
 
-public record InfractionDTO (String description, String type, Team team){ }
+public record InfractionDTO (String description, String type, UUID team){ }
