@@ -44,6 +44,13 @@ public class InfractionBoundary {
         return ResponseEntity.ok("team penalizzato di " + pointsToDeduct + " punti con successo");
     }
 
+    @PostMapping("/handle")
+    public ResponseEntity<String> handleInfraction(
+            @AuthenticationPrincipal UUID coordinator,
+            @RequestBody UUID team) {
 
+        infractionHandler.handleInfraction(team, coordinator);
+        return ResponseEntity.ok("infrazione presente! Penalizza o espelli team");
+    }
 
 }

@@ -77,8 +77,8 @@ public class InfractionHandler {
         Hackathon h = t.getHackathon();
 
         if(!coord.hasPermission(Permission.CAN_EXPEL_TEAM, h)
-            && !(h.getStateType().equals(HackathonStateType.IN_CORSO) ||
-                h.getStateType().equals(HackathonStateType.IN_VALUTAZIONE)))
+           || !(h.getStateType().equals(HackathonStateType.IN_CORSO) ||
+                !h.getStateType().equals(HackathonStateType.IN_VALUTAZIONE)))
             throw new UnsupportedOperationException("cannot perform this action");
 
         h.removeTeam(t);
@@ -109,8 +109,8 @@ public class InfractionHandler {
                 () -> new IllegalArgumentException("infraction does not exist"));
 
         if (!coord.hasPermission(Permission.CAN_MANAGE_INFRACTIONS, h)
-                && !(h.getStateType().equals(HackathonStateType.IN_CORSO) ||
-                h.getStateType().equals(HackathonStateType.IN_VALUTAZIONE)))
+                || !(h.getStateType().equals(HackathonStateType.IN_CORSO) ||
+                !h.getStateType().equals(HackathonStateType.IN_VALUTAZIONE)))
             throw new UnsupportedOperationException("cannot perform this action");
 
         //MESSAGGIO AD API "ESPELLI O PENALIZZA TEAM"
@@ -136,8 +136,8 @@ public class InfractionHandler {
         Hackathon h = t.getHackathon();
 
         if (!coord.hasPermission(Permission.CAN_PENALIZE_TEAM, h)
-                && !(h.getStateType().equals(HackathonStateType.IN_CORSO) ||
-                h.getStateType().equals(HackathonStateType.IN_VALUTAZIONE)))
+                || !(h.getStateType().equals(HackathonStateType.IN_CORSO) ||
+                !h.getStateType().equals(HackathonStateType.IN_VALUTAZIONE)))
             throw new UnsupportedOperationException("cannot perform this action");
 
         h.removeInfractionByTeam(t);
