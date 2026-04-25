@@ -24,16 +24,23 @@ public class Team {
     @GeneratedValue
     private UUID id;
 
-    @OneToOne
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "hackathon_id")
     private Hackathon hackathon;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Invito> invitationList = new ArrayList<>();
 
-    @OneToMany
+    @ManyToMany
+    @JoinTable(
+            name = "team_members",
+            joinColumns = @JoinColumn(name = "team_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
     private List<UtenteRegistrato> teamMembersList = new ArrayList<>();
 
-    @OneToOne
+    @ManyToOne
+    @JoinColumn(name = "team_leader_id")
     private UtenteRegistrato teamLeader;
 
     private boolean pendingCallProposal;

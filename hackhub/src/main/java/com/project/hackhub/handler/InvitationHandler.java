@@ -51,8 +51,9 @@ public class InvitationHandler {
                 () -> new IllegalArgumentException("team does not exist")
         );
 
-        if (!t.getHackathon().getState().getStateType().equals(HackathonStateType.IN_ISCRIZIONE)
-                || !teamLeader1.hasPermission(Permission.CAN_INVITE_USERS, t.getHackathon()))
+        if (!t.getHackathon().getState().getStateType().equals(HackathonStateType.IN_ISCRIZIONE))
+                throw new IllegalStateException("Hackathon must be IN_ISCRIZIONE to invite users.");
+        if(!teamLeader1.hasPermission(Permission.CAN_INVITE_USERS, t.getHackathon()))
             throw new UnsupportedOperationException("Action not allowed.");
 
        if (userToInvite.isAvailable(t.getHackathon().getReservation())) {

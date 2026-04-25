@@ -103,4 +103,5 @@ public class Prenotazione {
 
         return this.location.equals(other.location);
     }
+
 }

@@ -1,10 +1,7 @@
 package com.project.hackhub.model.team;
 
 import com.project.hackhub.model.utente.UtenteRegistrato;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,17 +14,13 @@ import java.util.UUID;
 @Getter
 public class Invito {
 
-    @OneToOne
+    @ManyToOne
     private Team mittente;
 
     @OneToOne
     private UtenteRegistrato destinatario;
 
     private boolean pendente;
-
-    public boolean isPendente() {
-        return pendente;
-    }
 
     @Id
     @GeneratedValue
