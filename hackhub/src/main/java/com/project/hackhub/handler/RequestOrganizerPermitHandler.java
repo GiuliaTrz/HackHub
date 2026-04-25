@@ -3,10 +3,13 @@ package com.project.hackhub.handler;
 import com.project.hackhub.model.team.FileTemplate;
 import com.project.hackhub.model.utente.UtenteRegistrato;
 import com.project.hackhub.repository.UtenteRegistratoRepository;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Component;
 
 import java.util.UUID;
 
+@Component
 @AllArgsConstructor
 public class RequestOrganizerPermitHandler {
 
@@ -19,6 +22,7 @@ public class RequestOrganizerPermitHandler {
      * @throws IllegalArgumentException if the user is null or if the fileTemplate is not valid
      * @author Giorgia Branchesi
      */
+    @Transactional
     public void requestPermission(UUID user, FileTemplate f) {
 
         UtenteRegistrato user1 = userRepository.findById(user).orElseThrow(
