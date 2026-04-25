@@ -103,6 +103,10 @@ public class TeamHandler {
         if (hackathon == null)
             throw new IllegalArgumentException("Hackathon cannot be null.");
 
+        for(Team t: hackathon.getTeamsList())
+            if(t.getName().equals(name))
+                throw new IllegalArgumentException("A team with the same name already exists in this hackathon.");
+
         Team team = new Team();
         team.setName(name);
         team.setHackathon(hackathon);

@@ -19,7 +19,9 @@ public class UtenteRegistrato {
     @Id @GeneratedValue
     @Getter private UUID id;
 
-    @OneToMany
+    @OneToMany(mappedBy = "destinatario",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true)
     private Set<Invito> invitationsList = new LinkedHashSet<>();
 
     @Embedded
@@ -32,8 +34,10 @@ public class UtenteRegistrato {
     @Transient
     private final UserStateFactory factory = new UserStateFactory();
 
-    @ElementCollection @CollectionTable(name = "StateInHackathon")
-    @MapKeyJoinColumn(name = "prenotazione_id")
+    @ElementCollection
+    @CollectionTable(name = "state_in_hackathon",
+            joinColumns = @JoinColumn(name = "utente_registrato_id"))
+    @MapKeyJoinColumn(name = "id")
     private Map<Prenotazione, UserStateType> stateInHackathon = new HashMap<>();
 
     public UtenteRegistrato(@NonNull Anagrafica a, String passwordHash){
@@ -62,7 +66,10 @@ public class UtenteRegistrato {
     public boolean isAvailable(Prenotazione p){
         if(p == null)
             throw new IllegalArgumentException("Reservation can't be null");
-        return (!stateInHackathon.containsKey(p));
+        for(Prenotazione prenotazione : stateInHackathon.keySet()){
+            if(prenotazione.overlapsWith(p))
+                return false;}
+        return true;
     }
 
     public void addInvitation(Invito i){

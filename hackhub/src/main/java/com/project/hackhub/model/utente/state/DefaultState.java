@@ -6,7 +6,9 @@ public class DefaultState extends UserState {
 
     public DefaultState() {
         super(EnumSet.of(Permission.CAN_CREATE_TEAM,
-                Permission.DETAILED_INFO));
+                Permission.DETAILED_INFO,
+                Permission.CAN_ACCEPT_INVITATION,
+                Permission.CAN_DECLINE_INVITATION));
     }
 
 }

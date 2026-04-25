@@ -1,6 +1,7 @@
 package com.project.hackhub.handler;
 
 import com.project.hackhub.exceptions.MultipleWinnersException;
+import com.project.hackhub.exceptions.UserNotAvailableException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -24,6 +25,12 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity.status(HttpStatus.CONFLICT)
                 .body("Multiple winners tied: " + names + ". Please use the manual endpoint.");
+    }
+
+    @ExceptionHandler(UserNotAvailableException.class)
+    public ResponseEntity<String> handleConflict(UserNotAvailableException ex) {
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body("user not available");
     }
 
     @ExceptionHandler(IllegalArgumentException.class)

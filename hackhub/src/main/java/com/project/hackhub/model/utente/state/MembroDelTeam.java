@@ -6,12 +6,10 @@ public class MembroDelTeam extends UserState {
 
 
     public MembroDelTeam() {
-        super(EnumSet.of(Permission.CAN_INVITE_USERS, Permission.DETAILED_INFO,
-                Permission.TEAM_PERMISSION));
-    }
-
-    protected MembroDelTeam(EnumSet<Permission> permissions) {
-        super(permissions);
+        super(EnumSet.of(Permission.CAN_INVITE_USERS,
+                Permission.DETAILED_INFO,
+                Permission.TEAM_PERMISSION,
+                Permission.CAN_CANCEL_INVITATION));
     }
 
 

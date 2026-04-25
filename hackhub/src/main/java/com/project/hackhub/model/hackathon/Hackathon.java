@@ -38,19 +38,20 @@ public class Hackathon {
     @Transient
     private final HackathonStateFactory factory = new HackathonStateFactory();
 
-    @OneToMany
+    @OneToMany(mappedBy = "hackathon", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Team> teamsList = new ArrayList<>();
 
-    @OneToMany
+    @ManyToMany
+    @JoinTable(name = "hackathon_mentors")
     private List<UtenteRegistrato> mentorsList = new ArrayList<>();
 
     @Embedded
     private Soldi moneyPrice;
 
-    @OneToOne
+    @ManyToOne
     private UtenteRegistrato judge;
 
-    @OneToOne
+    @ManyToOne
     private UtenteRegistrato coordinator;
 
     @OneToOne(cascade = CascadeType.PERSIST)

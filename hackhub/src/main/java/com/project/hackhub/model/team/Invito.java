@@ -1,14 +1,12 @@
 package com.project.hackhub.model.team;
 
 import com.project.hackhub.model.utente.UtenteRegistrato;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.Objects;
 import java.util.UUID;
 
 @AllArgsConstructor
@@ -17,17 +15,14 @@ import java.util.UUID;
 @Getter
 public class Invito {
 
-    @OneToOne
+    @ManyToOne
     private Team mittente;
 
-    @OneToOne
+    @ManyToOne
+    @JoinColumn(name = "destinatario_id")
     private UtenteRegistrato destinatario;
 
     private boolean pendente;
-
-    public boolean isPendente() {
-        return pendente;
-    }
 
     @Id
     @GeneratedValue
@@ -54,5 +49,17 @@ public class Invito {
             throw new IllegalStateException("Invite already processed.");
 
         this.pendente = false;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Invito invito = (Invito) o;
+        return Objects.equals(id, invito.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
     }
 }
