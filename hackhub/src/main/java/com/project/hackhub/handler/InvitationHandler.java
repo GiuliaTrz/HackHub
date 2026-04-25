@@ -61,6 +61,8 @@ public class InvitationHandler {
             invitoRepository.save(invitation);
             t.addInvitation(invitation);
             teamRepository.save(t);
+            userToInvite.addInvitation(invitation);
+            utenteRegistratoRepo.save(userToInvite);
 
             EventManager notifier = EventManager.getInstance();
             notifier.notify(EventType.INVITO_UTENTE, List.of(userToInvite), invitation);

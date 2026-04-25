@@ -19,7 +19,9 @@ public class UtenteRegistrato {
     @Id @GeneratedValue
     @Getter private UUID id;
 
-    @OneToMany
+    @OneToMany(mappedBy = "destinatario",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true)
     private Set<Invito> invitationsList = new LinkedHashSet<>();
 
     @Embedded

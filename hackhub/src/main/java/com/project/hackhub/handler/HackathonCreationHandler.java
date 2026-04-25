@@ -27,7 +27,6 @@ import static com.project.hackhub.model.utente.state.Permission.CAN_ADD_TASK;
 @AllArgsConstructor
 public class HackathonCreationHandler {
 
-    private final HackathonRepository hackathonRepository;
     private final TaskRepository taskRepository;
     private final HackathonRepository hackathonRepo;
     private final HackathonSnapshotRepository snapshotRepository;

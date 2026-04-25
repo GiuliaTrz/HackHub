@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.Objects;
 import java.util.UUID;
 
 @AllArgsConstructor
@@ -17,7 +18,8 @@ public class Invito {
     @ManyToOne
     private Team mittente;
 
-    @OneToOne
+    @ManyToOne
+    @JoinColumn(name = "destinatario_id")
     private UtenteRegistrato destinatario;
 
     private boolean pendente;
@@ -47,5 +49,17 @@ public class Invito {
             throw new IllegalStateException("Invite already processed.");
 
         this.pendente = false;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Invito invito = (Invito) o;
+        return Objects.equals(id, invito.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
     }
 }

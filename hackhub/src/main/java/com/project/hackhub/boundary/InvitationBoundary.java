@@ -30,7 +30,7 @@ public class InvitationBoundary {
             @PathVariable UUID invitation,
             @AuthenticationPrincipal UUID teamMember
     ) {
-        invitationHandler.cancelInvitation(teamMember, invitation);
+        invitationHandler.cancelInvitation(invitation, teamMember);
         return ResponseEntity.noContent().build();
     }
 
