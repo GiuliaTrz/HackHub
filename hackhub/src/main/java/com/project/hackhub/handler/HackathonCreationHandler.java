@@ -136,7 +136,9 @@ public class HackathonCreationHandler {
         updateStaffState(hackathon);
 
         // Clean up snapshot
-        existingSnapshot.ifPresent(snapshot -> snapshotRepository.delete(snapshot));
+        existingSnapshot.ifPresent(snapshotRepository::delete);
+        coordinator.setOrganizer(false);
+        userRepository.save(coordinator);
 
         return new HackathonCreationResponse(true, "Hackathon created successfully");
     }

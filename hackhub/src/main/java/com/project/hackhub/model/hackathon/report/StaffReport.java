@@ -2,6 +2,7 @@ package com.project.hackhub.model.hackathon.report;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import com.project.hackhub.model.hackathon.Prenotazione;
 import com.project.hackhub.model.hackathon.Soldi;
 import com.project.hackhub.model.hackathon.state.HackathonState;
@@ -33,12 +34,12 @@ public final class StaffReport extends Report {
     @JsonIgnoreProperties({"passwordHash", "organizer"})
     private final UtenteRegistrato judge;
 
-    private final Map<Team, Float> teamsGrades;
+    private final Map<String, Float> teamsGrades;
     private final List<AidRequest> aidRequests;
     private final LocalDate expiredSubscriptionsDate;
     private final List<Infraction> infractions;
 
-    public StaffReport(String name, String ruleBook, Prenotazione reservation, HackathonState state, Soldi moneyPrize, int maxTeamDimension, Team winner, List<Team> teams, List<UtenteRegistrato> mentors, UtenteRegistrato coordinator, UtenteRegistrato judge, Map<Team, Float> teamsGrades, List<AidRequest> aidRequests, LocalDate expiredSubscriptionsDate, List<Infraction> infractions) {
+    public StaffReport(String name, String ruleBook, Prenotazione reservation, HackathonState state, Soldi moneyPrize, int maxTeamDimension, Team winner, List<Team> teams, List<UtenteRegistrato> mentors, UtenteRegistrato coordinator, UtenteRegistrato judge, Map<String, Float> teamsGrades, List<AidRequest> aidRequests, LocalDate expiredSubscriptionsDate, List<Infraction> infractions) {
         super(name, ruleBook, reservation, expiredSubscriptionsDate, state, moneyPrize, maxTeamDimension, winner);
         this.teams = teams;
         this.mentors = mentors;

@@ -1,7 +1,6 @@
 package com.project.hackhub.handler;
 
 
-import com.project.hackhub.dto.GradeDTO;
 import com.project.hackhub.model.hackathon.state.HackathonStateType;
 import com.project.hackhub.model.team.Submission;
 import com.project.hackhub.model.team.Team;
@@ -33,12 +32,12 @@ public class GradeHandler {
      * Grades a specific submission after validating judge permissions and Hackathon state.     *
      * @param judge UUID of the user performing the evaluation.
      * @param submissionId UUID of the submission to be graded.
-     * @param dto the record containing the grade to assign to the submission.
+     * @param num the grade to assign to the submission.
      * @throws IllegalArgumentException if entities are not found or permissions are missing.
      * @throws IllegalStateException if the Hackathon is not in the evaluation phase.
      * @author Chiara Marinucci
      */
-    public void gradeSubmission(UUID judge, UUID submissionId, GradeDTO dto) {
+    public void gradeSubmission(UUID judge, UUID submissionId, float num) {
         UtenteRegistrato j = utenteRegistratoRepository.findById(judge)
                 .orElseThrow(()-> new IllegalArgumentException("judge not found"));
         Submission s = submissionRepository.findById(submissionId)
@@ -48,7 +47,7 @@ public class GradeHandler {
             throw new IllegalStateException("Hackathon is not IN_VALUTAZIONE");
         if(!j.hasPermission(Permission.CAN_GRADE_SUBMISSION, t.getHackathon()))
             throw new IllegalArgumentException("User does not have required permission");
-        s.setGrade(dto.grade());
+        s.setGrade(num+t.getGrade());
         submissionRepository.save(s);
         updateTeamFinalGrade(t);
         }

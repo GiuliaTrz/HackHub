@@ -12,11 +12,14 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/support")
+@RequestMapping("/api/support")
 @AllArgsConstructor
 public class SupportRequestBoundary {
     private final SupportRequestHandler supportRequestHandler;
 
+    /**
+    * Not functioning as the functionality is simulated
+    */
     @GetMapping("/available-slots/{hackathon}")
     public ResponseEntity<List<Slot>> getAvailableSlots(
         @AuthenticationPrincipal UUID user,
@@ -24,7 +27,9 @@ public class SupportRequestBoundary {
         return ResponseEntity.ok(supportRequestHandler.getAvailableSlots(user, hackathon));
     }
 
-
+    /**
+     * Not functioning as the functionality is simulated
+     */
     @PostMapping("/propose-call/{team}")
     public ResponseEntity<String> proposeCall(
             @AuthenticationPrincipal UUID mentor,

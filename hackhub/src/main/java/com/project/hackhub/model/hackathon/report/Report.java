@@ -1,6 +1,8 @@
 package com.project.hackhub.model.hackathon.report;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import com.project.hackhub.model.hackathon.Prenotazione;
 import com.project.hackhub.model.hackathon.Soldi;
 import com.project.hackhub.model.hackathon.state.HackathonState;
@@ -27,6 +29,7 @@ public abstract class Report {
     private final HackathonState state;
     private final Soldi moneyPrize;
     private final int maxTeamDimension;
+    @JsonIncludeProperties({"name","id", "grade"})
     private final Team winner;
 
     public Report(String name, String ruleBook, Prenotazione reservation, LocalDate expiredSubscriptionsDate, HackathonState state, Soldi moneyPrize, int maxTeamDimension, Team winner) {

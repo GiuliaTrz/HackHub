@@ -81,25 +81,24 @@ public class SupportRequestHandler {
             if(removed) {
                 AidRequest a = new AidRequest(t, AidRequestType.CALL_PROPOSAL, slot);
                 t.getHackathon().addAidRequest(a);
-                t.setPendingCallProposal(true);
+                t.setHasPendingCallProposal(true);
                 hackathonRepository.save(t.getHackathon());
             }
     }
 
     /**
      * Processes an aid request for a specific team that is parteking in a certain hackathon.
+     *
      * @param leader the id of a registered user performing the request.
-     * @param dto data transfer object containing team and request details.
-     * @return {@code true} if the request is successfully created and saved.
-     * {@code false} if data is invalid or the team already has a pending request.
-     * @throws IllegalArgumentException if dto or team is null
-     * @throws IllegalStateException if hackathon is not in state "IN_CORSO"
+     * @param dto    data transfer object containing team and request details.
+     * @throws IllegalArgumentException      if dto or team is null
+     * @throws IllegalStateException         if hackathon is not in state "IN_CORSO"
      * @throws UnsupportedOperationException if the user lacks required permission.
      * @author Chiara Marinucci
      */
-    public boolean sendAidRequest(UUID leader, AidRequestDTO dto){
-        if(dto == null) return false;
-        Team realTeam = this.teamRepository.findById(dto.team().getId())
+    public void sendAidRequest(UUID leader, AidRequestDTO dto){
+        if(dto == null) return;
+        Team realTeam = this.teamRepository.findById(dto.team())
                 .orElseThrow(() -> new IllegalArgumentException("Team not found"));
         UtenteRegistrato u =  this.utenteRepository.findById(leader)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
@@ -108,13 +107,11 @@ public class SupportRequestHandler {
         if (!u.hasPermission(Permission.CAN_SEND_AID_REQUEST, realTeam.getHackathon()))
                 throw new UnsupportedOperationException("User does not have required permission");
         if (checkAidRequestData(dto, realTeam)) {
-                AidRequest aidRequest = new AidRequest(dto.team(), dto.type(), dto.description(), null);
+                AidRequest aidRequest = new AidRequest(realTeam, dto.type(), dto.description(), null);
                 realTeam.getHackathon().addAidRequest(aidRequest);
-                realTeam.setPendingCallProposal(true);
+                realTeam.setHasPendingCallProposal(true);
                 hackathonRepository.save(realTeam.getHackathon());
-                return true;
-            }
-        return false;
+        }
     }
 
     /**
@@ -131,9 +128,7 @@ public class SupportRequestHandler {
             return false;
         if(t==null)
             return false;
-        List<AidRequest> existingRequests = t.getHackathon().getAidRequests();
-        return existingRequests.stream()
-                .noneMatch(a -> a.getTeam().equals(t));
+        return !t.isHasPendingCallProposal();
     }
 
     /**
@@ -166,7 +161,7 @@ public class SupportRequestHandler {
                 .orElseThrow(() -> new IllegalArgumentException("Nessuna richiesta attiva per questo team"));
 
         hackathon.getAidRequests().remove(toRemove);
-        team.setPendingCallProposal(false);
+        team.setHasPendingCallProposal(false);
         hackathonRepository.save(hackathon);
     }
 

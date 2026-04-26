@@ -13,9 +13,9 @@ import java.util.Objects;
 @Getter @Setter
 @NoArgsConstructor
 public class Slot {
-    @Column(name = "start")
+    @Column(name = "start_time")
     private LocalDateTime start;
-    @Column(name = "end")
+    @Column(name = "end_time")
     private LocalDateTime end;
 
     public Slot(LocalDateTime start, LocalDateTime end) {
