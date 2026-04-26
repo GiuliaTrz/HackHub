@@ -38,7 +38,7 @@ public class ReportData {
     private UtenteRegistrato judge;
     private UtenteRegistrato coordinator;
     private Prenotazione reservation;
-    private Map<Team, Float> teamsGrades;
+    private Map<String, Float> teamsGrades;
     private List<AidRequest> aidRequests;
     private List<Infraction> infractions;
     private Team winner;

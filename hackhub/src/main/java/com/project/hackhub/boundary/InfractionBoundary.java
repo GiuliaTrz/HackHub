@@ -40,7 +40,7 @@ public class InfractionBoundary {
             @PathVariable UUID team,
             @RequestBody float pointsToDeduct) {
 
-        infractionHandler.penalizeTeam(team, coordinator, pointsToDeduct);
+        infractionHandler.penalizeTeam(coordinator, team, pointsToDeduct);
         return ResponseEntity.ok("team penalizzato di " + pointsToDeduct + " punti con successo");
     }
 
@@ -49,7 +49,7 @@ public class InfractionBoundary {
             @AuthenticationPrincipal UUID coordinator,
             @RequestBody UUID team) {
 
-        infractionHandler.handleInfraction(team, coordinator);
+        infractionHandler.handleInfraction(coordinator, team);
         return ResponseEntity.ok("infrazione presente! Penalizza o espelli team");
     }
 

@@ -1,6 +1,7 @@
 package com.project.hackhub.handler;
 
 import com.project.hackhub.dto.AidRequestDTO;
+import com.project.hackhub.repository.TeamRepository;
 import com.project.hackhub.service.calendar.CalendarAdapter;
 import com.project.hackhub.service.calendar.Slot;
 import com.project.hackhub.model.hackathon.Hackathon;
@@ -12,20 +13,24 @@ import com.project.hackhub.model.utente.UtenteRegistrato;
 import com.project.hackhub.model.utente.state.Permission;
 import com.project.hackhub.repository.HackathonRepository;
 import com.project.hackhub.repository.UtenteRegistratoRepository;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.UUID;
 
+@Service
 public class SupportRequestHandler {
 
     private final CalendarAdapter calendarAdapter;
     private final HackathonRepository hackathonRepository;
     private final UtenteRegistratoRepository utenteRepository;
+    private final TeamRepository teamRepository;
 
-    public SupportRequestHandler(CalendarAdapter calendarAdapter, HackathonRepository hackathonRepository, UtenteRegistratoRepository utenteRepository) {
+    public SupportRequestHandler(CalendarAdapter calendarAdapter, HackathonRepository hackathonRepository, UtenteRegistratoRepository utenteRepository, TeamRepository teamRepository) {
         this.calendarAdapter = calendarAdapter;
         this.hackathonRepository = hackathonRepository;
         this.utenteRepository = utenteRepository;
+        this.teamRepository = teamRepository;
     }
 
     /**
@@ -54,17 +59,16 @@ public class SupportRequestHandler {
      * Proposes a call to a team that a mentor reckons may benefit from aid.
      * Adds a new aid request in the hackathon's aidrequest list booked for a specific time slot and saves the changes.
      * Updates the team's pending request flag.
+     *
      * @param mentor the id of a user that starts the action.
-     * @param slot the timeslot chosen for the proposed call.
-     * @param team the id of a team the call is proposed to.
-     * @throws IllegalArgumentException if the user is not a UtenteRegistrato
-     * @throws IllegalStateException if the Hackathon state is not "IN_CORSO"
+     * @param slot   the timeslot chosen for the proposed call.
+     * @param team   the id of a team the call is proposed to.
+     * @throws IllegalArgumentException      if the user is not a UtenteRegistrato
+     * @throws IllegalStateException         if the Hackathon state is not "IN_CORSO"
      * @throws UnsupportedOperationException if the user lacks the required permission.
-     * @return {@code true} if the slot was successfully reserved and the proposal created
-     * {@code false} otherwise
      * @author Chiara Marinucci
      */
-    public boolean proposeCall(UUID mentor, Slot slot, UUID team){
+    public void proposeCall(UUID mentor, Slot slot, UUID team){
         Team t = this.hackathonRepository.findByTeamId(team)
                 .orElseThrow(() -> new IllegalArgumentException("Team not found"));
         if(t.getHackathon().getState().getStateType() != HackathonStateType.IN_CORSO)
@@ -77,53 +81,54 @@ public class SupportRequestHandler {
             if(removed) {
                 AidRequest a = new AidRequest(t, AidRequestType.CALL_PROPOSAL, slot);
                 t.getHackathon().addAidRequest(a);
-                t.setPendingCallProposal(true);
+                t.setHasPendingCallProposal(true);
                 hackathonRepository.save(t.getHackathon());
-                return true;}
-        return false;
+            }
     }
 
     /**
      * Processes an aid request for a specific team that is parteking in a certain hackathon.
+     *
      * @param leader the id of a registered user performing the request.
-     * @param dto data transfer object containing team and request details.
-     * @return {@code true} if the request is successfully created and saved.
-     * {@code false} if data is invalid or the team already has a pending request.
-     * @throws IllegalArgumentException if dto or team is null
-     * @throws IllegalStateException if hackathon is not in state "IN_CORSO"
+     * @param dto    data transfer object containing team and request details.
+     * @throws IllegalArgumentException      if dto or team is null
+     * @throws IllegalStateException         if hackathon is not in state "IN_CORSO"
      * @throws UnsupportedOperationException if the user lacks required permission.
      * @author Chiara Marinucci
      */
-    public boolean sendAidRequest(UUID leader, AidRequestDTO dto){
-        if(dto == null) return false;
+    public void sendAidRequest(UUID leader, AidRequestDTO dto){
+        if(dto == null) return;
+        Team realTeam = this.teamRepository.findById(dto.team())
+                .orElseThrow(() -> new IllegalArgumentException("Team not found"));
         UtenteRegistrato u =  this.utenteRepository.findById(leader)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
-        if(dto.team().getHackathon().getState().getStateType() != HackathonStateType.IN_CORSO)
+        if(realTeam.getHackathon().getState().getStateType() != HackathonStateType.IN_CORSO)
                 throw new IllegalStateException("Hackathon is not IN_CORSO");
-        if (!u.hasPermission(Permission.CAN_SEND_AID_REQUEST, dto.team().getHackathon()))
+        if (!u.hasPermission(Permission.CAN_SEND_AID_REQUEST, realTeam.getHackathon()))
                 throw new UnsupportedOperationException("User does not have required permission");
-        if (checkAidRequestData(dto)) {
-                AidRequest aidRequest = new AidRequest(dto.team(), dto.type(), dto.description(), null);
-                dto.team().getHackathon().addAidRequest(aidRequest);
-                dto.team().setPendingCallProposal(true);
-                hackathonRepository.save(dto.team().getHackathon());
-                return true;
-            }
-        return false;
+        if (checkAidRequestData(dto, realTeam)) {
+                AidRequest aidRequest = new AidRequest(realTeam, dto.type(), dto.description(), null);
+                realTeam.getHackathon().addAidRequest(aidRequest);
+                realTeam.setHasPendingCallProposal(true);
+                hackathonRepository.save(realTeam.getHackathon());
+        }
     }
 
     /**
      * Validates the aid request data and ensures uniqueness.
      * @param dto data to check
+     * @param t team for which the request is being made
      * @return {@code true} if fields are complete and no prior request exists for the team.
      * {@code false} otherwise
      * @author Chiara Marinucci
      */
-    private boolean checkAidRequestData(AidRequestDTO dto){
-        if(dto.team() == null || dto.type() == null || dto.description() == null)
+    private boolean checkAidRequestData(AidRequestDTO dto, Team t){
+        if(dto.team() == null || dto.description().isBlank()
+        || dto.type() == null)
             return false;
-        List<AidRequest> aidRequests = dto.team().getHackathon().getAidRequests();
-        return aidRequests.stream().noneMatch(a -> a.getTeam().equals(dto.team()));
+        if(t==null)
+            return false;
+        return !t.isHasPendingCallProposal();
     }
 
     /**
@@ -156,7 +161,7 @@ public class SupportRequestHandler {
                 .orElseThrow(() -> new IllegalArgumentException("Nessuna richiesta attiva per questo team"));
 
         hackathon.getAidRequests().remove(toRemove);
-        team.setPendingCallProposal(false);
+        team.setHasPendingCallProposal(false);
         hackathonRepository.save(hackathon);
     }
 

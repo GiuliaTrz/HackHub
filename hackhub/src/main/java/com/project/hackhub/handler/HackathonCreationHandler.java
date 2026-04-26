@@ -96,19 +96,21 @@ public class HackathonCreationHandler {
 
         // Initialize builder
         HackathonBuilder builder = new HackathonBuilder();
-        builder.reset();
-
-        // Try to restore existing snapshot
         Optional<HackathonSnapshot> existingSnapshot = snapshotRepository.findByAuthor(coordinator);
+        builder.reset();
 
         // Restore state from snapshot if present
         existingSnapshot.ifPresent(snapshot -> {
             builder.restoreFromSnapshot(snapshot, userRepository);
         });
 
+        Prenotazione p = dto.reservation();
+        if (p == null) {
+            p = existingSnapshot.map(HackathonSnapshot::getReservation).orElse(null);
+        }
         // Apply new data from DTO
         Director director = new Director(builder, userRepository);
-        director.populateBuilder(dto);
+        director.populateBuilder(dto, p);
 
         // Check if hackathon is complete
         if (builder.isComplete()) {
@@ -136,7 +138,9 @@ public class HackathonCreationHandler {
         updateStaffState(hackathon);
 
         // Clean up snapshot
-        existingSnapshot.ifPresent(snapshot -> snapshotRepository.delete(snapshot));
+        existingSnapshot.ifPresent(snapshotRepository::delete);
+        coordinator.setOrganizer(false);
+        userRepository.save(coordinator);
 
         return new HackathonCreationResponse(true, "Hackathon created successfully");
     }

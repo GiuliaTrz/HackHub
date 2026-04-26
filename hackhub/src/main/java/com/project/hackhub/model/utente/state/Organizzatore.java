@@ -18,4 +18,8 @@ public class Organizzatore extends UserState {
 
     }
 
+    @Override
+    public UserStateType getType() {
+        return UserStateType.ORGANIZZATORE;
+    }
 }

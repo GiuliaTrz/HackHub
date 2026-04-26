@@ -1,5 +1,6 @@
 package com.project.hackhub.model.hackathon;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.project.hackhub.model.hackathon.state.HackathonState;
 import com.project.hackhub.model.hackathon.state.HackathonStateType;
 import com.project.hackhub.model.hackathon.state.HackathonStateFactory;
@@ -38,6 +39,7 @@ public class Hackathon {
     @Transient
     private final HackathonStateFactory factory = new HackathonStateFactory();
 
+    @JsonManagedReference
     @OneToMany(mappedBy = "hackathon", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Team> teamsList = new ArrayList<>();
 
@@ -128,15 +130,15 @@ public class Hackathon {
         teamsList.add(t);
     }
 
-    public boolean addAidRequest(@NonNull AidRequest a) {
+    public void addAidRequest(@NonNull AidRequest a) {
 
-        return aidRequests.add(a);
+        aidRequests.add(a);
     }
 
-    public Map<Team, Float> getTeamsGrades() {
-        Map<Team, Float> grades = new HashMap<>();
-        for(Team t : this.teamsList){
-            grades.put(t, t.getGrade());
+    public Map<String, Float> getTeamsGrades() {
+        Map<String, Float> grades = new HashMap<>();
+        for(Team t : this.teamsList) {
+            grades.put(t.getName(), t.getGrade());
         }
         return grades;
     }

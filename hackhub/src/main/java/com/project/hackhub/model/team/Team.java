@@ -1,5 +1,6 @@
 package com.project.hackhub.model.team;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.project.hackhub.model.hackathon.Hackathon;
 import com.project.hackhub.model.utente.UtenteRegistrato;
 import jakarta.persistence.*;
@@ -26,6 +27,7 @@ public class Team {
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "hackathon_id")
+    @JsonBackReference
     private Hackathon hackathon;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
@@ -43,9 +45,10 @@ public class Team {
     @JoinColumn(name = "team_leader_id")
     private UtenteRegistrato teamLeader;
 
-    private boolean pendingCallProposal;
+    @Column(name = "pending_call_proposal")
+    private boolean hasPendingCallProposal;
 
-    private Float grade;
+    private Float grade = (float) 0.00;
 
     /**
      * Aggiunge un {@link UtenteRegistrato} alla lista dei membri del team.

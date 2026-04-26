@@ -1,6 +1,8 @@
 package com.project.hackhub.model.hackathon.report;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import com.project.hackhub.model.hackathon.Prenotazione;
 import com.project.hackhub.model.hackathon.Soldi;
 import com.project.hackhub.model.hackathon.state.HackathonState;
@@ -18,8 +20,13 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public final class DetailedReport extends Report {
 
+    @JsonIgnoreProperties({"passwordHash", "organizer"})
     private final UtenteRegistrato coordinator;
+
+    @JsonIgnoreProperties({"passwordHash", "organizer"})
     private final UtenteRegistrato judge;
+
+    @JsonIgnoreProperties({"passwordHash", "organizer"})
     private final List<UtenteRegistrato> mentors;
 
     public DetailedReport(String name, String ruleBook, Prenotazione reservation, LocalDate expiredSubscriptionsDate, HackathonState state, Soldi moneyPrize, int maxTeamDimension, Team winner, UtenteRegistrato coordinator, UtenteRegistrato judge, List<UtenteRegistrato> mentors) {

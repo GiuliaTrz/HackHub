@@ -1,0 +1,6 @@
+#FileLock
+#Sun Apr 26 23:43:29 CEST 2026
+hostName=MSI
+id=19dcbbf5b530a68058a27788d41888d4f90543b587a
+method=file
+server=192.168.8.105\:5119

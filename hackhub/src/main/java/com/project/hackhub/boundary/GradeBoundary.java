@@ -1,6 +1,5 @@
 package com.project.hackhub.boundary;
 
-import com.project.hackhub.dto.GradeDTO;
 import com.project.hackhub.handler.GradeHandler;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +23,7 @@ public class GradeBoundary {
      * The judge must be authenticated to perform this action.
      * @param judge the id of the judge performing the action
      * @param submissionId the id of the submission to grade
-     * @param dto the record containing the grade
+     * @param num the record containing the grade
      * @return a ResponseEntity with a success message if the grading is successful
      * @author Chiara Marinucci
      */
@@ -32,8 +31,8 @@ public class GradeBoundary {
     public ResponseEntity<String> gradeSubmission(
             @AuthenticationPrincipal UUID judge,
             @PathVariable UUID submissionId,
-            @Valid @RequestBody GradeDTO dto){
-        gradeHandler.gradeSubmission(judge, submissionId, dto);
-        return ResponseEntity.ok("submission " + submissionId + " successfully graded: " + dto.grade());
+            @RequestBody float num){
+        gradeHandler.gradeSubmission(judge, submissionId, num);
+        return ResponseEntity.ok("submission " + submissionId + " successfully graded");
     }
 }

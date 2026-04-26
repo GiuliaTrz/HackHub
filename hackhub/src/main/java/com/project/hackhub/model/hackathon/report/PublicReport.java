@@ -17,9 +17,9 @@ import java.util.Map;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public final class PublicReport extends Report {
 
-    private final Map<Team, Float> teamsGrades;
+    private final Map<String, Float> teamsGrades;
 
-    public PublicReport(String name, String ruleBook, Prenotazione reservation, LocalDate expiredSubscriptionsDate, HackathonState state, Soldi moneyPrize, int maxTeamDimension, Team winner, Map<Team, Float> teamsGrades) {
+    public PublicReport(String name, String ruleBook, Prenotazione reservation, LocalDate expiredSubscriptionsDate, HackathonState state, Soldi moneyPrize, int maxTeamDimension, Team winner, Map<String, Float> teamsGrades) {
         super(name, ruleBook, reservation, expiredSubscriptionsDate, state, moneyPrize, maxTeamDimension, winner);
         this.teamsGrades = teamsGrades;
     }

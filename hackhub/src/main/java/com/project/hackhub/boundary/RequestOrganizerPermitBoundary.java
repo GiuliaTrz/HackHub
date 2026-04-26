@@ -5,10 +5,7 @@ import com.project.hackhub.model.team.FileTemplate;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 
@@ -19,12 +16,12 @@ public class RequestOrganizerPermitBoundary {
 
     private final RequestOrganizerPermitHandler requestOrganizerPermitHandler;
 
-    @PostMapping("/request")
+    @PatchMapping("/request")
     public ResponseEntity<String> requestPermission(
             @AuthenticationPrincipal UUID user,
             @RequestBody FileTemplate f) {
 
         requestOrganizerPermitHandler.requestPermission(user, f);
-        return ResponseEntity.ok("permesso garantito!");
+        return ResponseEntity.ok("permission to organize hackathon granted!");
     }
 }

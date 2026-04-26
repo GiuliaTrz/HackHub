@@ -1,10 +1,13 @@
 package com.project.hackhub.model.hackathon.builder;
 
 import com.project.hackhub.dto.HackathonDTO;
+import com.project.hackhub.exceptions.UserNotAvailableException;
 import com.project.hackhub.handler.HackathonCreationHandler;
 import com.project.hackhub.model.hackathon.Prenotazione;
 import com.project.hackhub.model.utente.UtenteRegistrato;
+import com.project.hackhub.repository.HackathonSnapshotRepository;
 import com.project.hackhub.repository.UtenteRegistratoRepository;
+import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import lombok.Setter;
 
@@ -18,17 +21,13 @@ import java.util.UUID;
  * @author Giorgia Branchesi
  *
  */
+@AllArgsConstructor
 public class Director {
 
     private final Builder builder;
     private final UtenteRegistratoRepository userRepository;
 
-    public Director(Builder builder, UtenteRegistratoRepository userRepository) {
-        this.builder = builder;
-        this.userRepository = userRepository;
-    }
-
-    public void populateBuilder(HackathonDTO dto) {
+    public void populateBuilder(HackathonDTO dto, Prenotazione p) {
 
         if (dto == null) {
             throw new IllegalArgumentException("dto cannot be null");
@@ -36,8 +35,8 @@ public class Director {
 
         setBasicInfo(dto);
         setReservation(dto);
-        setJudge(dto);
-        setMentors(dto);
+        setJudge(dto, p);
+        setMentors(dto, p);
         setAdditionalInfo(dto);
     }
 
@@ -54,25 +53,35 @@ public class Director {
             builder.setReservation(dto.reservation());
     }
 
-    private void setJudge(HackathonDTO dto) {
+    private void setJudge(HackathonDTO dto, Prenotazione p) {
         if (dto.judge() == null) return;
+        UtenteRegistrato j = userRepository.findById(dto.judge())
+                .orElseThrow(() -> new IllegalArgumentException("Judge not found"));
 
-        userRepository.findById(dto.judge())
-                .ifPresent(builder::setJudge);
+        if(p != null) {
+            if (j.isAvailable(p))
+                builder.setJudge(j);
+            else
+                throw new UserNotAvailableException("Judge is not available for the given reservation");
+        }
     }
 
-    private void setMentors(HackathonDTO dto) {
+    private void setMentors(HackathonDTO dto, Prenotazione p) {
 
         if (dto.mentorsList() == null) return;
 
-        List<UtenteRegistrato> mentors = dto.mentorsList().stream()
-                .map(userRepository::findById)
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .toList();
+        if(p != null) {
+            List<UtenteRegistrato> mentors = dto.mentorsList().stream()
+                    .map(userRepository::findById)
+                    .map(opt -> opt.filter(u -> u.isAvailable(p)))
+                    .filter(Optional::isPresent)
+                    .map(Optional::get)
+                    .toList();
 
-        if (!mentors.isEmpty()) {
-            builder.addMentorsList(mentors);
+
+            if (!mentors.isEmpty()) {
+                builder.addMentorsList(mentors);
+            }
         }
     }
 

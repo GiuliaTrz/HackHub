@@ -11,4 +11,8 @@ public class DefaultState extends UserState {
                 Permission.CAN_DECLINE_INVITATION));
     }
 
+    @Override
+    public UserStateType getType() {
+        return UserStateType.DEFAULT_STATE;
+    }
 }
