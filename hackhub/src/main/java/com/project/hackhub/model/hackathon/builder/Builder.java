@@ -13,7 +13,6 @@ public interface Builder {
     void setName(String n);
     void setRuleBook(String r);
     void setState();
-    void setStateType(HackathonStateType stateType);
     void setMaxTeamDimension(Integer num);
     void setReservation(Prenotazione p);
     void setMoneyPrice(Soldi p);

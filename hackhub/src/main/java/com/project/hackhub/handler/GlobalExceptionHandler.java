@@ -30,7 +30,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(UserNotAvailableException.class)
     public ResponseEntity<String> handleConflict(UserNotAvailableException ex) {
         return ResponseEntity.status(HttpStatus.CONFLICT)
-                .body("user not available");
+                .body("Users selected not available for the given reservation. Please choose different users ");
     }
 
     @ExceptionHandler(IllegalArgumentException.class)

@@ -8,6 +8,7 @@ import com.project.hackhub.model.hackathon.state.HackathonStateFactory;
 import com.project.hackhub.model.hackathon.state.HackathonStateType;
 import com.project.hackhub.model.utente.UtenteRegistrato;
 import com.project.hackhub.repository.UtenteRegistratoRepository;
+import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
@@ -19,7 +20,7 @@ import java.util.List;
  */
 public class HackathonBuilder implements Builder {
 
-    @Setter
+    @Setter @Getter
     private Hackathon hackathon;
 
     /**
@@ -59,15 +60,6 @@ public class HackathonBuilder implements Builder {
     @Override
     public void setState() {
         hackathon.setStateType(HackathonStateType.IN_ISCRIZIONE);
-    }
-
-    /**
-     * Sets the state type of the hackathon.
-     * @param stateType the state type to set
-     */
-    @Override
-    public void setStateType(HackathonStateType stateType) {
-        hackathon.setStateType(stateType);
     }
 
     /**
@@ -201,6 +193,7 @@ public class HackathonBuilder implements Builder {
                 && hackathon.getMoneyPrice() != null
                 && hackathon.getJudge() != null
                 && hackathon.getReservation() != null
-                && hackathon.getMentorsList() != null;
+                && hackathon.getMentorsList() != null
+                && !hackathon.getMentorsList().isEmpty();
     }
 }
