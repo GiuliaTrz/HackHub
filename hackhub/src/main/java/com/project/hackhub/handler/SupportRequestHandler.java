@@ -77,6 +77,8 @@ public class SupportRequestHandler {
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
         if(!u.hasPermission(Permission.CAN_PROPOSE_CALL, t.getHackathon()))
                 throw new UnsupportedOperationException("User does not have required permission");
+        if(t.isHasPendingCallProposal())
+            throw new IllegalStateException("Team already has a pending call proposal");
         boolean removed = this.calendarAdapter.removeSlot(t.getHackathon(), slot);
             if(removed) {
                 AidRequest a = new AidRequest(t, AidRequestType.CALL_PROPOSAL, slot);
@@ -111,7 +113,8 @@ public class SupportRequestHandler {
                 realTeam.getHackathon().addAidRequest(aidRequest);
                 realTeam.setHasPendingCallProposal(true);
                 hackathonRepository.save(realTeam.getHackathon());
-        }
+        } else
+            throw new IllegalStateException("Team already has a pending request or fields are incomplete");
     }
 
     /**
