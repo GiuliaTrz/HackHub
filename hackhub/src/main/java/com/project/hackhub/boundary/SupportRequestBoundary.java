@@ -17,8 +17,8 @@ import java.util.UUID;
 public class SupportRequestBoundary {
     private final SupportRequestHandler supportRequestHandler;
 
-    /**
-    * Not functioning as the functionality is simulated
+    /** As interaction with the external system Calendar is simulated,
+     * inconsistencies can be expected during testing
     */
     @GetMapping("/available-slots/{hackathon}")
     public ResponseEntity<List<Slot>> getAvailableSlots(
@@ -27,8 +27,8 @@ public class SupportRequestBoundary {
         return ResponseEntity.ok(supportRequestHandler.getAvailableSlots(user, hackathon));
     }
 
-    /**
-     * Not functioning as the functionality is simulated
+    /** As interaction with the external system Calendar is simulated,
+     * inconsistencies can be expected during testing
      */
     @PostMapping("/propose-call/{team}")
     public ResponseEntity<String> proposeCall(
