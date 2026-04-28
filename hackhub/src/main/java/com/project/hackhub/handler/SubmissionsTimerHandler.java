@@ -1,8 +1,6 @@
 package com.project.hackhub.handler;
 
 import com.project.hackhub.model.hackathon.Hackathon;
-import com.project.hackhub.model.hackathon.state.HackathonState;
-import com.project.hackhub.model.hackathon.state.HackathonStateFactory;
 import com.project.hackhub.model.hackathon.state.HackathonStateType;
 import com.project.hackhub.repository.HackathonRepository;
 import lombok.AllArgsConstructor;
@@ -16,7 +14,6 @@ import java.util.List;
 public class SubmissionsTimerHandler {
 
     private final HackathonRepository hackathonRepository;
-    private final HackathonStateFactory hackathonStateFactory;
 
     /**
      * Closes the possibility to send submissions to a Hackathon changing its state in  {@link HackathonStateType#IN_VALUTAZIONE}

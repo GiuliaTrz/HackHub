@@ -36,7 +36,6 @@ public final class StaffReport extends Report {
 
     private final Map<String, Float> teamsGrades;
     private final List<AidRequest> aidRequests;
-    private final LocalDate expiredSubscriptionsDate;
     private final List<Infraction> infractions;
 
     public StaffReport(String name, String ruleBook, Prenotazione reservation, HackathonState state, Soldi moneyPrize, int maxTeamDimension, Team winner, List<Team> teams, List<UtenteRegistrato> mentors, UtenteRegistrato coordinator, UtenteRegistrato judge, Map<String, Float> teamsGrades, List<AidRequest> aidRequests, LocalDate expiredSubscriptionsDate, List<Infraction> infractions) {
@@ -47,7 +46,6 @@ public final class StaffReport extends Report {
         this.judge = judge;
         this.teamsGrades = teamsGrades;
         this.aidRequests = aidRequests;
-        this.expiredSubscriptionsDate = expiredSubscriptionsDate;
         this.infractions = infractions;
     }
 }

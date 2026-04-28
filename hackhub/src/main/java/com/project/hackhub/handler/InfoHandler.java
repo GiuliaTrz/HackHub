@@ -30,7 +30,7 @@ public class InfoHandler {
      * @author Chiara Marinucci
      */
     @Transactional
-    public List<UUID> getAllHackathon() {
+    public List<UUID> getAllHackathons() {
         List<Hackathon> list = this.hackathonRepository.findAll();
         List<UUID> res = new ArrayList<>();
         for(Hackathon h : list)

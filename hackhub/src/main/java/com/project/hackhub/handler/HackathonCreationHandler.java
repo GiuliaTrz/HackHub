@@ -105,7 +105,7 @@ public class HackathonCreationHandler {
             p = existingSnapshot.map(HackathonSnapshot::getReservation).orElse(null);
         }
         // Apply new data from DTO
-        Director director = new Director(builder, userRepository);
+        Director director = new Director(builder, userRepository, this);
         director.populateBuilder(dto, p);
 
         // Check if hackathon is complete

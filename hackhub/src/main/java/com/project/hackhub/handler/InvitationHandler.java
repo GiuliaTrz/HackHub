@@ -85,7 +85,7 @@ public class InvitationHandler {
         Invito toCancel = invitoRepository.findById(invitation).orElseThrow(
                 () -> new IllegalArgumentException("invitation to cancel does not exist"));
 
-        Team t = toCancel.getSender();
+        Team t = toCancel.getMittente();
         UtenteRegistrato tMember = userRepository.findById(teamMember).orElseThrow(() -> new IllegalArgumentException("user does not exist"));
 
         if(!t.getHackathon().getState().getStateType().equals(HackathonStateType.IN_ISCRIZIONE)
@@ -94,8 +94,8 @@ public class InvitationHandler {
 
         t.removeInvitationFromList(toCancel);
         teamRepository.save(t);
-        toCancel.getAddresee().removeInvitation(toCancel);
-        userRepository.save(toCancel.getAddresee());
+        toCancel.getDestinatario().removeInvitation(toCancel);
+        userRepository.save(toCancel.getDestinatario());
         invitoRepository.delete(toCancel);
     }
 }

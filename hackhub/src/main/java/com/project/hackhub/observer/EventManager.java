@@ -1,6 +1,7 @@
 package com.project.hackhub.observer;
 
 import com.project.hackhub.model.utente.UtenteRegistrato;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,6 +10,7 @@ import java.util.List;
  * Singleton class to handle listeners and events
  * @author Giorgia Branchesi
  */
+@Component
 public final class EventManager {
 
     private final List<EventListener> listeners = new ArrayList<>();

@@ -5,16 +5,11 @@ import com.project.hackhub.exceptions.UserNotAvailableException;
 import com.project.hackhub.handler.HackathonCreationHandler;
 import com.project.hackhub.model.hackathon.Prenotazione;
 import com.project.hackhub.model.utente.UtenteRegistrato;
-import com.project.hackhub.repository.HackathonSnapshotRepository;
 import com.project.hackhub.repository.UtenteRegistratoRepository;
 import lombok.AllArgsConstructor;
-import lombok.NonNull;
-import lombok.Setter;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 /**
  * Director class to orchestrate the use of a {@link Builder}
@@ -26,6 +21,7 @@ public class Director {
 
     private final Builder builder;
     private final UtenteRegistratoRepository userRepository;
+    private final HackathonCreationHandler hackathonCreationHandler;
 
     public void populateBuilder(HackathonDTO dto, Prenotazione p) {
 
@@ -49,7 +45,7 @@ public class Director {
     }
 
     private void setReservation(HackathonDTO dto) {
-        if (dto.reservation() != null)
+        if (dto.reservation() != null && hackathonCreationHandler.isReservationAvailable(dto.reservation()))
             builder.setReservation(dto.reservation());
     }
 

@@ -1,11 +1,11 @@
 package com.project.hackhub.observer;
 
-import com.project.hackhub.model.team.Invito;
 import com.project.hackhub.model.utente.UtenteRegistrato;
-import com.project.hackhub.service.UserStateService;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+@Component
 public class IllecitoListener implements EventListener{
 
     /**

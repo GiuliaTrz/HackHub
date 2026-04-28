@@ -1,7 +1,6 @@
 package com.project.hackhub.boundary;
 
 import com.project.hackhub.handler.InfoHandler;
-import com.project.hackhub.model.hackathon.Hackathon;
 import com.project.hackhub.model.hackathon.report.Report;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -25,8 +24,8 @@ public class InfoBoundary {
      * @return a list of all hackathons
      */
     @GetMapping("/hackathons")
-    public ResponseEntity<List<UUID>> getAllHackathon() {
-        return ResponseEntity.ok(infoHandler.getAllHackathon());
+    public ResponseEntity<List<UUID>> getAllHackathons() {
+        return ResponseEntity.ok(infoHandler.getAllHackathons());
     }
     /**
      * Endpoint for getting a report of a given hackathon for a user based on hackathon's state

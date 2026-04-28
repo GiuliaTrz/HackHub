@@ -15,25 +15,25 @@ import java.util.UUID;
 public class Invito {
 
     @ManyToOne
-    private Team sender;
+    private Team mittente;
 
     @ManyToOne
     @JoinColumn(name = "destinatario_id")
-    private UtenteRegistrato addresee;
-
-    private boolean pending;
+    private UtenteRegistrato destinatario;
 
     @Id
     @GeneratedValue
     private UUID id;
 
+    boolean pendente = true;
+
     public Invito(Team team, UtenteRegistrato user) {
         if (team == null || user == null)
             throw new IllegalArgumentException("Invalid parameters.");
 
-        this.sender = team;
-        this.addresee = user;
-        this.pending = true;
+        this.mittente = team;
+        this.destinatario = user;
+        this.pendente = true;
     }
 
     @Override

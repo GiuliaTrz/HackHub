@@ -24,13 +24,13 @@ public class SupportRequestHandler {
 
     private final CalendarAdapter calendarAdapter;
     private final HackathonRepository hackathonRepository;
-    private final UtenteRegistratoRepository utenteRepository;
+    private final UtenteRegistratoRepository userRepository;
     private final TeamRepository teamRepository;
 
-    public SupportRequestHandler(CalendarAdapter calendarAdapter, HackathonRepository hackathonRepository, UtenteRegistratoRepository utenteRepository, TeamRepository teamRepository) {
+    public SupportRequestHandler(CalendarAdapter calendarAdapter, HackathonRepository hackathonRepository, UtenteRegistratoRepository userRepository, TeamRepository teamRepository) {
         this.calendarAdapter = calendarAdapter;
         this.hackathonRepository = hackathonRepository;
-        this.utenteRepository = utenteRepository;
+        this.userRepository = userRepository;
         this.teamRepository = teamRepository;
     }
 
@@ -50,7 +50,7 @@ public class SupportRequestHandler {
                 .orElseThrow(() -> new IllegalArgumentException("Hackathon not found"));
         if(h.getState().getStateType() != HackathonStateType.IN_CORSO)
             throw new IllegalStateException("Hackathon is not IN_CORSO");
-        UtenteRegistrato u = this.utenteRepository.findById(user)
+        UtenteRegistrato u = this.userRepository.findById(user)
                 .orElseThrow(()-> new IllegalArgumentException("User not found"));
             if (!u.hasPermission(Permission.CAN_PROPOSE_CALL, h))
                 throw new UnsupportedOperationException("User does not have required permission");
@@ -76,7 +76,7 @@ public class SupportRequestHandler {
                 .orElseThrow(() -> new IllegalArgumentException("Team not found"));
         if(t.getHackathon().getState().getStateType() != HackathonStateType.IN_CORSO)
             throw new IllegalStateException("Hackathon is not IN_CORSO");
-        UtenteRegistrato u = this.utenteRepository.findById(mentor)
+        UtenteRegistrato u = this.userRepository.findById(mentor)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
         if(!u.hasPermission(Permission.CAN_PROPOSE_CALL, t.getHackathon()))
                 throw new UnsupportedOperationException("User does not have required permission");
@@ -106,7 +106,7 @@ public class SupportRequestHandler {
         if(dto == null) return;
         Team realTeam = this.teamRepository.findById(dto.team())
                 .orElseThrow(() -> new IllegalArgumentException("Team not found"));
-        UtenteRegistrato u =  this.utenteRepository.findById(leader)
+        UtenteRegistrato u =  this.userRepository.findById(leader)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
         if(realTeam.getHackathon().getState().getStateType() != HackathonStateType.IN_CORSO)
                 throw new IllegalStateException("Hackathon is not IN_CORSO");
@@ -147,7 +147,7 @@ public class SupportRequestHandler {
      */
     @Transactional
     public void deleteSupportRequest(UUID requesterId, UUID hackathonId, UUID teamId) {
-        UtenteRegistrato requester = utenteRepository.findById(requesterId)
+        UtenteRegistrato requester = userRepository.findById(requesterId)
                 .orElseThrow(() -> new IllegalArgumentException("Utente non trovato"));
         Hackathon hackathon = hackathonRepository.findById(hackathonId)
                 .orElseThrow(() -> new IllegalArgumentException("Hackathon non trovato"));
@@ -182,7 +182,7 @@ public class SupportRequestHandler {
      */
     @Transactional
     public List<AidRequest> getAllSupportRequests(UUID viewerId, UUID hackathonId) {
-        UtenteRegistrato viewer = utenteRepository.findById(viewerId)
+        UtenteRegistrato viewer = userRepository.findById(viewerId)
                 .orElseThrow(() -> new IllegalArgumentException("Utente non trovato"));
         Hackathon hackathon = hackathonRepository.findById(hackathonId)
                 .orElseThrow(() -> new IllegalArgumentException("Hackathon non trovato"));

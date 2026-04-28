@@ -11,11 +11,11 @@ public enum EventType {
     //le varie class sono da cambiare, le ho messe solo per reference
     ELIMINAZIONE_HACKATHON(Hackathon .class),
     RIMOZIONE_DA_TEAM(Hackathon .class),
-    PROCLAMAZIONE_VINCITORE(Hackathon .class),
-    ILLECITO(Hackathon .class),
     MODIFICA_HACKATHON(Hackathon .class),
 
     //giuste
+    ILLECITO(Hackathon .class),
+    PROCLAMAZIONE_VINCITORE(Hackathon .class),
     ESPULSIONE_TEAM(Hackathon .class),
     ELIMINAZIONE_TEAM(Team .class),
     NUOVO_LEADER(Team .class),

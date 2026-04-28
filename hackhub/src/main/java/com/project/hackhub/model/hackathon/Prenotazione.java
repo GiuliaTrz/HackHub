@@ -36,35 +36,6 @@ public class Prenotazione {
     }
 
     /**
-     * Cambia la {@link Localita} associata a questa prenotazione.
-     *
-     * @param newLocation la nuova posizione da impostare; non può essere null
-     * @throws IllegalArgumentException se la nuova location è null
-     *
-     * @author Giulia Trozzi
-     */
-    public void changeLocation(Localita newLocation) {
-        if (newLocation == null)
-            throw new IllegalArgumentException("New location cannot be null.");
-
-        this.location = newLocation;
-    }
-
-    /**
-     * Cambia l'{@link IntervalloTemporale} associato a questa prenotazione.
-     *
-     * @param newInterval il nuovo intervallo temporale da impostare; non può essere null
-     * @throws IllegalArgumentException se il nuovo intervallo è null
-     * @author Giulia Trozzi
-     */
-    public void changeTimeInterval(IntervalloTemporale newInterval) {
-        if (newInterval == null)
-            throw new IllegalArgumentException("Time interval cannot be null.");
-
-        this.timeInterval = newInterval;
-    }
-
-    /**
      * Verifica se questa prenotazione si sovrappone con un'altra prenotazione.
      *
      * @param other la prenotazione con cui verificare la sovrapposizione; non può essere null

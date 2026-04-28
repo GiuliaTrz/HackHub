@@ -79,20 +79,20 @@ public class SubmissionHandler {
         Team t = teamRepository.findById(team)
                 .orElseThrow(()-> new IllegalArgumentException("Team not found"));
         if(u.hasPermission(Permission.STAFF_PERMISSION, t.getHackathon()))
-            return getSubmissionsAsStaff(u, t);
+            return getSubmissionsAsStaff(t);
         else if(u.hasPermission(Permission.TEAM_PERMISSION, t.getHackathon())
                 && t.getTeamMembersList().contains(u))
-            return getSubmissionsAsTeamMember(u, t);
+            return getSubmissionsAsTeamMember(t);
         else throw new IllegalArgumentException("user does not have the required permission");
     }
-    private List<Submission> getSubmissionsAsStaff(UtenteRegistrato staff, Team t){
+    private List<Submission> getSubmissionsAsStaff(Team t){
         if(t.getHackathon().getState().getStateType() != HackathonStateType.IN_VALUTAZIONE &&
                 t.getHackathon().getState().getStateType() != HackathonStateType.CONCLUSO)
             throw new IllegalStateException("Hackathon state is not IN_VALUTAZIONE or CONCLUSO");
         return this.submissionRepository.findLatestSubmissionsByTeamId(t.getId());
     }
 
-    private List<Submission> getSubmissionsAsTeamMember(UtenteRegistrato m, Team t) {
+    private List<Submission> getSubmissionsAsTeamMember(Team t) {
         if(t.getHackathon().getState().getStateType() != HackathonStateType.CONCLUSO)
             throw new IllegalStateException("Hackathon state is not CONCLUSO");
         return this.submissionRepository.findLatestSubmissionsByTeamId(t.getId());

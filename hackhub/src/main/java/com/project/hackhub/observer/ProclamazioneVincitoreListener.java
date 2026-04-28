@@ -1,10 +1,11 @@
 package com.project.hackhub.observer;
 
-import com.project.hackhub.model.hackathon.Hackathon;
 import com.project.hackhub.model.utente.UtenteRegistrato;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+@Component
 public class ProclamazioneVincitoreListener implements EventListener{
     @Override
     public void updateUsers(List<UtenteRegistrato> usersList, String message, Object entity) {

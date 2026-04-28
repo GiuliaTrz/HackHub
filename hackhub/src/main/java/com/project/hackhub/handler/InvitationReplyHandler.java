@@ -38,7 +38,7 @@ public class InvitationReplyHandler {
         Invito i = invitationRepository.findById(invitation).orElseThrow(
                 () -> new IllegalArgumentException("the invitation cannot be null"));
 
-        Team t = i.getSender();
+        Team t = i.getMittente();
         t.removeInvitationFromList(i);
         teamRepository.save(t);
         invitationRepository.delete(i);
@@ -61,8 +61,8 @@ public class InvitationReplyHandler {
         Invito i = invitationRepository.findById(invitation).orElseThrow(
                 () -> new IllegalArgumentException("the invitation cannot be null"));
 
-        UtenteRegistrato addressee = i.getAddresee();
-        Hackathon h = i.getSender().getHackathon();
+        UtenteRegistrato addressee = i.getDestinatario();
+        Hackathon h = i.getMittente().getHackathon();
 
         String s = u.getState(h).getType().toString();
         if(!u.hasPermission(Permission.CAN_ACCEPT_INVITATION, h)) {
@@ -74,7 +74,7 @@ public class InvitationReplyHandler {
 
         addressee.removeInvitation(i);
         userStateService.changeUserState(addressee, true, h, UserStateType.MEMBRO_DEL_TEAM);
-        i.getSender().addTeamMember(addressee);
+        i.getMittente().addTeamMember(addressee);
         removeInvitation(invitation);
     }
 
@@ -94,8 +94,8 @@ public class InvitationReplyHandler {
         Invito i = invitationRepository.findById(invitation).orElseThrow(
                 () -> new IllegalArgumentException("the invitation cannot be null"));
 
-        UtenteRegistrato addressee = i.getAddresee();
-        Hackathon h = i.getSender().getHackathon();
+        UtenteRegistrato addressee = i.getDestinatario();
+        Hackathon h = i.getMittente().getHackathon();
 
         if (!u.hasPermission(Permission.CAN_DECLINE_INVITATION, h) || !h.getState().getStateType().equals(HackathonStateType.IN_ISCRIZIONE))
             throw new UnsupportedOperationException("cannot perform operation");

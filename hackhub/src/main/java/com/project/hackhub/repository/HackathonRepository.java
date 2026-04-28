@@ -1,7 +1,6 @@
 package com.project.hackhub.repository;
 
 import com.project.hackhub.model.hackathon.Hackathon;
-import com.project.hackhub.model.hackathon.state.HackathonStateType;
 import com.project.hackhub.model.team.Infraction;
 import com.project.hackhub.model.team.Team;
 import org.springframework.data.jpa.repository.JpaRepository;

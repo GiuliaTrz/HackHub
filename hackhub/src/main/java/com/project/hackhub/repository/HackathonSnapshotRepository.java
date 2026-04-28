@@ -12,6 +12,4 @@ import java.util.UUID;
 public interface HackathonSnapshotRepository extends JpaRepository<HackathonSnapshot, UUID> {
 
     Optional<HackathonSnapshot> findByAuthor(UtenteRegistrato coordinator);
-
-    void removeHackathonSnapshotByAuthor(UtenteRegistrato coordinator);
 }
