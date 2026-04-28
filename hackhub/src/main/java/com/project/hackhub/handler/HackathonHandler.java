@@ -7,6 +7,7 @@ import com.project.hackhub.model.utente.state.UserStateType;
 import com.project.hackhub.repository.HackathonRepository;
 import com.project.hackhub.repository.UtenteRegistratoRepository;
 import com.project.hackhub.service.UserStateService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -26,17 +27,21 @@ public class HackathonHandler {
      * @param hackathonId ID dell'hackathon
      * @author Giulia Trozzi
      */
+    @Transactional
     public void deleteHackathon(UUID deleterId, UUID hackathonId) {
+
         UtenteRegistrato deleter = utenteRepository.findById(deleterId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
         Hackathon hackathon = hackathonRepo.findById(hackathonId)
                 .orElseThrow(() -> new IllegalArgumentException("Hackathon not found"));
 
-        if (!deleter.hasPermission(Permission.CAN_DELETE_HACKATHON, null)) {
+        if (!deleter.hasPermission(Permission.CAN_DELETE_HACKATHON, hackathon)) {
             throw new UnsupportedOperationException("Insufficient permissions to delete hackathon");
         }
-
         hackathonRepo.delete(hackathon);
+        //bisogna, prima di eliminarlo, prendere tutti i partecipanti (sia staff che membri dei team)
+        //e passarli dentro al listener. Dentro al listener poi cambi lo stato di ogni utente tramite
+        // lo userStateService, il metodo è changeUserState, con il false come boolean per rimuovere la prenotazione
     }
 
     /**
@@ -47,13 +52,18 @@ public class HackathonHandler {
      * @return hackathon aggiornato
      * @author Giulia Trozzi
      */
+    // bisogna passargli per forza un HackathonDTO [esiste già, lo utilizziamo in fase di creazione anche]
+    // non esiste un istanza di hackathon persistita chiamata "updatedHackathon",
+    // è un oggetto che contiene i nuovi dati da aggiornare, non è un'entità persistita
+    // la prenotazione è immodificabile, anche se è presente nel dto, quindi mettere il controllo
+    @Transactional
     public Hackathon updateHackathon(UUID editorId, UUID hackathonId, Hackathon updatedHackathon) {
         UtenteRegistrato editor = utenteRepository.findById(editorId)
                 .orElseThrow(() -> new IllegalArgumentException("Editor not found"));
         Hackathon hackathon = hackathonRepo.findById(hackathonId)
                 .orElseThrow(() -> new IllegalArgumentException("Hackathon not found"));
 
-        if (!editor.hasPermission(Permission.CAN_EDIT_HACKATHON, hackathon)) {
+        if (!editor.hasPermission(Permission.CAN_MODIFY_HACKATHON, hackathon)) {
             throw new UnsupportedOperationException("Insufficient permissions");
         }
 
@@ -75,6 +85,7 @@ public class HackathonHandler {
      * @param add true per aggiungere, false per rimuovere
      * @author Giulia Trozzi
      */
+    @Transactional
     public void modifyStaff(UUID editorId, UUID hackathonId, UUID staffMemberId, String role, boolean add) {
         UtenteRegistrato editor = utenteRepository.findById(editorId)
                 .orElseThrow(() -> new IllegalArgumentException("Editor not found"));
@@ -88,6 +99,8 @@ public class HackathonHandler {
         }
 
         switch (role.toUpperCase()) {
+            // l'organizzatore non si può cambiare, è l'organizzatore stesso che cambia il ruolo di mentori
+            // o giudice o aggiunge un nuovo mentore
             case "ORGANIZER":
                 if (add) {
                     if (hackathon.getCoordinator() != null) {
@@ -103,6 +116,8 @@ public class HackathonHandler {
                     userStateService.changeUserState(member, false, hackathon, UserStateType.DEFAULT_STATE);
                 }
                 break;
+                // non può rimanere senza mentore, bisogna fare il controllo
+            // che ne rimanga almeno uno
             case "MENTOR":
                 if (add) {
                     hackathon.addMentor(member);
@@ -113,6 +128,7 @@ public class HackathonHandler {
                 }
                 break;
             case "JUDGE":
+                // non lo può rimuovere, al massimo lo sostituisce, un hackathon non può rimanere senza giudice
                 if (add) {
                     if (hackathon.getJudge() != null) {
                         UtenteRegistrato oldJudge = hackathon.getJudge();

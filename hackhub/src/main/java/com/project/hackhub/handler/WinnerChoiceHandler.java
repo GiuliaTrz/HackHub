@@ -10,6 +10,7 @@ import com.project.hackhub.observer.EventManager;
 import com.project.hackhub.repository.HackathonRepository;
 import com.project.hackhub.repository.TeamRepository;
 import com.project.hackhub.repository.UtenteRegistratoRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -68,6 +69,7 @@ public class WinnerChoiceHandler {
      * with manual choice
      * @author Chiara Marinucci
      */
+    @Transactional
     public void chooseWinner(UUID judge, UUID hackathon){
         Hackathon h = checkValid(judge, hackathon);
 
@@ -95,6 +97,7 @@ public class WinnerChoiceHandler {
      * if the team is not among the tied winners list.
      * @author Chiara Marinucci
      */
+    @Transactional
     public void chooseWinner(UUID judge, UUID hackathon, UUID team){
         Hackathon h = checkValid(judge, hackathon);
         Team t = this.teamRepository.findById(team).orElseThrow(() -> new IllegalArgumentException("team not found"));
@@ -123,6 +126,7 @@ public class WinnerChoiceHandler {
      * @throws IllegalStateException if the Hackathon's state is not IN_VALUTAZIONE
      * @author Chiara Marinucci
      */
+    @Transactional
     public void proclaimWinner(UUID hackathon, UUID coord){
         UtenteRegistrato c = this.utenteRegistratoRepository.findById(coord)
                 .orElseThrow(() -> new IllegalArgumentException("coordinator not found"));

@@ -11,6 +11,7 @@ import com.project.hackhub.observer.EventType;
 import com.project.hackhub.repository.InvitoRepository;
 import com.project.hackhub.repository.TeamRepository;
 import com.project.hackhub.repository.UtenteRegistratoRepository;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -21,7 +22,7 @@ import java.util.UUID;
 @AllArgsConstructor
 public class InvitationHandler {
 
-    private final UtenteRegistratoRepository utenteRegistratoRepo;
+    private final UtenteRegistratoRepository userRepository;
     private final TeamRepository teamRepository;
     private final InvitoRepository invitoRepository;
 
@@ -38,12 +39,13 @@ public class InvitationHandler {
      * is not {@link HackathonStateType#IN_ISCRIZIONE}
      * @author Giorgia Branchesi
      */
+    @Transactional
     public void inviteUser(UUID teamLeader, UUID user, UUID team) {
 
-        UtenteRegistrato teamLeader1 = utenteRegistratoRepo.findById(teamLeader).orElseThrow(
+        UtenteRegistrato teamLeader1 = userRepository.findById(teamLeader).orElseThrow(
                 () -> new IllegalArgumentException("Team leader does not exist")
         );
-        UtenteRegistrato userToInvite = utenteRegistratoRepo.findById(user).orElseThrow(
+        UtenteRegistrato userToInvite = userRepository.findById(user).orElseThrow(
                 () -> new IllegalArgumentException("User to invite does not exist")
         );
 
@@ -60,9 +62,6 @@ public class InvitationHandler {
             Invito invitation = new Invito(t, userToInvite);
             t.addInvitation(invitation);
             teamRepository.save(t);
-            userToInvite.addInvitation(invitation);
-            utenteRegistratoRepo.save(userToInvite);
-
             EventManager notifier = EventManager.getInstance();
             notifier.notify(EventType.INVITO_UTENTE, List.of(userToInvite), invitation);
         } else {
@@ -80,13 +79,14 @@ public class InvitationHandler {
      * have permission to cancel the invitation or if the {@link com.project.hackhub.model.hackathon.Hackathon}
      * is not {@link HackathonStateType#IN_ISCRIZIONE}
      */
+    @Transactional
     public void cancelInvitation(UUID invitation, UUID teamMember) {
 
         Invito toCancel = invitoRepository.findById(invitation).orElseThrow(
                 () -> new IllegalArgumentException("invitation to cancel does not exist"));
 
-        Team t = toCancel.getMittente();
-        UtenteRegistrato tMember = utenteRegistratoRepo.findById(teamMember).orElseThrow(() -> new IllegalArgumentException("user does not exist"));
+        Team t = toCancel.getSender();
+        UtenteRegistrato tMember = userRepository.findById(teamMember).orElseThrow(() -> new IllegalArgumentException("user does not exist"));
 
         if(!t.getHackathon().getState().getStateType().equals(HackathonStateType.IN_ISCRIZIONE)
                 || !tMember.hasPermission(Permission.CAN_CANCEL_INVITATION, t.getHackathon()))
@@ -94,8 +94,8 @@ public class InvitationHandler {
 
         t.removeInvitationFromList(toCancel);
         teamRepository.save(t);
-        toCancel.getDestinatario().removeInvitation(toCancel);
-        utenteRegistratoRepo.save(toCancel.getDestinatario());
+        toCancel.getAddresee().removeInvitation(toCancel);
+        userRepository.save(toCancel.getAddresee());
         invitoRepository.delete(toCancel);
     }
 }

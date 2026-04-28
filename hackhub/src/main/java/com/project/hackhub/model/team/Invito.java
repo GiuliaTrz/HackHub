@@ -6,7 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.Objects;
 import java.util.UUID;
 
 @AllArgsConstructor
@@ -16,13 +15,13 @@ import java.util.UUID;
 public class Invito {
 
     @ManyToOne
-    private Team mittente;
+    private Team sender;
 
     @ManyToOne
     @JoinColumn(name = "destinatario_id")
-    private UtenteRegistrato destinatario;
+    private UtenteRegistrato addresee;
 
-    private boolean pendente;
+    private boolean pending;
 
     @Id
     @GeneratedValue
@@ -32,23 +31,9 @@ public class Invito {
         if (team == null || user == null)
             throw new IllegalArgumentException("Invalid parameters.");
 
-        this.mittente = team;
-        this.destinatario = user;
-        this.pendente = true;
-    }
-
-    public void accept() {
-        if (!pendente)
-            throw new IllegalStateException("Invite already processed.");
-
-        this.pendente = false;
-    }
-
-    public void reject() {
-        if (!pendente)
-            throw new IllegalStateException("Invite already processed.");
-
-        this.pendente = false;
+        this.sender = team;
+        this.addresee = user;
+        this.pending = true;
     }
 
     @Override

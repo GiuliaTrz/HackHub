@@ -9,6 +9,7 @@ import com.project.hackhub.observer.EventManager;
 import com.project.hackhub.observer.EventType;
 import com.project.hackhub.repository.TeamRepository;
 import com.project.hackhub.repository.UtenteRegistratoRepository;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -31,6 +32,7 @@ public class TeamLeaderChoiceHandler {
      * or the user does not have permission to do the action
      * @author Giorgia Branchesi
      */
+    @Transactional
     public void chooseNewTeamLeader(UUID newLeader, UUID oldLeader, UUID t){
 
         UtenteRegistrato oldLeaderU = userRepository.findById(oldLeader).orElseThrow

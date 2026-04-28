@@ -7,6 +7,7 @@ import com.project.hackhub.model.hackathon.report.HackathonReportAssembler;
 import com.project.hackhub.model.utente.UtenteRegistrato;
 import com.project.hackhub.repository.HackathonRepository;
 import com.project.hackhub.repository.UtenteRegistratoRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -28,6 +29,7 @@ public class InfoHandler {
      * @return a list of all Hackathons
      * @author Chiara Marinucci
      */
+    @Transactional
     public List<UUID> getAllHackathon() {
         List<Hackathon> list = this.hackathonRepository.findAll();
         List<UUID> res = new ArrayList<>();
@@ -44,6 +46,7 @@ public class InfoHandler {
      * * @throws IllegalArgumentException if hackathonId is not mapped to a Hackathon
      * @author Chiara Marinucci
      */
+    @Transactional
     public Report getHackathonReport(UUID hackathonId, UUID utenteId){
         Hackathon h = hackathonRepository.findById(hackathonId).orElse(null);
         if (h == null)

@@ -89,14 +89,6 @@ public class Hackathon {
         return factory.createState(stateType);
     }
 
-    public void setState(HackathonState state) {
-
-        if(state == null)
-            throw new IllegalArgumentException("state cannot be null");
-
-        this.stateType = state.getStateType();
-    }
-
     /**
      * Rimuove un mentore
      * @param u utente registrato
@@ -109,25 +101,12 @@ public class Hackathon {
             throw new IllegalStateException("Mentor non presente nella lista.");
         mentorsList.remove(u);
     }
-    public boolean isMentor(UtenteRegistrato u) {
-        return mentorsList.contains(u);
-    }
 
-    public boolean removeTeam(Team t) {
+    public void removeTeam(Team t) {
         if (t == null)
             throw new IllegalArgumentException("Team nullo.");
 
-        return  teamsList.remove(t);
-    }
-
-    public void addTeam(Team t) {
-        if (t == null)
-            throw new IllegalArgumentException("Team nullo.");
-
-        if (teamsList.contains(t))
-            throw new IllegalStateException("Team già presente.");
-
-        teamsList.add(t);
+        teamsList.remove(t);
     }
 
     public void addAidRequest(@NonNull AidRequest a) {

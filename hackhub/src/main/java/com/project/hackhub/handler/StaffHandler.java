@@ -7,6 +7,7 @@ import com.project.hackhub.model.utente.state.UserStateType;
 import com.project.hackhub.repository.HackathonRepository;
 import com.project.hackhub.repository.UtenteRegistratoRepository;
 import com.project.hackhub.service.UserStateService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -29,6 +30,7 @@ public class StaffHandler {
      * @throws IllegalArgumentException se uno degli ID non corrisponde a un'entità
      * @author Giulia Trozzi
      */
+    @Transactional
     public void addMentor(UUID organizerId, UUID hackathonId, UUID mentorId) {
         UtenteRegistrato organizer = utenteRepository.findById(organizerId)
                 .orElseThrow(() -> new IllegalArgumentException("Organizer not found"));
@@ -58,6 +60,7 @@ public class StaffHandler {
      * @param mentorId ID mentore da rimuovere
      * @author Giulia Trozzi
      */
+    @Transactional
     public void removeMentor(UUID organizerId, UUID hackathonId, UUID mentorId) {
         UtenteRegistrato organizer = utenteRepository.findById(organizerId)
                 .orElseThrow(() -> new IllegalArgumentException("Organizzatore non trovato"));
@@ -95,6 +98,7 @@ public class StaffHandler {
      *                                       o se l'operazione lascerebbe l'hackathon senza organizzatori
      * @throws IllegalStateException         se l'utente target non è disponibile (ha già uno stato incompatibile)
      */
+    @Transactional
     public void changeStaffRole(UUID organizerId, UUID hackathonId, UUID targetUserId, String newRole) {
         UtenteRegistrato organizer = utenteRepository.findById(organizerId)
                 .orElseThrow(() -> new IllegalArgumentException("Organizzatore non trovato"));

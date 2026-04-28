@@ -6,6 +6,7 @@ import com.project.hackhub.model.utente.UtenteRegistrato;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
 import lombok.Setter;
 
 import java.util.ArrayList;
@@ -49,6 +50,12 @@ public class Team {
     private boolean hasPendingCallProposal;
 
     private Float grade = (float) 0.00;
+
+    public Team(@NonNull String name, @NonNull Hackathon hackathon, @NonNull UtenteRegistrato teamLeader) {
+        this.name = name;
+        this.hackathon = hackathon;
+        this.teamLeader = teamLeader;
+    }
 
     /**
      * Aggiunge un {@link UtenteRegistrato} alla lista dei membri del team.

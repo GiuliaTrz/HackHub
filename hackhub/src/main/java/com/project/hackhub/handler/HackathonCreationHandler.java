@@ -52,10 +52,6 @@ public class HackathonCreationHandler {
         this.hackathonRepo.save(h);
     }
 
-    public HackathonBuilder createHackathonBuilder() {
-        return new HackathonBuilder();
-    }
-
     /**
      * Checks if a reservation is available
      *

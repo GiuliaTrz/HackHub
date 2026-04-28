@@ -13,7 +13,8 @@ public class Organizzatore extends UserState {
                 Permission.CAN_PROCLAIM_WINNER,
                 Permission.CAN_ADD_TASK,
                 Permission.CAN_EXPEL_TEAM,
-                Permission.CAN_PENALIZE_TEAM
+                Permission.CAN_PENALIZE_TEAM,
+                Permission.CAN_DELETE_HACKATHON
                 ));
 
     }

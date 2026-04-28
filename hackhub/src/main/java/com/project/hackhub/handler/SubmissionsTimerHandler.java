@@ -28,9 +28,7 @@ public class SubmissionsTimerHandler {
         List<Hackathon> expiredHackathons = hackathonRepository.getExpiredSubmissions(LocalDateTime.now());
 
         for (Hackathon h : expiredHackathons) {
-
-            HackathonState newState = hackathonStateFactory.createState(HackathonStateType.IN_VALUTAZIONE);
-            h.setState(newState);
+            h.setStateType(HackathonStateType.IN_VALUTAZIONE);
             hackathonRepository.save(h);
         }
     }

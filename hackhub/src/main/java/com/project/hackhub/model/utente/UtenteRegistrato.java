@@ -19,7 +19,7 @@ public class UtenteRegistrato {
     @Id @GeneratedValue
     @Getter private UUID id;
 
-    @OneToMany(mappedBy = "destinatario")
+    @OneToMany(mappedBy = "addresee")
     private Set<Invito> invitationsList = new LinkedHashSet<>();
 
     @Embedded

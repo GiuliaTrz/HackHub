@@ -7,6 +7,7 @@ import com.project.hackhub.model.utente.UtenteRegistrato;
 import com.project.hackhub.model.utente.state.Permission;
 import com.project.hackhub.observer.EventManager;
 import com.project.hackhub.observer.EventType;
+import com.project.hackhub.repository.HackathonRepository;
 import com.project.hackhub.repository.TeamRepository;
 import com.project.hackhub.repository.UtenteRegistratoRepository;
 import jakarta.transaction.Transactional;
@@ -21,6 +22,7 @@ public class PartecipationHandler {
 
     private final TeamRepository teamRepository;
     private final UtenteRegistratoRepository userRepository;
+    private final HackathonRepository hackathonRepository;
 
     /**
      * Unsubscribes a team from a Hackathon. The team does not exist after his unsubscription
@@ -46,6 +48,7 @@ public class PartecipationHandler {
             throw new UnsupportedOperationException("Cannot unsubscribe team");
 
         h.removeTeam(t);
+        hackathonRepository.save(h);
         EventManager notifier = EventManager.getInstance();
         notifier.notify(EventType.ELIMINAZIONE_TEAM, t.getTeamMembersList(), t);
         teamRepository.delete(t);
