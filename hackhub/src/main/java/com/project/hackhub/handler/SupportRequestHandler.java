@@ -13,6 +13,7 @@ import com.project.hackhub.model.utente.UtenteRegistrato;
 import com.project.hackhub.model.utente.state.Permission;
 import com.project.hackhub.repository.HackathonRepository;
 import com.project.hackhub.repository.UtenteRegistratoRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -43,6 +44,7 @@ public class SupportRequestHandler {
      * @throws UnsupportedOperationException if the user lacks the required permission.
      * @author Chiara Marinucci
      */
+    @Transactional
     public List<Slot> getAvailableSlots(UUID user, UUID hackathon){
         Hackathon h = this.hackathonRepository.findById(hackathon)
                 .orElseThrow(() -> new IllegalArgumentException("Hackathon not found"));
@@ -68,6 +70,7 @@ public class SupportRequestHandler {
      * @throws UnsupportedOperationException if the user lacks the required permission.
      * @author Chiara Marinucci
      */
+    @Transactional
     public void proposeCall(UUID mentor, Slot slot, UUID team){
         Team t = this.hackathonRepository.findByTeamId(team)
                 .orElseThrow(() -> new IllegalArgumentException("Team not found"));
@@ -98,6 +101,7 @@ public class SupportRequestHandler {
      * @throws UnsupportedOperationException if the user lacks required permission.
      * @author Chiara Marinucci
      */
+    @Transactional
     public void sendAidRequest(UUID leader, AidRequestDTO dto){
         if(dto == null) return;
         Team realTeam = this.teamRepository.findById(dto.team())
@@ -141,6 +145,7 @@ public class SupportRequestHandler {
      * @param teamId      ID team
      * @author Giulia Trozzi
      */
+    @Transactional
     public void deleteSupportRequest(UUID requesterId, UUID hackathonId, UUID teamId) {
         UtenteRegistrato requester = utenteRepository.findById(requesterId)
                 .orElseThrow(() -> new IllegalArgumentException("Utente non trovato"));
@@ -175,6 +180,7 @@ public class SupportRequestHandler {
      * @return lista di AidRequest
      * @author Giulia Trozzi
      */
+    @Transactional
     public List<AidRequest> getAllSupportRequests(UUID viewerId, UUID hackathonId) {
         UtenteRegistrato viewer = utenteRepository.findById(viewerId)
                 .orElseThrow(() -> new IllegalArgumentException("Utente non trovato"));

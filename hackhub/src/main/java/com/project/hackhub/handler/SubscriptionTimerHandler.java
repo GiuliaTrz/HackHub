@@ -28,9 +28,7 @@ public class SubscriptionTimerHandler {
         List<Hackathon> expiredHackathons = hackathonRepository.getExpiredSubscriptions(LocalDateTime.now());
 
         for (Hackathon h : expiredHackathons) {
-
-            HackathonState newState = hackathonStateFactory.createState(HackathonStateType.IN_CORSO);
-            h.setState(newState);
+            h.setStateType(HackathonStateType.IN_CORSO);
             hackathonRepository.save(h);
         }
     }

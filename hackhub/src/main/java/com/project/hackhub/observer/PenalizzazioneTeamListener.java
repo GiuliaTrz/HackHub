@@ -30,6 +30,6 @@ public class PenalizzazioneTeamListener implements EventListener{
         if(message == null) throw new IllegalArgumentException("message needed");
         if(entity == null) throw new IllegalArgumentException("hackathon cannot be null");
 
-        //TODO, il messaggio è da restituire quando facciamo la chiamata API! Gli utenti da notificare sono tutti i membri del team
+        // message will be simulated for testing through the API call
     }
 }

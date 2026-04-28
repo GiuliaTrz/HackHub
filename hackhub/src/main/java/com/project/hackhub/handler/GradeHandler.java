@@ -9,6 +9,7 @@ import com.project.hackhub.model.utente.state.Permission;
 import com.project.hackhub.repository.SubmissionRepository;
 import com.project.hackhub.repository.TeamRepository;
 import com.project.hackhub.repository.UtenteRegistratoRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -37,6 +38,7 @@ public class GradeHandler {
      * @throws IllegalStateException if the Hackathon is not in the evaluation phase.
      * @author Chiara Marinucci
      */
+    @Transactional
     public void gradeSubmission(UUID judge, UUID submissionId, float num) {
         UtenteRegistrato j = utenteRegistratoRepository.findById(judge)
                 .orElseThrow(()-> new IllegalArgumentException("judge not found"));
@@ -47,7 +49,7 @@ public class GradeHandler {
             throw new IllegalStateException("Hackathon is not IN_VALUTAZIONE");
         if(!j.hasPermission(Permission.CAN_GRADE_SUBMISSION, t.getHackathon()))
             throw new IllegalArgumentException("User does not have required permission");
-        s.setGrade(num+t.getGrade());
+        s.setGrade(num);
         submissionRepository.save(s);
         updateTeamFinalGrade(t);
         }
@@ -62,7 +64,7 @@ public class GradeHandler {
             boolean isEverythingGraded = allSubmissions.stream()
                     .allMatch(sub -> sub.getGrade() != null);
             if(isEverythingGraded && !allSubmissions.isEmpty()){
-                float sum = 0;
+                float sum = t.getGrade() != null ? t.getGrade() : 0;
                 for (Submission sub : allSubmissions)
                     sum += sub.getGrade();
 

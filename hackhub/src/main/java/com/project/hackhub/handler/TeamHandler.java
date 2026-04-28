@@ -34,6 +34,7 @@ public class TeamHandler {
      */
     @Transactional
     public void createTeam(UUID creatorId, UUID hackathonId, String teamName) {
+
         UtenteRegistrato creator = userRepository.findById(creatorId)
                 .orElseThrow(() -> new IllegalArgumentException("Creator not found"));
         Hackathon hackathon = hackathonRepository.findById(hackathonId)
@@ -52,6 +53,7 @@ public class TeamHandler {
      * @param newName nuovo nome
      * @return team aggiornato
      */
+    @Transactional
     public Team updateTeam(UUID editorId, UUID teamId, String newName) {
         UtenteRegistrato editor = userRepository.findById(editorId)
                 .orElseThrow(() -> new IllegalArgumentException("Editor not found"));
@@ -75,6 +77,7 @@ public class TeamHandler {
      * @param teamId ID del team
      * @param memberId ID del membro da rimuovere
      */
+    @Transactional
     public void removeMember(UUID requesterId, UUID teamId, UUID memberId) {
         UtenteRegistrato requester = userRepository.findById(requesterId)
                 .orElseThrow(() -> new IllegalArgumentException("Requester not found"));
@@ -107,11 +110,8 @@ public class TeamHandler {
             if(t.getName().equals(name))
                 throw new IllegalArgumentException("A team with the same name already exists in this hackathon.");
 
-        Team team = new Team();
-        team.setName(name);
-        team.setHackathon(hackathon);
+        Team team = new Team(name, hackathon, leader);
         team.addTeamMember(leader);
-        team.setTeamLeader(leader);
         userStateService.changeUserState(leader, true, hackathon, UserStateType.TEAM_LEADER);
 
         teamRepository.save(team);

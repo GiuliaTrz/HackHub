@@ -6,6 +6,7 @@ import com.project.hackhub.model.utente.state.UserStateType;
 import com.project.hackhub.repository.TeamRepository;
 import com.project.hackhub.repository.UtenteRegistratoRepository;
 import com.project.hackhub.service.UserStateService;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 
 import java.util.UUID;
@@ -25,6 +26,7 @@ public class TeamPartecipationHandler {
      * @throws UnsupportedOperationException if the team is composed by only the user
      * @author Giorgia Branchesi
      */
+    @Transactional
     public void leaveTeam(UUID user, UUID team) {
 
         UtenteRegistrato user1 = userRepository.findById(user).orElseThrow(
@@ -35,7 +37,11 @@ public class TeamPartecipationHandler {
 
         if(t.getTeamMembersList().size() < 2)
             throw new UnsupportedOperationException("cannot leave team! " +
-                    "Must change team leader of delete hackathon participation!");
+                    "Must delete hackathon team participation!");
+
+        if(user1.equals(t.getTeamLeader()))
+            throw new UnsupportedOperationException("the team leader cannot leave the team! " +
+                    "Must choose a new team leader before leaving the team!");
 
         userStateService.changeUserState(user1, false, t.getHackathon(), UserStateType.DEFAULT_STATE);
         t.removeTeamMember(user1);

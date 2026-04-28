@@ -7,6 +7,7 @@ import com.project.hackhub.model.team.Team;
 import com.project.hackhub.model.utente.UtenteRegistrato;
 import com.project.hackhub.repository.HackathonRepository;
 import com.project.hackhub.repository.UtenteRegistratoRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -31,6 +32,7 @@ public class PrizeHandler {
      * @throws IllegalStateException se l'hackathon non ha un vincitore o il premio è già stato riscosso
      * @author Giulia Trozzi
      */
+    @Transactional
     public void claimPrize(UUID userId, UUID hackathonId) {
         UtenteRegistrato user = utenteRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("Utente non trovato"));

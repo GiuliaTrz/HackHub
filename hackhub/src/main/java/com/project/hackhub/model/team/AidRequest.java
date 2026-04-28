@@ -4,7 +4,9 @@ import com.project.hackhub.model.hackathon.Hackathon;
 import com.project.hackhub.service.calendar.Slot;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.Embedded;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Embeddable
@@ -16,7 +18,7 @@ public class AidRequest {
     @Embedded
     private Slot slot;
 
-    @OneToOne
+    @ManyToOne @Getter
     private Team team;
 
     public AidRequest(Team t, AidRequestType type, String description, Slot slot){
@@ -37,9 +39,4 @@ public class AidRequest {
             throw new IllegalStateException("Team not associated.");
         return team.getHackathon();
     }
-
-    public Team getTeam() {
-        return this.team;
-    }
-
 }

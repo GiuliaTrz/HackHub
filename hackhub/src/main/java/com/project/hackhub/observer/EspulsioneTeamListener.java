@@ -21,7 +21,6 @@ public class EspulsioneTeamListener implements EventListener {
         return EventType.ESPULSIONE_TEAM;
     }
 
-    /** {@inheritDoc} */
     @Override
     public void updateUsers(List<UtenteRegistrato> usersList, String message, Object entity) {
 
@@ -34,6 +33,6 @@ public class EspulsioneTeamListener implements EventListener {
         for(UtenteRegistrato u: usersList) {
             userStateService.changeUserState(u, false, hackathon, UserStateType.DEFAULT_STATE);
         }
-        //TODO, il messaggio è da restituire quando facciamo la chiamata API!
+        // message will be simulated for testing through the API call
     }
 }

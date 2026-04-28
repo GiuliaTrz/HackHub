@@ -21,10 +21,7 @@ public class SceltaVincitoreListener implements EventListener{
         if(message == null) throw new IllegalArgumentException("message needed");
         if(entity == null) throw new IllegalArgumentException("Hackathon cannot be null");
 
-        Hackathon hackathon = (Hackathon) entity;
-        for(UtenteRegistrato u: usersList) {
-            //TODO scegliere come indicare la notifica ai partecipanti
-        }
+        // message will be simulated for testing through the API call
     }
 
 }

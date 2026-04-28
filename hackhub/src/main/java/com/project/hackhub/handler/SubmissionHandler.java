@@ -72,6 +72,7 @@ public class SubmissionHandler {
      * @return a list of all most recent submissions sent by a Team
      * @author Chiara Marinucci
      */
+    @Transactional
     public List<Submission> getTeamSubmissions(UUID user, UUID team){
         UtenteRegistrato u = utenteRegistratoRepository.findById(user)
                 .orElseThrow(()-> new IllegalArgumentException("staff not found"));

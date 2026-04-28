@@ -47,6 +47,6 @@ public class EliminazioneTeamListener implements EventListener{
         for(UtenteRegistrato u: usersList) {
             userStateService.changeUserState(u, false, team.getHackathon(), UserStateType.DEFAULT_STATE);
         }
-        //TODO, il messaggio è da restituire quando facciamo la chiamata API! Gli utenti da notificare sono tutti i membri del team
+        // message will be simulated for testing through the API call
     }
 }

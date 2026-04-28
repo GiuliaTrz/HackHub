@@ -11,6 +11,7 @@ import com.project.hackhub.repository.InvitoRepository;
 import com.project.hackhub.repository.TeamRepository;
 import com.project.hackhub.repository.UtenteRegistratoRepository;
 import com.project.hackhub.service.UserStateService;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -37,7 +38,7 @@ public class InvitationReplyHandler {
         Invito i = invitationRepository.findById(invitation).orElseThrow(
                 () -> new IllegalArgumentException("the invitation cannot be null"));
 
-        Team t = i.getMittente();
+        Team t = i.getSender();
         t.removeInvitationFromList(i);
         teamRepository.save(t);
         invitationRepository.delete(i);
@@ -52,6 +53,7 @@ public class InvitationReplyHandler {
      *                                       or if the user is not available, so they can't accept the invitation
      * @author Giorgia Branchesi
      */
+    @Transactional
     public void acceptInvitation(UUID user, UUID invitation) {
 
         UtenteRegistrato u = userRepository.findById(user).orElseThrow(
@@ -59,8 +61,8 @@ public class InvitationReplyHandler {
         Invito i = invitationRepository.findById(invitation).orElseThrow(
                 () -> new IllegalArgumentException("the invitation cannot be null"));
 
-        UtenteRegistrato addressee = i.getDestinatario();
-        Hackathon h = i.getMittente().getHackathon();
+        UtenteRegistrato addressee = i.getAddresee();
+        Hackathon h = i.getSender().getHackathon();
 
         String s = u.getState(h).getType().toString();
         if(!u.hasPermission(Permission.CAN_ACCEPT_INVITATION, h)) {
@@ -72,7 +74,7 @@ public class InvitationReplyHandler {
 
         addressee.removeInvitation(i);
         userStateService.changeUserState(addressee, true, h, UserStateType.MEMBRO_DEL_TEAM);
-        i.getMittente().addTeamMember(addressee);
+        i.getSender().addTeamMember(addressee);
         removeInvitation(invitation);
     }
 
@@ -84,6 +86,7 @@ public class InvitationReplyHandler {
      * @throws UnsupportedOperationException if the {@link Hackathon} is not in {@link HackathonStateType#IN_ISCRIZIONE}
      * @author Giorgia Branchesi
      */
+    @Transactional
     public void declineInvitation(UUID user, UUID invitation) {
 
         UtenteRegistrato u = userRepository.findById(user).orElseThrow(
@@ -91,8 +94,8 @@ public class InvitationReplyHandler {
         Invito i = invitationRepository.findById(invitation).orElseThrow(
                 () -> new IllegalArgumentException("the invitation cannot be null"));
 
-        UtenteRegistrato addressee = i.getDestinatario();
-        Hackathon h = i.getMittente().getHackathon();
+        UtenteRegistrato addressee = i.getAddresee();
+        Hackathon h = i.getSender().getHackathon();
 
         if (!u.hasPermission(Permission.CAN_DECLINE_INVITATION, h) || !h.getState().getStateType().equals(HackathonStateType.IN_ISCRIZIONE))
             throw new UnsupportedOperationException("cannot perform operation");

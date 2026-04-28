@@ -16,9 +16,7 @@ public class NuovoLeaderListener implements EventListener{
     private final UserStateService userStateService;
 
     /**
-     * Gets the {@link EventType} supported by this listener
-     * @return the {@link EventType} supported by this listener
-     * @author Giorgia Branchesi
+     * {@inheritDoc}
      */
     @Override
     public EventType getSupportedEventType() {
@@ -46,6 +44,6 @@ public class NuovoLeaderListener implements EventListener{
         Team team = (Team) entity;
         userStateService.changeUserState(usersList.get(0), false, team.getHackathon(), UserStateType.DEFAULT_STATE);
         userStateService.changeUserState(usersList.get(1), false, team.getHackathon(), UserStateType.TEAM_LEADER);
-        //TODO, il messaggio è da restituire quando facciamo la chiamata API! Gli utenti da notificare sono tutti i membri del team
+        // message will be simulated for testing through the API call
     }
 }

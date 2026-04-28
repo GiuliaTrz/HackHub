@@ -15,9 +15,7 @@ public class InvitoUtenteListener implements EventListener{
     private final UserStateService userStateService;
 
     /**
-     * Gets the {@link EventType} supported by this listener
-     * @return the {@link EventType} supported by this listener
-     * @author Giorgia Branchesi
+     * {@inheritDoc}
      */
     @Override
     public EventType getSupportedEventType() {
@@ -42,7 +40,7 @@ public class InvitoUtenteListener implements EventListener{
         if(entity == null) throw new IllegalArgumentException("invitation cannot be null");
 
         Invito invitation = (Invito) entity;
-        userStateService.addInvitation(usersList.get(0), invitation);
-        //TODO, il messaggio è da restituire quando facciamo la chiamata API!
+        userStateService.addInvitation(usersList.getFirst(), invitation);
+        // message will be simulated for testing through the API call
     }
 }

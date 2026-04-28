@@ -13,15 +13,6 @@ public interface EventListener{
      */
     EventType getSupportedEventType();
 
-    /**
-     * Updates the users about the expulsion of their team from the Hackathon
-     *
-     * @param usersList the users to update
-     * @param message the message to send
-     * @param entity the entity
-     * @throws IllegalArgumentException if the message or the entity are null
-     * @author Giorgia Branchesi
-     */
     void updateUsers(List<UtenteRegistrato> usersList,
                      String message,
                      Object entity);
