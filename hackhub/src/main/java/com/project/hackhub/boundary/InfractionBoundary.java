@@ -52,5 +52,13 @@ public class InfractionBoundary {
         infractionHandler.handleInfraction(coordinator, team);
         return ResponseEntity.ok("infrazione presente! Penalizza o espelli team");
     }
+    @DeleteMapping("/{hackathonId}/{infractionIndex}")
+    public ResponseEntity<Void> deleteInfraction(
+            @AuthenticationPrincipal UUID userId,
+            @PathVariable UUID hackathonId,
+            @PathVariable int infractionIndex) {
+        infractionHandler.deleteInfraction(userId, hackathonId, infractionIndex);
+        return ResponseEntity.noContent().build();
+    }
 
 }
