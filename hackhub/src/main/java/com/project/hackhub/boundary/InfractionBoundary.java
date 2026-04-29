@@ -49,7 +49,7 @@ public class InfractionBoundary {
             @PathVariable UUID team) {
 
         infractionHandler.expelTeam(team, coordinator);
-        return ResponseEntity.ok("team espulso con successo");
+        return ResponseEntity.ok("team has been successfully expelled");
     }
 
     /**
@@ -67,7 +67,7 @@ public class InfractionBoundary {
             @RequestBody float pointsToDeduct) {
 
         infractionHandler.penalizeTeam(coordinator, team, pointsToDeduct);
-        return ResponseEntity.ok("team penalizzato di " + pointsToDeduct + " punti con successo");
+        return ResponseEntity.ok("team will be penalized subtracting " + pointsToDeduct + " points from final grade");
     }
 
     /**
@@ -84,7 +84,7 @@ public class InfractionBoundary {
             @RequestBody UUID team) {
 
         infractionHandler.handleInfraction(coordinator, team);
-        return ResponseEntity.ok("infrazione presente! Penalizza o espelli team");
+        return ResponseEntity.ok("Infraction to be handled: please, penalize or expel team");
     }
 
     /**

@@ -1,11 +1,11 @@
 package com.project.hackhub.handler;
 
 import com.project.hackhub.model.hackathon.Hackathon;
-import com.project.hackhub.model.utente.UtenteRegistrato;
-import com.project.hackhub.model.utente.state.Permission;
-import com.project.hackhub.model.utente.state.UserStateType;
+import com.project.hackhub.model.user.User;
+import com.project.hackhub.model.user.state.Permission;
+import com.project.hackhub.model.user.state.UserStateType;
 import com.project.hackhub.repository.HackathonRepository;
-import com.project.hackhub.repository.UtenteRegistratoRepository;
+import com.project.hackhub.repository.UserRepository;
 import com.project.hackhub.service.UserStateService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +18,7 @@ import java.util.UUID;
 public class StaffHandler {
 
     private final HackathonRepository hackathonRepository;
-    private final UtenteRegistratoRepository utenteRepository;
+    private final UserRepository userRepository;
     private final UserStateService userStateService;
 
     /**
@@ -32,11 +32,11 @@ public class StaffHandler {
      */
     @Transactional
     public void addMentor(UUID organizerId, UUID hackathonId, UUID mentorId) {
-        UtenteRegistrato organizer = utenteRepository.findById(organizerId)
+        User organizer = userRepository.findById(organizerId)
                 .orElseThrow(() -> new IllegalArgumentException("Organizer not found"));
         Hackathon hackathon = hackathonRepository.findById(hackathonId)
                 .orElseThrow(() -> new IllegalArgumentException("Hackathon not found"));
-        UtenteRegistrato mentor = utenteRepository.findById(mentorId)
+        User mentor = userRepository.findById(mentorId)
                 .orElseThrow(() -> new IllegalArgumentException("Mentor not found"));
 
         if (!organizer.hasPermission(Permission.CAN_MANAGE_STAFF, hackathon)) {
@@ -48,9 +48,9 @@ public class StaffHandler {
         }
 
         hackathon.addMentor(mentor);
-        userStateService.changeUserState(mentor, true, hackathon, UserStateType.MENTORE);
+        userStateService.changeUserState(mentor, true, hackathon, UserStateType.MENTOR);
         hackathonRepository.save(hackathon);
-        utenteRepository.save(mentor);
+        userRepository.save(mentor);
     }
 
     /**
@@ -62,11 +62,11 @@ public class StaffHandler {
      */
     @Transactional
     public void removeMentor(UUID organizerId, UUID hackathonId, UUID mentorId) {
-        UtenteRegistrato organizer = utenteRepository.findById(organizerId)
+        User organizer = userRepository.findById(organizerId)
                 .orElseThrow(() -> new IllegalArgumentException("Organizzatore non trovato"));
         Hackathon hackathon = hackathonRepository.findById(hackathonId)
                 .orElseThrow(() -> new IllegalArgumentException("Hackathon non trovato"));
-        UtenteRegistrato mentor = utenteRepository.findById(mentorId)
+        User mentor = userRepository.findById(mentorId)
                 .orElseThrow(() -> new IllegalArgumentException("Mentore non trovato"));
 
         if (!organizer.hasPermission(Permission.CAN_MANAGE_STAFF, hackathon)) {
@@ -80,7 +80,7 @@ public class StaffHandler {
         hackathon.removeMentor(mentor);
         userStateService.changeUserState(mentor, false, hackathon, UserStateType.DEFAULT_STATE);
         hackathonRepository.save(hackathon);
-        utenteRepository.save(mentor);
+        userRepository.save(mentor);
     }
 
     /**
@@ -100,11 +100,11 @@ public class StaffHandler {
      */
     @Transactional
     public void changeStaffRole(UUID organizerId, UUID hackathonId, UUID targetUserId, String newRole) {
-        UtenteRegistrato organizer = utenteRepository.findById(organizerId)
+        User organizer = userRepository.findById(organizerId)
                 .orElseThrow(() -> new IllegalArgumentException("Organizzatore non trovato"));
         Hackathon hackathon = hackathonRepository.findById(hackathonId)
                 .orElseThrow(() -> new IllegalArgumentException("Hackathon non trovato"));
-        UtenteRegistrato targetUser = utenteRepository.findById(targetUserId)
+        User targetUser = userRepository.findById(targetUserId)
                 .orElseThrow(() -> new IllegalArgumentException("Utente target non trovato"));
 
         if (!organizer.hasPermission(Permission.CAN_MANAGE_STAFF, hackathon)) {
@@ -119,7 +119,7 @@ public class StaffHandler {
 
         boolean isCurrentlyOrganizer = hackathon.getCoordinator() != null &&
                 hackathon.getCoordinator().getId().equals(targetUserId);
-        if (isCurrentlyOrganizer && targetState != UserStateType.ORGANIZZATORE) {
+        if (isCurrentlyOrganizer && targetState != UserStateType.COORDINATOR) {
             throw new UnsupportedOperationException("Impossibile cambiare ruolo all'unico organizzatore dell'hackathon");
         }
 
@@ -131,19 +131,19 @@ public class StaffHandler {
         userStateService.changeUserState(targetUser, true, hackathon, targetState);
 
         hackathonRepository.save(hackathon);
-        utenteRepository.save(targetUser);
+        userRepository.save(targetUser);
     }
 
     private UserStateType parseRole(String role) {
         return switch (role.toUpperCase()) {
-            case "ORGANIZER" -> UserStateType.ORGANIZZATORE;
-            case "MENTOR" -> UserStateType.MENTORE;
-            case "JUDGE" -> UserStateType.GIUDICE;
+            case "ORGANIZER" -> UserStateType.COORDINATOR;
+            case "MENTOR" -> UserStateType.MENTOR;
+            case "JUDGE" -> UserStateType.JUDGE;
             default -> throw new IllegalArgumentException("Ruolo non valido. Usare ORGANIZER, MENTOR o JUDGE");
         };
     }
 
-    private void removeUserFromAllStaffRoles(UtenteRegistrato user, Hackathon hackathon) {
+    private void removeUserFromAllStaffRoles(User user, Hackathon hackathon) {
         if (hackathon.getMentorsList().contains(user)) {
             hackathon.removeMentor(user);
         }
@@ -155,18 +155,18 @@ public class StaffHandler {
         }
     }
 
-    private void assignRoleToUser(UtenteRegistrato user, Hackathon hackathon, UserStateType role) {
+    private void assignRoleToUser(User user, Hackathon hackathon, UserStateType role) {
         switch (role) {
-            case ORGANIZZATORE -> {
+            case COORDINATOR -> {
                 if (hackathon.getCoordinator() != null) {
                     throw new IllegalStateException("Hackathon ha già un organizzatore. Il modello attuale supporta un solo organizzatore.");
                 }
                 hackathon.setCoordinator(user);
             }
-            case MENTORE -> hackathon.addMentor(user);
-            case GIUDICE -> {
+            case MENTOR -> hackathon.addMentor(user);
+            case JUDGE -> {
                 if (hackathon.getJudge() != null) {
-                    UtenteRegistrato oldJudge = hackathon.getJudge();
+                    User oldJudge = hackathon.getJudge();
                     hackathon.setJudge(null);
                     userStateService.changeUserState(oldJudge, false, hackathon, UserStateType.DEFAULT_STATE);
                 }

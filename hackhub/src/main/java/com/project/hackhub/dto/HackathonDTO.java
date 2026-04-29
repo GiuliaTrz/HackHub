@@ -1,8 +1,7 @@
 package com.project.hackhub.dto;
 
-import com.project.hackhub.model.hackathon.Prenotazione;
-import com.project.hackhub.model.hackathon.Soldi;
-import com.project.hackhub.model.utente.UtenteRegistrato;
+import com.project.hackhub.model.hackathon.Reservation;
+import com.project.hackhub.model.hackathon.Money;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
@@ -15,7 +14,7 @@ public record HackathonDTO(
           LocalDate expiredSubscriptionsDate,
           Integer maxTeamDimension,
           List<UUID> mentorsList,
-          Soldi moneyPrice,
+          Money moneyPrice,
           UUID judge,
-          Prenotazione reservation
+          Reservation reservation
 ) {}

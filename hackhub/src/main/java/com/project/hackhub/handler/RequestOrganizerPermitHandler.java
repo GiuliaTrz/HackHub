@@ -1,8 +1,8 @@
 package com.project.hackhub.handler;
 
 import com.project.hackhub.model.team.FileTemplate;
-import com.project.hackhub.model.utente.UtenteRegistrato;
-import com.project.hackhub.repository.UtenteRegistratoRepository;
+import com.project.hackhub.model.user.User;
+import com.project.hackhub.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -13,7 +13,7 @@ import java.util.UUID;
 @AllArgsConstructor
 public class RequestOrganizerPermitHandler {
 
-    private final UtenteRegistratoRepository userRepository;
+    private final UserRepository userRepository;
 
     /**
      * Handles the request of a user to get a permit to organize a Hackathon
@@ -25,7 +25,7 @@ public class RequestOrganizerPermitHandler {
     @Transactional
     public void requestPermission(UUID user, FileTemplate f) {
 
-        UtenteRegistrato user1 = userRepository.findById(user).orElseThrow(
+        User user1 = userRepository.findById(user).orElseThrow(
                 () -> new IllegalArgumentException("user cannot be null")
         );
 

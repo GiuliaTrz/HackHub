@@ -4,7 +4,6 @@ import com.project.hackhub.dto.HackathonCreationResponse;
 import com.project.hackhub.dto.HackathonDTO;
 import com.project.hackhub.dto.TaskDTO;
 import com.project.hackhub.handler.HackathonCreationHandler;
-import com.project.hackhub.model.team.FileTemplate;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;

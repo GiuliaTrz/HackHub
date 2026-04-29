@@ -1,7 +1,6 @@
 package com.project.hackhub.repository;
 
 import com.project.hackhub.model.hackathon.Hackathon;
-import com.project.hackhub.model.hackathon.state.HackathonStateType;
 import com.project.hackhub.model.team.Infraction;
 import com.project.hackhub.model.team.Team;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -17,10 +16,10 @@ import java.util.UUID;
 @Repository
 public interface HackathonRepository extends JpaRepository<Hackathon, UUID> {
 
-    @Query("SELECT h FROM Hackathon h WHERE h.expiredSubscriptionsDate < :now\n AND h.stateType = HackathonStateType.IN_ISCRIZIONE")
+    @Query("SELECT h FROM Hackathon h WHERE h.expiredSubscriptionsDate < :now\n AND h.stateType = HackathonStateType.SUBSCRIPTION_PHASE")
     List<Hackathon> getExpiredSubscriptions(@Param("now") LocalDateTime now);
 
-    @Query("SELECT h FROM Hackathon h WHERE h.reservation.timeInterval.endDate < :now\n AND h.stateType = HackathonStateType.IN_CORSO")
+    @Query("SELECT h FROM Hackathon h WHERE h.reservation.timeInterval.endDate < :now\n AND h.stateType = HackathonStateType.ONGOING")
     List<Hackathon> getExpiredSubmissions(LocalDateTime now);
 
     @Query(" SELECT i FROM Hackathon h JOIN h.infractions i WHERE h = :hackathon AND i.iTeam = :team")

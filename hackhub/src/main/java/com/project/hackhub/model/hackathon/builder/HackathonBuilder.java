@@ -1,13 +1,11 @@
 package com.project.hackhub.model.hackathon.builder;
 
 import com.project.hackhub.model.hackathon.Hackathon;
-import com.project.hackhub.model.hackathon.state.HackathonState;
-import com.project.hackhub.model.hackathon.Prenotazione;
-import com.project.hackhub.model.hackathon.Soldi;
-import com.project.hackhub.model.hackathon.state.HackathonStateFactory;
+import com.project.hackhub.model.hackathon.Reservation;
+import com.project.hackhub.model.hackathon.Money;
 import com.project.hackhub.model.hackathon.state.HackathonStateType;
-import com.project.hackhub.model.utente.UtenteRegistrato;
-import com.project.hackhub.repository.UtenteRegistratoRepository;
+import com.project.hackhub.model.user.User;
+import com.project.hackhub.repository.UserRepository;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -55,11 +53,11 @@ public class HackathonBuilder implements Builder {
     }
 
     /**
-     * Sets the state of the hackathon to the default 'IN_ISCRIZIONE' state.
+     * Sets the state of the hackathon to the default 'SUBSCRIPTION_TIME' state.
      */
     @Override
     public void setState() {
-        hackathon.setStateType(HackathonStateType.IN_ISCRIZIONE);
+        hackathon.setStateType(HackathonStateType.SUBSCRIPTION_PHASE);
     }
 
     /**
@@ -78,7 +76,7 @@ public class HackathonBuilder implements Builder {
      * @param p the reservation
      */
     @Override
-    public void setReservation(Prenotazione p) {
+    public void setReservation(Reservation p) {
         hackathon.setReservation(p);
     }
 
@@ -87,7 +85,7 @@ public class HackathonBuilder implements Builder {
      * @param p the money price
      */
     @Override
-    public void setMoneyPrice(Soldi p) {
+    public void setMoneyPrice(Money p) {
         if(p != null && p.getQuantity() >= 0)
             hackathon.setMoneyPrice(p);
     }
@@ -97,7 +95,7 @@ public class HackathonBuilder implements Builder {
      * @param mentorsList the list of mentors
      */
     @Override
-    public void addMentorsList(List<UtenteRegistrato> mentorsList) {
+    public void addMentorsList(List<User> mentorsList) {
         if(mentorsList!=null)
             hackathon.setMentorsList(mentorsList);
     }
@@ -118,7 +116,7 @@ public class HackathonBuilder implements Builder {
      * @param u the judge
      */
     @Override
-    public void setJudge(UtenteRegistrato u) {
+    public void setJudge(User u) {
             hackathon.setJudge(u);
 
     }
@@ -128,7 +126,7 @@ public class HackathonBuilder implements Builder {
      * @param coordinator the coordinator
      */
     @Override
-    public void setCoordinator(UtenteRegistrato coordinator) {
+    public void setCoordinator(User coordinator) {
         hackathon.setCoordinator(coordinator);
     }
 
@@ -146,7 +144,7 @@ public class HackathonBuilder implements Builder {
      * @param author the author of the memento
      * @return a new HackathonBuilderMemento or updates an existing one
      */
-    public HackathonBuilderMemento saveMemento(UtenteRegistrato author) {
+    public HackathonBuilderMemento saveMemento(User author) {
         return HackathonBuilderMemento.fromBuilder(this, author);
     }
 
@@ -163,14 +161,14 @@ public class HackathonBuilder implements Builder {
      * @param snapshot the snapshot to restore from
      * @param userRepository repository to resolve user UUIDs
      */
-    public void restoreFromSnapshot(HackathonSnapshot snapshot, UtenteRegistratoRepository userRepository) {
+    public void restoreFromSnapshot(HackathonSnapshot snapshot, UserRepository userRepository) {
         // Restore basic data
         HackathonBuilderMemento memento = new HackathonBuilderMemento(snapshot);
         restoreMemento(memento);
 
         // Restore associated users
         if (snapshot.getMentorsList() != null && !snapshot.getMentorsList().isEmpty()) {
-            List<UtenteRegistrato> mentors = snapshot.getMentorsList().stream()
+            List<User> mentors = snapshot.getMentorsList().stream()
                     .map(uuid -> userRepository.findById(uuid)
                             .orElseThrow(() -> new IllegalArgumentException("Mentor not found: " + uuid)))
                     .toList();
@@ -178,7 +176,7 @@ public class HackathonBuilder implements Builder {
         }
 
         if (snapshot.getJudge() != null) {
-            UtenteRegistrato judge = userRepository.findById(snapshot.getJudge())
+            User judge = userRepository.findById(snapshot.getJudge())
                     .orElseThrow(() -> new IllegalArgumentException("Judge not found: " + snapshot.getJudge()));
             setJudge(judge);
         }

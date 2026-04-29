@@ -3,14 +3,14 @@ package com.project.hackhub.handler;
 import com.project.hackhub.dto.HackathonDTO;
 import com.project.hackhub.model.hackathon.Hackathon;
 import com.project.hackhub.model.team.Team;
-import com.project.hackhub.model.utente.UtenteRegistrato;
-import com.project.hackhub.model.utente.state.Permission;
-import com.project.hackhub.model.utente.state.UserStateType;
-import com.project.hackhub.observer.EliminazioneHackathonListener;
+import com.project.hackhub.model.user.User;
+import com.project.hackhub.model.user.state.Permission;
+import com.project.hackhub.model.user.state.UserStateType;
 import com.project.hackhub.repository.HackathonRepository;
-import com.project.hackhub.repository.UtenteRegistratoRepository;
+import com.project.hackhub.repository.UserRepository;
 import com.project.hackhub.service.UserStateService;
 import jakarta.transaction.Transactional;
+import com.project.hackhub.observer.EliminazioneHackathonListener;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 public class HackathonHandler {
 
     private final HackathonRepository hackathonRepo;
-    private final UtenteRegistratoRepository utenteRepository;
+    private final UserRepository utenteRepository; // <-- AGGIUNTO
     private final UserStateService userStateService;
     private final EliminazioneHackathonListener eliminazioneHackathonListener;
 
@@ -36,7 +36,7 @@ public class HackathonHandler {
     @Transactional
     public void deleteHackathon(UUID deleterId, UUID hackathonId) {
 
-        UtenteRegistrato deleter = utenteRepository.findById(deleterId)
+        User deleter = utenteRepository.findById(deleterId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
         Hackathon hackathon = hackathonRepo.findById(hackathonId)
                 .orElseThrow(() -> new IllegalArgumentException("Hackathon not found"));
@@ -46,7 +46,7 @@ public class HackathonHandler {
         }
 
         // 1. Raccolta di tutti gli utenti coinvolti
-        List<UtenteRegistrato> partecipanti = new ArrayList<>();
+        List<User> partecipanti = new ArrayList<>();
 
         // Staff
         if (hackathon.getCoordinator() != null) {
@@ -69,7 +69,7 @@ public class HackathonHandler {
         }
 
         // Rimozione duplicati
-        List<UtenteRegistrato> utentiUnici = partecipanti.stream()
+        List<User> utentiUnici = partecipanti.stream()
                 .distinct()
                 .collect(Collectors.toList());
 
@@ -86,7 +86,7 @@ public class HackathonHandler {
      */
     @Transactional
     public Hackathon updateHackathon(UUID editorId, UUID hackathonId, HackathonDTO dto) {
-        UtenteRegistrato editor = utenteRepository.findById(editorId)
+        User editor = utenteRepository.findById(editorId)
                 .orElseThrow(() -> new IllegalArgumentException("Editor not found"));
         Hackathon hackathon = hackathonRepo.findById(hackathonId)
                 .orElseThrow(() -> new IllegalArgumentException("Hackathon not found"));
@@ -114,11 +114,11 @@ public class HackathonHandler {
      */
     @Transactional
     public void modifyStaff(UUID editorId, UUID hackathonId, UUID staffMemberId, String role, boolean add) {
-        UtenteRegistrato editor = utenteRepository.findById(editorId)
+        User editor = utenteRepository.findById(editorId)
                 .orElseThrow(() -> new IllegalArgumentException("Editor not found"));
         Hackathon hackathon = hackathonRepo.findById(hackathonId)
                 .orElseThrow(() -> new IllegalArgumentException("Hackathon not found"));
-        UtenteRegistrato member = utenteRepository.findById(staffMemberId)
+        User member = utenteRepository.findById(staffMemberId)
                 .orElseThrow(() -> new IllegalArgumentException("Staff member not found"));
 
         if (!editor.hasPermission(Permission.CAN_MANAGE_STAFF, hackathon)) {
@@ -132,7 +132,7 @@ public class HackathonHandler {
                         throw new IllegalStateException("Hackathon ha già un organizzatore.");
                     }
                     hackathon.setCoordinator(member);
-                    userStateService.changeUserState(member, true, hackathon, UserStateType.ORGANIZZATORE);
+                    userStateService.changeUserState(member, true, hackathon, UserStateType.COORDINATOR);
                 } else {
                     if (hackathon.getCoordinator() == null || !hackathon.getCoordinator().getId().equals(staffMemberId)) {
                         throw new IllegalArgumentException("L'utente non è l'organizzatore di questo hackathon");
@@ -145,7 +145,7 @@ public class HackathonHandler {
             case "MENTOR":
                 if (add) {
                     hackathon.addMentor(member);
-                    userStateService.changeUserState(member, true, hackathon, UserStateType.MENTORE);
+                    userStateService.changeUserState(member, true, hackathon, UserStateType.MENTOR);
                 } else {
                     // Controllo: non si può rimuovere l'ultimo mentore
                     if (hackathon.getMentorsList() == null || hackathon.getMentorsList().size() <= 1) {
@@ -160,12 +160,12 @@ public class HackathonHandler {
                 // Il giudice non può essere rimosso, solo sostituito
                 if (add) {
                     if (hackathon.getJudge() != null) {
-                        UtenteRegistrato oldJudge = hackathon.getJudge();
+                        User oldJudge = hackathon.getJudge();
                         hackathon.setJudge(null);
                         userStateService.changeUserState(oldJudge, false, hackathon, UserStateType.DEFAULT_STATE);
                     }
                     hackathon.setJudge(member);
-                    userStateService.changeUserState(member, true, hackathon, UserStateType.GIUDICE);
+                    userStateService.changeUserState(member, true, hackathon, UserStateType.JUDGE);
                 } else {
                     throw new UnsupportedOperationException("Il giudice non può essere rimosso, può solo essere sostituito.");
                 }

@@ -1,12 +1,12 @@
 package com.project.hackhub.handler;
 
 import com.project.hackhub.model.hackathon.Hackathon;
-import com.project.hackhub.model.hackathon.Soldi;
+import com.project.hackhub.model.hackathon.Money;
 import com.project.hackhub.model.hackathon.state.HackathonStateType;
 import com.project.hackhub.model.team.Team;
-import com.project.hackhub.model.utente.UtenteRegistrato;
+import com.project.hackhub.model.user.User;
 import com.project.hackhub.repository.HackathonRepository;
-import com.project.hackhub.repository.UtenteRegistratoRepository;
+import com.project.hackhub.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -20,7 +20,7 @@ import java.util.UUID;
 public class PrizeHandler {
 
     private final HackathonRepository hackathonRepository;
-    private final UtenteRegistratoRepository utenteRepository;
+    private final UserRepository utenteRepository;
 
     /**
      * Riscuote il premio in denaro per un membro del team vincitore.
@@ -34,13 +34,13 @@ public class PrizeHandler {
      */
     @Transactional
     public void claimPrize(UUID userId, UUID hackathonId) {
-        UtenteRegistrato user = utenteRepository.findById(userId)
+        User user = utenteRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("Utente non trovato"));
         Hackathon hackathon = hackathonRepository.findById(hackathonId)
                 .orElseThrow(() -> new IllegalArgumentException("Hackathon non trovato"));
 
         // Verifica che l'hackathon sia terminato, e quindi nello stato "CONCLUSO"
-        if (hackathon.getState().getStateType() != HackathonStateType.CONCLUSO) {
+        if (hackathon.getState().getStateType() != HackathonStateType.CONCLUDED) {
             throw new IllegalStateException("L'hackathon non è ancora terminato");
         }
 
@@ -53,7 +53,7 @@ public class PrizeHandler {
             throw new UnsupportedOperationException("Solo i membri del team vincitore possono riscuotere il premio");
         }
 
-        Soldi totalPrize = hackathon.getMoneyPrice();
+        Money totalPrize = hackathon.getMoneyPrice();
         double totalAmount = totalPrize.getQuantity();   // <-- Usa il getter corretto
         int teamSize = winner.getTeamMembersList().size();
 
@@ -72,7 +72,7 @@ public class PrizeHandler {
     }
 
     // Simulazione del servizio di pagamento esterno
-    private boolean externalPaymentService(UtenteRegistrato user, BigDecimal amount) {
+    private boolean externalPaymentService(User user, BigDecimal amount) {
         // Qui si integrerebbe con un gateway di pagamento reale (estendibilità)
         return true;
     }

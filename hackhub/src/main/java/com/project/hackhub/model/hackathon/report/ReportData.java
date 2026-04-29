@@ -1,12 +1,12 @@
 package com.project.hackhub.model.hackathon.report;
 
-import com.project.hackhub.model.hackathon.Prenotazione;
-import com.project.hackhub.model.hackathon.Soldi;
+import com.project.hackhub.model.hackathon.Reservation;
+import com.project.hackhub.model.hackathon.Money;
 import com.project.hackhub.model.hackathon.state.HackathonState;
 import com.project.hackhub.model.team.AidRequest;
 import com.project.hackhub.model.team.Infraction;
 import com.project.hackhub.model.team.Team;
-import com.project.hackhub.model.utente.UtenteRegistrato;
+import com.project.hackhub.model.user.User;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -33,11 +33,11 @@ public class ReportData {
     private int maxTeamDimension;
     private HackathonState state;
     private List<Team> teamsList;
-    private List<UtenteRegistrato> mentorsList;
-    private Soldi moneyPrice;
-    private UtenteRegistrato judge;
-    private UtenteRegistrato coordinator;
-    private Prenotazione reservation;
+    private List<User> mentorsList;
+    private Money moneyPrice;
+    private User judge;
+    private User coordinator;
+    private Reservation reservation;
     private Map<String, Float> teamsGrades;
     private List<AidRequest> aidRequests;
     private List<Infraction> infractions;

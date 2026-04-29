@@ -1,8 +1,8 @@
 package com.project.hackhub.model.hackathon.report;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.project.hackhub.model.hackathon.Prenotazione;
-import com.project.hackhub.model.hackathon.Soldi;
+import com.project.hackhub.model.hackathon.Reservation;
+import com.project.hackhub.model.hackathon.Money;
 import com.project.hackhub.model.hackathon.state.HackathonState;
 import com.project.hackhub.model.team.Team;
 import lombok.Getter;
@@ -19,7 +19,7 @@ public final class PublicReport extends Report {
 
     private final Map<String, Float> teamsGrades;
 
-    public PublicReport(String name, String ruleBook, Prenotazione reservation, LocalDate expiredSubscriptionsDate, HackathonState state, Soldi moneyPrize, int maxTeamDimension, Team winner, Map<String, Float> teamsGrades) {
+    public PublicReport(String name, String ruleBook, Reservation reservation, LocalDate expiredSubscriptionsDate, HackathonState state, Money moneyPrize, int maxTeamDimension, Team winner, Map<String, Float> teamsGrades) {
         super(name, ruleBook, reservation, expiredSubscriptionsDate, state, moneyPrize, maxTeamDimension, winner);
         this.teamsGrades = teamsGrades;
     }

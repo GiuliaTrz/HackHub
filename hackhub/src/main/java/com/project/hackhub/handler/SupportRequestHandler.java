@@ -9,10 +9,10 @@ import com.project.hackhub.model.hackathon.state.HackathonStateType;
 import com.project.hackhub.model.team.AidRequestType;
 import com.project.hackhub.model.team.Team;
 import com.project.hackhub.model.team.AidRequest;
-import com.project.hackhub.model.utente.UtenteRegistrato;
-import com.project.hackhub.model.utente.state.Permission;
+import com.project.hackhub.model.user.User;
+import com.project.hackhub.model.user.state.Permission;
 import com.project.hackhub.repository.HackathonRepository;
-import com.project.hackhub.repository.UtenteRegistratoRepository;
+import com.project.hackhub.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
@@ -24,13 +24,13 @@ public class SupportRequestHandler {
 
     private final CalendarAdapter calendarAdapter;
     private final HackathonRepository hackathonRepository;
-    private final UtenteRegistratoRepository utenteRepository;
+    private final UserRepository userRepository;
     private final TeamRepository teamRepository;
 
-    public SupportRequestHandler(CalendarAdapter calendarAdapter, HackathonRepository hackathonRepository, UtenteRegistratoRepository utenteRepository, TeamRepository teamRepository) {
+    public SupportRequestHandler(CalendarAdapter calendarAdapter, HackathonRepository hackathonRepository, UserRepository userRepository, TeamRepository teamRepository) {
         this.calendarAdapter = calendarAdapter;
         this.hackathonRepository = hackathonRepository;
-        this.utenteRepository = utenteRepository;
+        this.userRepository = userRepository;
         this.teamRepository = teamRepository;
     }
 
@@ -48,9 +48,9 @@ public class SupportRequestHandler {
     public List<Slot> getAvailableSlots(UUID user, UUID hackathon){
         Hackathon h = this.hackathonRepository.findById(hackathon)
                 .orElseThrow(() -> new IllegalArgumentException("Hackathon not found"));
-        if(h.getState().getStateType() != HackathonStateType.IN_CORSO)
+        if(h.getState().getStateType() != HackathonStateType.ONGOING)
             throw new IllegalStateException("Hackathon is not IN_CORSO");
-        UtenteRegistrato u = this.utenteRepository.findById(user)
+        User u = this.userRepository.findById(user)
                 .orElseThrow(()-> new IllegalArgumentException("User not found"));
             if (!u.hasPermission(Permission.CAN_PROPOSE_CALL, h))
                 throw new UnsupportedOperationException("User does not have required permission");
@@ -74,9 +74,9 @@ public class SupportRequestHandler {
     public void proposeCall(UUID mentor, Slot slot, UUID team){
         Team t = this.hackathonRepository.findByTeamId(team)
                 .orElseThrow(() -> new IllegalArgumentException("Team not found"));
-        if(t.getHackathon().getState().getStateType() != HackathonStateType.IN_CORSO)
+        if(t.getHackathon().getState().getStateType() != HackathonStateType.ONGOING)
             throw new IllegalStateException("Hackathon is not IN_CORSO");
-        UtenteRegistrato u = this.utenteRepository.findById(mentor)
+        User u = this.userRepository.findById(mentor)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
         if(!u.hasPermission(Permission.CAN_PROPOSE_CALL, t.getHackathon()))
                 throw new UnsupportedOperationException("User does not have required permission");
@@ -106,9 +106,9 @@ public class SupportRequestHandler {
         if(dto == null) return;
         Team realTeam = this.teamRepository.findById(dto.team())
                 .orElseThrow(() -> new IllegalArgumentException("Team not found"));
-        UtenteRegistrato u =  this.utenteRepository.findById(leader)
+        User u =  this.userRepository.findById(leader)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
-        if(realTeam.getHackathon().getState().getStateType() != HackathonStateType.IN_CORSO)
+        if(realTeam.getHackathon().getState().getStateType() != HackathonStateType.ONGOING)
                 throw new IllegalStateException("Hackathon is not IN_CORSO");
         if (!u.hasPermission(Permission.CAN_SEND_AID_REQUEST, realTeam.getHackathon()))
                 throw new UnsupportedOperationException("User does not have required permission");
@@ -147,7 +147,7 @@ public class SupportRequestHandler {
      */
     @Transactional
     public void deleteSupportRequest(UUID requesterId, UUID hackathonId, UUID teamId) {
-        UtenteRegistrato requester = utenteRepository.findById(requesterId)
+        User requester = userRepository.findById(requesterId)
                 .orElseThrow(() -> new IllegalArgumentException("Utente non trovato"));
         Hackathon hackathon = hackathonRepository.findById(hackathonId)
                 .orElseThrow(() -> new IllegalArgumentException("Hackathon non trovato"));
@@ -182,7 +182,7 @@ public class SupportRequestHandler {
      */
     @Transactional
     public List<AidRequest> getAllSupportRequests(UUID viewerId, UUID hackathonId) {
-        UtenteRegistrato viewer = utenteRepository.findById(viewerId)
+        User viewer = userRepository.findById(viewerId)
                 .orElseThrow(() -> new IllegalArgumentException("Utente non trovato"));
         Hackathon hackathon = hackathonRepository.findById(hackathonId)
                 .orElseThrow(() -> new IllegalArgumentException("Hackathon non trovato"));

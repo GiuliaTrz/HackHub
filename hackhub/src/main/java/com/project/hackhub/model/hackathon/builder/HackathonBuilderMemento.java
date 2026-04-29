@@ -1,7 +1,7 @@
 package com.project.hackhub.model.hackathon.builder;
 
 import com.project.hackhub.model.hackathon.Hackathon;
-import com.project.hackhub.model.utente.UtenteRegistrato;
+import com.project.hackhub.model.user.User;
 import lombok.Getter;
 
 import java.util.ArrayList;
@@ -48,7 +48,7 @@ public class HackathonBuilderMemento implements Memento {
      */
     public static HackathonBuilderMemento fromBuilder(
             HackathonBuilder builder,
-            UtenteRegistrato author
+            User author
     ) {
 
         Hackathon hackathon = builder.getProduct();
@@ -70,7 +70,7 @@ public class HackathonBuilderMemento implements Memento {
                     new ArrayList<>(
                             hackathon.getMentorsList()
                                     .stream()
-                                    .map(UtenteRegistrato::getId)
+                                    .map(User::getId)
                                     .toList()
                     )
             );
@@ -131,60 +131,7 @@ public class HackathonBuilderMemento implements Memento {
             hackathon.setReservation(snapshot.getReservation());
     }
 
-     /**
-      * Merges a new snapshot into the existing one, preserving non-null values.
-      *
-      * This method implements an intelligent merge strategy where:
-      * <ul>
-      *   <li>If a value in the new snapshot is non-null, it overwrites the existing value</li>
-      *   <li>If a value in the new snapshot is null, the existing value is preserved</li>
-      *   <li>For lists (mentors), if the new list is non-null, it completely replaces the old list</li>
-      * </ul>
-      *
-      * This allows partial updates to preserve previously entered data, preventing accidental
-      * data loss when users submit incomplete forms in multiple steps.
-      *
-      * @param newSnapshot the snapshot containing new/updated data to merge
-      */
-     public void mergeWith(HackathonSnapshot newSnapshot) {
-         if (newSnapshot == null) {
-             return;
-         }
-
-         if (newSnapshot.getName() != null) {
-             snapshot.setName(newSnapshot.getName());
-         }
-
-         if (newSnapshot.getRuleBook() != null) {
-             snapshot.setRuleBook(newSnapshot.getRuleBook());
-         }
-
-         if (newSnapshot.getExpiredSubscriptionsDate() != null) {
-             snapshot.setExpiredSubscriptionsDate(newSnapshot.getExpiredSubscriptionsDate());
-         }
-
-         if (newSnapshot.getMaxTeamDimension() != null) {
-             snapshot.setMaxTeamDimension(newSnapshot.getMaxTeamDimension());
-         }
-
-         if (newSnapshot.getMoneyPrice() != null) {
-             snapshot.setMoneyPrice(newSnapshot.getMoneyPrice());
-         }
-
-         if (newSnapshot.getReservation() != null) {
-             snapshot.setReservation(newSnapshot.getReservation());
-         }
-
-         if (newSnapshot.getMentorsList() != null) {
-             snapshot.setMentorsList(newSnapshot.getMentorsList());
-         }
-
-         if (newSnapshot.getJudge() != null) {
-             snapshot.setJudge(newSnapshot.getJudge());
-         }
-     }
-
-     /**
+    /**
       * Returns the snapshot representing the saved state of this memento.
       * The snapshot contains all essential data needed to reconstruct the builder state,
       * including the author identifier for lookup and all hackathon creation parameters.

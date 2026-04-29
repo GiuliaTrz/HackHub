@@ -1,8 +1,8 @@
 package com.project.hackhub.observer;
 
+import com.project.hackhub.model.user.User;
 import com.project.hackhub.model.hackathon.Hackathon;
-import com.project.hackhub.model.utente.UtenteRegistrato;
-import com.project.hackhub.model.utente.state.UserStateType;
+import com.project.hackhub.model.user.state.UserStateType;
 import com.project.hackhub.service.UserStateService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -16,12 +16,12 @@ public class RimozioneDaTeamListener implements EventListener {
     private final UserStateService userStateService;
 
     @Override
-    public void updateUsers(List<UtenteRegistrato> usersList, String message, Object entity) {
+    public void updateUsers(List<User> usersList, String message, Object entity) {
         if (!(entity instanceof Hackathon hackathon)) {
             throw new IllegalArgumentException("Entity must be a Hackathon");
         }
 
-        for (UtenteRegistrato user : usersList) {
+        for (User user : usersList) {
             // Rimuove lo stato di partecipazione al team riportando a DEFAULT_STATE
             userStateService.changeUserState(user, false, hackathon, UserStateType.DEFAULT_STATE);
         }

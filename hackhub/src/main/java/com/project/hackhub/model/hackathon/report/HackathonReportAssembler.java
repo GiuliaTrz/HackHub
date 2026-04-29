@@ -1,8 +1,8 @@
 package com.project.hackhub.model.hackathon.report;
 
 import com.project.hackhub.model.hackathon.Hackathon;
-import com.project.hackhub.model.utente.UtenteRegistrato;
-import com.project.hackhub.model.utente.state.Permission;
+import com.project.hackhub.model.user.User;
+import com.project.hackhub.model.user.state.Permission;
 
 /**
  * A class that builds different report views based on user permissions.
@@ -89,7 +89,7 @@ public class HackathonReportAssembler {
      * @return report view matching user access level
      * @author Chiara Marinucci
      */
-    public Report build(ReportData data, Hackathon h, UtenteRegistrato u) {
+    public Report build(ReportData data, Hackathon h, User u) {
         if (u == null)
             return buildPublic(data);
         if (u.hasPermission(Permission.STAFF_PERMISSION, h))

@@ -2,12 +2,12 @@ package com.project.hackhub.handler;
 
 import com.project.hackhub.model.hackathon.Hackathon;
 import com.project.hackhub.model.team.Team;
-import com.project.hackhub.model.utente.UtenteRegistrato;
-import com.project.hackhub.model.utente.state.Permission;
-import com.project.hackhub.model.utente.state.UserStateType;
+import com.project.hackhub.model.user.User;
+import com.project.hackhub.model.user.state.Permission;
+import com.project.hackhub.model.user.state.UserStateType;
 import com.project.hackhub.repository.HackathonRepository;
 import com.project.hackhub.repository.TeamRepository;
-import com.project.hackhub.repository.UtenteRegistratoRepository;
+import com.project.hackhub.repository.UserRepository;
 import com.project.hackhub.service.UserStateService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +19,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class TeamHandler {
 
-    private final UtenteRegistratoRepository userRepository;
+    private final UserRepository userRepository;
     private final TeamRepository teamRepository;
     private final HackathonRepository hackathonRepository;
     private final UserStateService userStateService;
@@ -33,7 +33,7 @@ public class TeamHandler {
     @Transactional
     public void createTeam(UUID creatorId, UUID hackathonId, String teamName) {
 
-        UtenteRegistrato creator = userRepository.findById(creatorId)
+        User creator = userRepository.findById(creatorId)
                 .orElseThrow(() -> new IllegalArgumentException("Creator not found"));
         Hackathon hackathon = hackathonRepository.findById(hackathonId)
                 .orElseThrow(() -> new IllegalArgumentException("Hackathon not found"));
@@ -53,7 +53,7 @@ public class TeamHandler {
      */
     @Transactional
     public Team updateTeam(UUID editorId, UUID teamId, String newName) {
-        UtenteRegistrato editor = userRepository.findById(editorId)
+        User editor = userRepository.findById(editorId)
                 .orElseThrow(() -> new IllegalArgumentException("Editor not found"));
         Team team = teamRepository.findById(teamId)
                 .orElseThrow(() -> new IllegalArgumentException("Team not found"));
@@ -77,11 +77,11 @@ public class TeamHandler {
      */
     @Transactional
     public void removeMember(UUID requesterId, UUID teamId, UUID memberId) {
-        UtenteRegistrato requester = userRepository.findById(requesterId)
+        User requester = userRepository.findById(requesterId)
                 .orElseThrow(() -> new IllegalArgumentException("Requester not found"));
         Team team = teamRepository.findById(teamId)
                 .orElseThrow(() -> new IllegalArgumentException("Team not found"));
-        UtenteRegistrato member = userRepository.findById(memberId)
+        User member = userRepository.findById(memberId)
                 .orElseThrow(() -> new IllegalArgumentException("Member not found"));
 
         boolean isLeader = team.getTeamLeader().getId().equals(requesterId);
@@ -96,7 +96,7 @@ public class TeamHandler {
     /**
      * Metodo privato per la creazione effettiva del team.
      */
-    private void createTeam(String name, UtenteRegistrato leader, Hackathon hackathon) {
+    private void createTeam(String name, User leader, Hackathon hackathon) {
         if (name == null || name.isBlank())
             throw new IllegalArgumentException("Team name cannot be null or blank.");
         if (leader == null)
@@ -118,7 +118,7 @@ public class TeamHandler {
     /**
      * Metodo privato per rimuovere un membro del team.
      */
-    private void removeTeamMember(UtenteRegistrato user, Team team) {
+    private void removeTeamMember(User user, Team team) {
         if (user == null)
             throw new IllegalArgumentException("User cannot be null.");
         if (team == null)

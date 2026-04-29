@@ -1,6 +1,6 @@
 package com.project.hackhub.observer;
 
-import com.project.hackhub.model.utente.UtenteRegistrato;
+import com.project.hackhub.model.user.User;
 
 import java.util.List;
 
@@ -13,7 +13,7 @@ public interface EventListener{
      */
     EventType getSupportedEventType();
 
-    void updateUsers(List<UtenteRegistrato> usersList,
+    void updateUsers(List<User> usersList,
                      String message,
                      Object entity);
 

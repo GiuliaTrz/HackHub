@@ -1,8 +1,6 @@
 package com.project.hackhub.handler;
 
 import com.project.hackhub.model.hackathon.Hackathon;
-import com.project.hackhub.model.hackathon.state.HackathonState;
-import com.project.hackhub.model.hackathon.state.HackathonStateFactory;
 import com.project.hackhub.model.hackathon.state.HackathonStateType;
 import com.project.hackhub.repository.HackathonRepository;
 import lombok.AllArgsConstructor;
@@ -16,10 +14,9 @@ import java.util.List;
 public class SubmissionsTimerHandler {
 
     private final HackathonRepository hackathonRepository;
-    private final HackathonStateFactory hackathonStateFactory;
 
     /**
-     * Closes the possibility to send submissions to a Hackathon changing its state in  {@link HackathonStateType#IN_VALUTAZIONE}
+     * Closes the possibility to send submissions to a Hackathon changing its state in  {@link HackathonStateType#APPRAISAL}
      */
     @Scheduled(fixedRate = 300000) // ogni 5 minuti
     @Transactional
@@ -28,7 +25,7 @@ public class SubmissionsTimerHandler {
         List<Hackathon> expiredHackathons = hackathonRepository.getExpiredSubmissions(LocalDateTime.now());
 
         for (Hackathon h : expiredHackathons) {
-            h.setStateType(HackathonStateType.IN_VALUTAZIONE);
+            h.setStateType(HackathonStateType.APPRAISAL);
             hackathonRepository.save(h);
         }
     }

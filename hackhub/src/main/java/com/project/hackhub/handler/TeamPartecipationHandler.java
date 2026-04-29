@@ -1,10 +1,10 @@
 package com.project.hackhub.handler;
 
 import com.project.hackhub.model.team.Team;
-import com.project.hackhub.model.utente.UtenteRegistrato;
-import com.project.hackhub.model.utente.state.UserStateType;
+import com.project.hackhub.model.user.User;
+import com.project.hackhub.model.user.state.UserStateType;
 import com.project.hackhub.repository.TeamRepository;
-import com.project.hackhub.repository.UtenteRegistratoRepository;
+import com.project.hackhub.repository.UserRepository;
 import com.project.hackhub.service.UserStateService;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
@@ -16,7 +16,7 @@ import java.util.UUID;
 public class TeamPartecipationHandler {
 
     private final TeamRepository teamRepository;
-    private final UtenteRegistratoRepository userRepository;
+    private final UserRepository userRepository;
     private final UserStateService userStateService;
 
     /**
@@ -30,7 +30,7 @@ public class TeamPartecipationHandler {
     @Transactional
     public void leaveTeam(UUID user, UUID team) {
 
-        UtenteRegistrato user1 = userRepository.findById(user).orElseThrow(
+        User user1 = userRepository.findById(user).orElseThrow(
                 () -> new IllegalArgumentException("user cannot be null"));
 
         Team t = teamRepository.findById(team).orElseThrow(
