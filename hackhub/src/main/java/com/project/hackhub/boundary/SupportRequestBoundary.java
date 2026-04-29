@@ -2,6 +2,7 @@ package com.project.hackhub.boundary;
 
 import com.project.hackhub.dto.AidRequestDTO;
 import com.project.hackhub.handler.SupportRequestHandler;
+import com.project.hackhub.model.team.AidRequest;
 import com.project.hackhub.service.calendar.Slot;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -46,5 +47,21 @@ public class SupportRequestBoundary {
             @RequestBody AidRequestDTO dto){
         supportRequestHandler.sendAidRequest(leader, dto);
         return ResponseEntity.ok("aid request sent");
+    }
+    @GetMapping("/{hackathonId}")
+    public ResponseEntity<List<AidRequest>> getSupportRequests(
+            @AuthenticationPrincipal UUID userId,
+            @PathVariable UUID hackathonId) {
+        List<AidRequest> requests = supportRequestHandler.getAllSupportRequests(userId, hackathonId);
+        return ResponseEntity.ok(requests);
+    }
+
+    @DeleteMapping("/{hackathonId}/teams/{teamId}")
+    public ResponseEntity<Void> deleteSupportRequest(
+            @AuthenticationPrincipal UUID userId,
+            @PathVariable UUID hackathonId,
+            @PathVariable UUID teamId) {
+        supportRequestHandler.deleteSupportRequest(userId, hackathonId, teamId);
+        return ResponseEntity.noContent().build();
     }
 }
