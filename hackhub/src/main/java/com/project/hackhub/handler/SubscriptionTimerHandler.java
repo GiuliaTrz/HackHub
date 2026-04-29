@@ -1,7 +1,6 @@
 package com.project.hackhub.handler;
 
 import com.project.hackhub.model.hackathon.Hackathon;
-import com.project.hackhub.model.hackathon.state.HackathonStateFactory;
 import com.project.hackhub.model.hackathon.state.HackathonStateType;
 import com.project.hackhub.repository.HackathonRepository;
 import lombok.AllArgsConstructor;
@@ -17,7 +16,7 @@ public class SubscriptionTimerHandler {
     private final HackathonRepository hackathonRepository;
 
     /**
-     * Closes the possibility to subscribe to a Hackathon changing its state in  {@link HackathonStateType#IN_CORSO}
+     * Closes the possibility to subscribe to a Hackathon changing its state in  {@link HackathonStateType#ONGOING}
      */
     @Scheduled(fixedRate = 300000) // ogni 5 minuti
     @Transactional
@@ -26,7 +25,7 @@ public class SubscriptionTimerHandler {
         List<Hackathon> expiredHackathons = hackathonRepository.getExpiredSubscriptions(LocalDateTime.now());
 
         for (Hackathon h : expiredHackathons) {
-            h.setStateType(HackathonStateType.IN_CORSO);
+            h.setStateType(HackathonStateType.ONGOING);
             hackathonRepository.save(h);
         }
     }

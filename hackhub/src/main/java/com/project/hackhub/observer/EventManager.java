@@ -1,6 +1,6 @@
 package com.project.hackhub.observer;
 
-import com.project.hackhub.model.utente.UtenteRegistrato;
+import com.project.hackhub.model.user.User;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -21,7 +21,7 @@ public final class EventManager {
     }
 
     /**
-     * Notifies a list of {@link UtenteRegistrato} about a specific event happening
+     * Notifies a list of {@link User} about a specific event happening
      *
      * @param e      the type of event happening
      * @param users  the users to notify
@@ -30,7 +30,7 @@ public final class EventManager {
      *                                  is not supported by the type of event
      * @author Giorgia Branchesi
      */
-    public void notify(EventType e, List<UtenteRegistrato> users, Object entity) {
+    public void notify(EventType e, List<User> users, Object entity) {
 
         if (users == null || users.isEmpty()) return;
         if (e == null)

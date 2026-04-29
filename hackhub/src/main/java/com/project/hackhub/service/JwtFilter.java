@@ -1,7 +1,7 @@
 package com.project.hackhub.service;
 
-import com.project.hackhub.model.utente.UtenteRegistrato;
-import com.project.hackhub.repository.UtenteRegistratoRepository;
+import com.project.hackhub.model.user.User;
+import com.project.hackhub.repository.UserRepository;
 import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -24,8 +24,8 @@ import java.util.UUID;
 @AllArgsConstructor
 public class JwtFilter extends OncePerRequestFilter {
 
-    private final ServiceJwt servizioJwt;
-    private final UtenteRegistratoRepository userRepository;
+    private final ServiceJwt serviceJwt;
+    private final UserRepository userRepository;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain chain) throws ServletException, IOException {
@@ -35,11 +35,11 @@ public class JwtFilter extends OncePerRequestFilter {
         if (header != null && header.startsWith("Bearer ")) {
             token = header.substring(7);
             try {
-                userId = servizioJwt.extractUserId(token);
+                userId = serviceJwt.extractUserId(token);
                 if (userId != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                    UtenteRegistrato user = userRepository.findById(userId).orElse(null);
+                    User user = userRepository.findById(userId).orElse(null);
                     if (user != null) {
-                        servizioJwt.validateToken(token, user);
+                        serviceJwt.validateToken(token, user);
                         UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(user.getId(),
                                 null, Collections.emptyList());
                         auth.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));

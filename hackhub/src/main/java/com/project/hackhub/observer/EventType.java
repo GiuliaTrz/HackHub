@@ -1,7 +1,7 @@
 package com.project.hackhub.observer;
 
 import com.project.hackhub.model.hackathon.Hackathon;
-import com.project.hackhub.model.team.Invito;
+import com.project.hackhub.model.team.Invitation;
 import com.project.hackhub.model.team.Team;
 import lombok.Getter;
 
@@ -14,14 +14,14 @@ public enum EventType {
     MODIFICA_HACKATHON(Hackathon .class),
 
     //giuste
-    ILLECITO(Hackathon .class),
-    PROCLAMAZIONE_VINCITORE(Hackathon .class),
-    ESPULSIONE_TEAM(Hackathon .class),
-    ELIMINAZIONE_TEAM(Team .class),
-    NUOVO_LEADER(Team .class),
-    INVITO_UTENTE(Invito .class),
-    PENALIZZAZIONE_TEAM(Hackathon .class),
-    SCELTA_VINCITORE(Hackathon .class);
+    INFRACTION(Hackathon .class),
+    PROCLAIM_WINNER(Hackathon .class),
+    EXPULSION_TEAM(Hackathon .class),
+    UNSUBSCRIBE_TEAM(Team .class),
+    NEW_LEADER(Team .class),
+    USER_INVITATION(Invitation.class),
+    PENALIZED_TEAM(Hackathon .class),
+    WINNER_CHOICE(Hackathon .class);
 
     @Getter private final Class<?> entityClass;
 

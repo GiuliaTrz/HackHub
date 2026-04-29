@@ -7,7 +7,7 @@ import com.project.hackhub.model.hackathon.state.HackathonStateFactory;
 import com.project.hackhub.model.team.Infraction;
 import com.project.hackhub.model.team.Team;
 import com.project.hackhub.model.team.AidRequest;
-import com.project.hackhub.model.utente.UtenteRegistrato;
+import com.project.hackhub.model.user.User;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -26,7 +26,7 @@ public class Hackathon {
     @GeneratedValue
     private UUID id;
 
-    @AttributeOverride(name = "name", column = @Column(name = "hackathonName"))
+    @Column(name = "HackathonName")
     private String name;
 
     private String ruleBook;
@@ -45,19 +45,19 @@ public class Hackathon {
 
     @ManyToMany
     @JoinTable(name = "hackathon_mentors")
-    private List<UtenteRegistrato> mentorsList = new ArrayList<>();
+    private List<User> mentorsList = new ArrayList<>();
 
     @Embedded
-    private Soldi moneyPrice;
+    private Money moneyPrice;
 
     @ManyToOne
-    private UtenteRegistrato judge;
+    private User judge;
 
     @ManyToOne
-    private UtenteRegistrato coordinator;
+    private User coordinator;
 
     @OneToOne(cascade = CascadeType.PERSIST)
-    private Prenotazione reservation;
+    private Reservation reservation;
 
     @ElementCollection
     private List<Infraction> infractions = new ArrayList<>();
@@ -72,7 +72,7 @@ public class Hackathon {
     private Team winner;
 
 
-    public void addMentor(UtenteRegistrato u) {
+    public void addMentor(User u) {
         if (u == null)
             throw new IllegalArgumentException("Mentor nullo.");
 
@@ -94,7 +94,7 @@ public class Hackathon {
      * @param u utente registrato
      * @author Giulia Trozzi
      */
-    public void removeMentor(UtenteRegistrato u) {
+    public void removeMentor(User u) {
         if (u == null)
             throw new IllegalArgumentException("Mentor nullo.");
         if (!mentorsList.contains(u))

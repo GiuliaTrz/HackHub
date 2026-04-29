@@ -4,31 +4,31 @@ import com.project.hackhub.exceptions.MultipleWinnersException;
 import com.project.hackhub.model.hackathon.Hackathon;
 import com.project.hackhub.model.hackathon.state.HackathonStateType;
 import com.project.hackhub.model.team.Team;
-import com.project.hackhub.model.utente.UtenteRegistrato;
-import com.project.hackhub.model.utente.state.Permission;
+import com.project.hackhub.model.user.User;
+import com.project.hackhub.model.user.state.Permission;
 import com.project.hackhub.observer.EventManager;
 import com.project.hackhub.repository.HackathonRepository;
 import com.project.hackhub.repository.TeamRepository;
-import com.project.hackhub.repository.UtenteRegistratoRepository;
+import com.project.hackhub.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import static com.project.hackhub.observer.EventType.PROCLAMAZIONE_VINCITORE;
-import static com.project.hackhub.observer.EventType.SCELTA_VINCITORE;
+import static com.project.hackhub.observer.EventType.PROCLAIM_WINNER;
+import static com.project.hackhub.observer.EventType.WINNER_CHOICE;
 
 @Service
 public class WinnerChoiceHandler {
 
     private final HackathonRepository hackathonRepository;
-    private final UtenteRegistratoRepository utenteRegistratoRepository;
+    private final UserRepository userRepository;
     private final TeamRepository teamRepository;
 
-    public WinnerChoiceHandler(HackathonRepository hackathonRepository, UtenteRegistratoRepository utenteRegistratoRepository, TeamRepository teamRepository) {
+    public WinnerChoiceHandler(HackathonRepository hackathonRepository, UserRepository userRepository, TeamRepository teamRepository) {
         this.hackathonRepository = hackathonRepository;
-        this.utenteRegistratoRepository = utenteRegistratoRepository;
+        this.userRepository = userRepository;
         this.teamRepository = teamRepository;
     }
 
@@ -47,11 +47,11 @@ public class WinnerChoiceHandler {
      * @author Chiara Marinucci
      */
     private Hackathon checkValid(UUID judge, UUID hackathon) {
-        UtenteRegistrato j = this.utenteRegistratoRepository.findById(judge)
+        User j = this.userRepository.findById(judge)
                 .orElseThrow(() -> new IllegalArgumentException("judge not found"));
         Hackathon h = this.hackathonRepository.findById(hackathon)
                 .orElseThrow(() -> new IllegalArgumentException("Hackathon not found"));
-        if(h.getState().getStateType()!= HackathonStateType.IN_VALUTAZIONE)
+        if(h.getState().getStateType()!= HackathonStateType.APPRAISAL)
             throw new IllegalStateException("Hackathon must be in state IN_VALUTAZIONE");
         if(!j.hasPermission(Permission.CAN_CHOOSE_WINNER, h))
             throw new IllegalArgumentException("user does not have required permission");
@@ -77,9 +77,9 @@ public class WinnerChoiceHandler {
         if(winners.size() == 1) {
             h.setWinner(winners.getFirst());
             this.hackathonRepository.save(h);
-            List<UtenteRegistrato> toBeNotified = new ArrayList<>();
+            List<User> toBeNotified = new ArrayList<>();
             toBeNotified.add(h.getCoordinator());
-            EventManager.getInstance().notify(SCELTA_VINCITORE,toBeNotified , h);
+            EventManager.getInstance().notify(WINNER_CHOICE,toBeNotified , h);
         }
         else if (winners.isEmpty())
             throw new IllegalArgumentException("There are no winners");
@@ -111,9 +111,9 @@ public class WinnerChoiceHandler {
                     " outside of the teams with highest grade for the Hackathon"));
         h.setWinner(t);
         this.hackathonRepository.save(h);
-        List<UtenteRegistrato> toBeNotified = new ArrayList<>();
+        List<User> toBeNotified = new ArrayList<>();
         toBeNotified.add(h.getCoordinator());
-        EventManager.getInstance().notify(SCELTA_VINCITORE,toBeNotified , h);
+        EventManager.getInstance().notify(WINNER_CHOICE,toBeNotified , h);
     }
 
     /**
@@ -128,21 +128,21 @@ public class WinnerChoiceHandler {
      */
     @Transactional
     public void proclaimWinner(UUID hackathon, UUID coord){
-        UtenteRegistrato c = this.utenteRegistratoRepository.findById(coord)
+        User c = this.userRepository.findById(coord)
                 .orElseThrow(() -> new IllegalArgumentException("coordinator not found"));
         Hackathon h = this.hackathonRepository.findById(hackathon)
                 .orElseThrow(() -> new IllegalArgumentException("Hackathon not found"));
-        if(h.getState().getStateType()!= HackathonStateType.IN_VALUTAZIONE)
+        if(h.getState().getStateType()!= HackathonStateType.APPRAISAL)
             throw new IllegalStateException("Hackathon must be in state IN_VALUTAZIONE");
         if(!c.hasPermission(Permission.CAN_PROCLAIM_WINNER, h))
             throw new IllegalArgumentException("user does not have required permission");
 
         if(h.getWinner()!= null){
-            List<UtenteRegistrato> toBeNotified = new ArrayList<>();
+            List<User> toBeNotified = new ArrayList<>();
             for(Team t : h.getTeamsList()){
             toBeNotified.addAll(t.getTeamMembersList());
             }
-            EventManager.getInstance().notify(PROCLAMAZIONE_VINCITORE,toBeNotified , h);
+            EventManager.getInstance().notify(PROCLAIM_WINNER,toBeNotified , h);
         }
         setConcluso(h);
     }
@@ -152,7 +152,7 @@ public class WinnerChoiceHandler {
      * @param h the Hackathon of interest
      */
     private void setConcluso(Hackathon h) {
-        h.setStateType(HackathonStateType.CONCLUSO);
+        h.setStateType(HackathonStateType.CONCLUDED);
         this.hackathonRepository.save(h);
     }
 

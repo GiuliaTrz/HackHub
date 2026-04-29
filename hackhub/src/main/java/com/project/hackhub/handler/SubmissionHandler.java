@@ -6,12 +6,12 @@ import com.project.hackhub.model.hackathon.Task;
 import com.project.hackhub.model.hackathon.state.HackathonStateType;
 import com.project.hackhub.model.team.Submission;
 import com.project.hackhub.model.team.Team;
-import com.project.hackhub.model.utente.UtenteRegistrato;
-import com.project.hackhub.model.utente.state.Permission;
+import com.project.hackhub.model.user.User;
+import com.project.hackhub.model.user.state.Permission;
 import com.project.hackhub.repository.SubmissionRepository;
 import com.project.hackhub.repository.TaskRepository;
 import com.project.hackhub.repository.TeamRepository;
-import com.project.hackhub.repository.UtenteRegistratoRepository;
+import com.project.hackhub.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
@@ -21,13 +21,13 @@ import java.util.UUID;
 @Service
 public class SubmissionHandler {
     private final TeamRepository teamRepository;
-    private final UtenteRegistratoRepository utenteRegistratoRepository;
+    private final UserRepository userRepository;
     private final SubmissionRepository submissionRepository;
     private final TaskRepository taskRepository;
 
-    public SubmissionHandler(TeamRepository teamRepository, UtenteRegistratoRepository utenteRegistratoRepository, SubmissionRepository submissionRepository, TaskRepository taskRepository) {
+    public SubmissionHandler(TeamRepository teamRepository, UserRepository userRepository, SubmissionRepository submissionRepository, TaskRepository taskRepository) {
         this.teamRepository = teamRepository;
-        this.utenteRegistratoRepository = utenteRegistratoRepository;
+        this.userRepository = userRepository;
         this.submissionRepository = submissionRepository;
         this.taskRepository = taskRepository;
     }
@@ -45,11 +45,11 @@ public class SubmissionHandler {
      */
     @Transactional
     public void sendSubmission(UUID teamLeader, SubmissionDTO dto){
-        UtenteRegistrato leader = utenteRegistratoRepository.findById(teamLeader).orElseThrow(()-> new IllegalArgumentException("teamLeader not found"));
+        User leader = userRepository.findById(teamLeader).orElseThrow(()-> new IllegalArgumentException("teamLeader not found"));
         Team t = teamRepository.findById(dto.teamId()).orElseThrow(()-> new IllegalArgumentException("Team not found"));
         Task ta = taskRepository.findById(dto.taskId()).orElseThrow(()-> new IllegalArgumentException("Task can't be null"));
         if(!t.getTeamLeader().equals(leader)) throw new IllegalArgumentException("TeamLeader doesn't match the given Team");
-        if(!t.getHackathon().getState().getStateType().equals(HackathonStateType.IN_CORSO)) throw new IllegalStateException("Hackathon is not IN_CORSO");
+        if(!t.getHackathon().getState().getStateType().equals(HackathonStateType.ONGOING)) throw new IllegalStateException("Hackathon is not IN_CORSO");
         if(leader.hasPermission(Permission.CAN_SEND_SUBMISSION, t.getHackathon())){
             FileTemplate ft = new FileTemplate();
             ft.setFileName(dto.fileName());
@@ -74,7 +74,7 @@ public class SubmissionHandler {
      */
     @Transactional
     public List<Submission> getTeamSubmissions(UUID user, UUID team){
-        UtenteRegistrato u = utenteRegistratoRepository.findById(user)
+        User u = userRepository.findById(user)
                 .orElseThrow(()-> new IllegalArgumentException("staff not found"));
         Team t = teamRepository.findById(team)
                 .orElseThrow(()-> new IllegalArgumentException("Team not found"));
@@ -86,14 +86,14 @@ public class SubmissionHandler {
         else throw new IllegalArgumentException("user does not have the required permission");
     }
     private List<Submission> getSubmissionsAsStaff(Team t){
-        if(t.getHackathon().getState().getStateType() != HackathonStateType.IN_VALUTAZIONE &&
-                t.getHackathon().getState().getStateType() != HackathonStateType.CONCLUSO)
+        if(t.getHackathon().getState().getStateType() != HackathonStateType.APPRAISAL &&
+                t.getHackathon().getState().getStateType() != HackathonStateType.CONCLUDED)
             throw new IllegalStateException("Hackathon state is not IN_VALUTAZIONE or CONCLUSO");
         return this.submissionRepository.findLatestSubmissionsByTeamId(t.getId());
     }
 
     private List<Submission> getSubmissionsAsTeamMember(Team t) {
-        if(t.getHackathon().getState().getStateType() != HackathonStateType.CONCLUSO)
+        if(t.getHackathon().getState().getStateType() != HackathonStateType.CONCLUDED)
             throw new IllegalStateException("Hackathon state is not CONCLUSO");
         return this.submissionRepository.findLatestSubmissionsByTeamId(t.getId());
     }

@@ -4,11 +4,11 @@ package com.project.hackhub.handler;
 import com.project.hackhub.model.hackathon.state.HackathonStateType;
 import com.project.hackhub.model.team.Submission;
 import com.project.hackhub.model.team.Team;
-import com.project.hackhub.model.utente.UtenteRegistrato;
-import com.project.hackhub.model.utente.state.Permission;
+import com.project.hackhub.model.user.User;
+import com.project.hackhub.model.user.state.Permission;
 import com.project.hackhub.repository.SubmissionRepository;
 import com.project.hackhub.repository.TeamRepository;
-import com.project.hackhub.repository.UtenteRegistratoRepository;
+import com.project.hackhub.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
@@ -19,13 +19,13 @@ import java.util.UUID;
 public class GradeHandler {
 
     private final SubmissionRepository submissionRepository;
-    private final UtenteRegistratoRepository utenteRegistratoRepository;
+    private final UserRepository userRepository;
     private final TeamRepository teamRepository;
 
-    public GradeHandler(SubmissionRepository submissionRepository, UtenteRegistratoRepository utenteRegistratoRepository,
+    public GradeHandler(SubmissionRepository submissionRepository, UserRepository userRepository,
                         TeamRepository teamRepository) {
         this.submissionRepository = submissionRepository;
-        this.utenteRegistratoRepository = utenteRegistratoRepository;
+        this.userRepository = userRepository;
         this.teamRepository = teamRepository;
     }
 
@@ -40,12 +40,12 @@ public class GradeHandler {
      */
     @Transactional
     public void gradeSubmission(UUID judge, UUID submissionId, float num) {
-        UtenteRegistrato j = utenteRegistratoRepository.findById(judge)
+        User j = userRepository.findById(judge)
                 .orElseThrow(()-> new IllegalArgumentException("judge not found"));
         Submission s = submissionRepository.findById(submissionId)
                 .orElseThrow(() -> new IllegalArgumentException("Submission not found"));
         Team t = s.getTeam();
-        if(!t.getHackathon().getState().getStateType().equals(HackathonStateType.IN_VALUTAZIONE))
+        if(!t.getHackathon().getState().getStateType().equals(HackathonStateType.APPRAISAL))
             throw new IllegalStateException("Hackathon is not IN_VALUTAZIONE");
         if(!j.hasPermission(Permission.CAN_GRADE_SUBMISSION, t.getHackathon()))
             throw new IllegalArgumentException("User does not have required permission");

@@ -1,8 +1,8 @@
 package com.project.hackhub.model.hackathon.builder;
 
-import com.project.hackhub.model.hackathon.Prenotazione;
-import com.project.hackhub.model.hackathon.Soldi;
-import com.project.hackhub.model.utente.UtenteRegistrato;
+import com.project.hackhub.model.hackathon.Reservation;
+import com.project.hackhub.model.hackathon.Money;
+import com.project.hackhub.model.user.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -27,7 +27,7 @@ public class HackathonSnapshot {
 
     @OneToOne
     @JoinColumn(unique = true)
-    private UtenteRegistrato author;
+    private User author;
 
     private String name;
 
@@ -39,10 +39,10 @@ public class HackathonSnapshot {
     private Integer maxTeamDimension;
 
     @Embedded
-    private Soldi moneyPrice;
+    private Money moneyPrice;
 
     @OneToOne(cascade = CascadeType.ALL)
-    private Prenotazione reservation;
+    private Reservation reservation;
 
     @ElementCollection
     private List<UUID> mentorsList = new ArrayList<>();

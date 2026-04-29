@@ -1,11 +1,10 @@
 package com.project.hackhub.service;
 
 import com.project.hackhub.model.hackathon.Hackathon;
-import com.project.hackhub.model.team.Invito;
-import com.project.hackhub.model.utente.UtenteRegistrato;
-import com.project.hackhub.model.utente.state.UserStateFactory;
-import com.project.hackhub.model.utente.state.UserStateType;
-import com.project.hackhub.repository.UtenteRegistratoRepository;
+import com.project.hackhub.model.team.Invitation;
+import com.project.hackhub.model.user.User;
+import com.project.hackhub.model.user.state.UserStateType;
+import com.project.hackhub.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -13,7 +12,7 @@ import org.springframework.stereotype.Service;
 @AllArgsConstructor
 public final class UserStateService {
 
-    private final UtenteRegistratoRepository userRepository;
+    private final UserRepository userRepository;
 
     /**
      * Sets the given state on the given user and adds or removes the reservation of the Hackathon as needed
@@ -25,7 +24,7 @@ public final class UserStateService {
      * @throws IllegalArgumentException if any of the parameters are null
      * @author Giorgia Branchesi
      */
-    public void changeUserState(UtenteRegistrato user, boolean toAdd, Hackathon hackathon, UserStateType state) {
+    public void changeUserState(User user, boolean toAdd, Hackathon hackathon, UserStateType state) {
 
         if (user == null) throw new IllegalArgumentException("user cannot be null");
         if (hackathon == null) throw new IllegalArgumentException("hackathon cannot be null");
@@ -39,7 +38,7 @@ public final class UserStateService {
         userRepository.save(user);
     }
 
-    public void addInvitation(UtenteRegistrato user, Invito invitation) {
+    public void addInvitation(User user, Invitation invitation) {
 
         user.addInvitation(invitation);
         userRepository.save(user);

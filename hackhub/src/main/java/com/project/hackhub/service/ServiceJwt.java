@@ -1,6 +1,6 @@
 package com.project.hackhub.service;
 
-import com.project.hackhub.model.utente.UtenteRegistrato;
+import com.project.hackhub.model.user.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
@@ -39,7 +39,7 @@ public class ServiceJwt {
      * @param user the user trying to authenticate to the platform
      * @return a Jwt token as string, containing the id of the user as subject
      */
-    public String generateToken(UtenteRegistrato user) {
+    public String generateToken(User user) {
         if (user == null) throw new IllegalArgumentException("The user cannot be null");
 
         Date now = new Date();
@@ -80,7 +80,7 @@ public class ServiceJwt {
      * @throws IllegalArgumentException if token or user are null
      * @throws RuntimeException if the token is not valid, expired or not associated to the given user
      */
-    public void validateToken(String token, UtenteRegistrato user) {
+    public void validateToken(String token, User user) {
         if (token == null || user == null)
             throw new IllegalArgumentException("Token or User cannot be null");
 

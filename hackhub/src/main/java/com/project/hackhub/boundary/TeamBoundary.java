@@ -1,9 +1,7 @@
 package com.project.hackhub.boundary;
 
 import com.project.hackhub.handler.TeamHandler;
-import com.project.hackhub.model.team.Team;
 import lombok.AllArgsConstructor;
-import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;

@@ -1,11 +1,11 @@
 package com.project.hackhub.handler;
 
 import com.project.hackhub.model.hackathon.Hackathon;
-import com.project.hackhub.model.utente.UtenteRegistrato;
-import com.project.hackhub.model.utente.state.Permission;
-import com.project.hackhub.model.utente.state.UserStateType;
+import com.project.hackhub.model.user.User;
+import com.project.hackhub.model.user.state.Permission;
+import com.project.hackhub.model.user.state.UserStateType;
 import com.project.hackhub.repository.HackathonRepository;
-import com.project.hackhub.repository.UtenteRegistratoRepository;
+import com.project.hackhub.repository.UserRepository;
 import com.project.hackhub.service.UserStateService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +18,7 @@ import java.util.UUID;
 public class HackathonHandler {
 
     private final HackathonRepository hackathonRepo;
-    private final UtenteRegistratoRepository utenteRepository; // <-- AGGIUNTO
+    private final UserRepository utenteRepository; // <-- AGGIUNTO
     private final UserStateService userStateService;
 
     /**
@@ -30,7 +30,7 @@ public class HackathonHandler {
     @Transactional
     public void deleteHackathon(UUID deleterId, UUID hackathonId) {
 
-        UtenteRegistrato deleter = utenteRepository.findById(deleterId)
+        User deleter = utenteRepository.findById(deleterId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
         Hackathon hackathon = hackathonRepo.findById(hackathonId)
                 .orElseThrow(() -> new IllegalArgumentException("Hackathon not found"));
@@ -58,7 +58,7 @@ public class HackathonHandler {
     // la prenotazione è immodificabile, anche se è presente nel dto, quindi mettere il controllo
     @Transactional
     public Hackathon updateHackathon(UUID editorId, UUID hackathonId, Hackathon updatedHackathon) {
-        UtenteRegistrato editor = utenteRepository.findById(editorId)
+        User editor = utenteRepository.findById(editorId)
                 .orElseThrow(() -> new IllegalArgumentException("Editor not found"));
         Hackathon hackathon = hackathonRepo.findById(hackathonId)
                 .orElseThrow(() -> new IllegalArgumentException("Hackathon not found"));
@@ -87,11 +87,11 @@ public class HackathonHandler {
      */
     @Transactional
     public void modifyStaff(UUID editorId, UUID hackathonId, UUID staffMemberId, String role, boolean add) {
-        UtenteRegistrato editor = utenteRepository.findById(editorId)
+        User editor = utenteRepository.findById(editorId)
                 .orElseThrow(() -> new IllegalArgumentException("Editor not found"));
         Hackathon hackathon = hackathonRepo.findById(hackathonId)
                 .orElseThrow(() -> new IllegalArgumentException("Hackathon not found"));
-        UtenteRegistrato member = utenteRepository.findById(staffMemberId)
+        User member = utenteRepository.findById(staffMemberId)
                 .orElseThrow(() -> new IllegalArgumentException("Staff member not found"));
 
         if (!editor.hasPermission(Permission.CAN_MANAGE_STAFF, hackathon)) {
@@ -107,7 +107,7 @@ public class HackathonHandler {
                         throw new IllegalStateException("Hackathon ha già un organizzatore.");
                     }
                     hackathon.setCoordinator(member);
-                    userStateService.changeUserState(member, true, hackathon, UserStateType.ORGANIZZATORE);
+                    userStateService.changeUserState(member, true, hackathon, UserStateType.COORDINATOR);
                 } else {
                     if (hackathon.getCoordinator() == null || !hackathon.getCoordinator().getId().equals(staffMemberId)) {
                         throw new IllegalArgumentException("L'utente non è l'organizzatore di questo hackathon");
@@ -121,7 +121,7 @@ public class HackathonHandler {
             case "MENTOR":
                 if (add) {
                     hackathon.addMentor(member);
-                    userStateService.changeUserState(member, true, hackathon, UserStateType.MENTORE);
+                    userStateService.changeUserState(member, true, hackathon, UserStateType.MENTOR);
                 } else {
                     hackathon.removeMentor(member);
                     userStateService.changeUserState(member, false, hackathon, UserStateType.DEFAULT_STATE);
@@ -131,12 +131,12 @@ public class HackathonHandler {
                 // non lo può rimuovere, al massimo lo sostituisce, un hackathon non può rimanere senza giudice
                 if (add) {
                     if (hackathon.getJudge() != null) {
-                        UtenteRegistrato oldJudge = hackathon.getJudge();
+                        User oldJudge = hackathon.getJudge();
                         hackathon.setJudge(null);
                         userStateService.changeUserState(oldJudge, false, hackathon, UserStateType.DEFAULT_STATE);
                     }
                     hackathon.setJudge(member);
-                    userStateService.changeUserState(member, true, hackathon, UserStateType.GIUDICE);
+                    userStateService.changeUserState(member, true, hackathon, UserStateType.JUDGE);
                 } else {
                     if (hackathon.getJudge() == null || !hackathon.getJudge().getId().equals(staffMemberId)) {
                         throw new IllegalArgumentException("L'utente non è il giudice di questo hackathon");

@@ -2,7 +2,6 @@ package com.project.hackhub.boundary;
 
 import com.project.hackhub.dto.SubmissionDTO;
 import com.project.hackhub.handler.SubmissionHandler;
-import com.project.hackhub.model.team.FileTemplate;
 import com.project.hackhub.model.team.Submission;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

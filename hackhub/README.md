@@ -17,7 +17,7 @@ This document lists all the API endpoints available in the HackHub application.
 
 ## InfoBoundary
 - **GET** `/api/info/hackathons` - Get all hackathons
-- **GET** `/api/info/report` - Get hackathon report
+- **GET** `/api/info/{hackathonId}/report` - Get hackathon report
 
 ## InfractionBoundary
 - **POST** `/api/infraction/report` - Report an infraction
@@ -33,12 +33,20 @@ This document lists all the API endpoints available in the HackHub application.
 - **POST** `/api/invitation/{invitation}/accept` - Accept an invitation
 - **DELETE** `/api/invitation/{invitation}` - Decline an invitation
 
-## PartecipationBoundary
-- **DELETE** `/api/teamPartecipation/unsubscribeTeam/{team}` - Unsubscribe a team from hackathon
+## ParticipationBoundary
+- **DELETE** `/api/teamParticipation/unsubscribeTeam/{team}` - Unsubscribe a team from hackathon
+
+## RequestOrganizerPermitBoundary
+- **PATCH** `/api/organizer/permit/request` - Request organizer permission
 
 ## SubmissionBoundary
 - **POST** `/api/submission/send` - Send a submission
 - **GET** `/api/submission/team/{teamId}` - Get team submissions
+
+## SupportRequestBoundary
+- **GET** `/api/support/available-slots/{hackathon}` - Get available slots
+- **POST** `/api/support/propose-call/{team}` - Propose a call
+- **POST** `/api/support/send-aid-request` - Send aid request
 
 ## TeamBoundary
 - **POST** `/api/team/{hackathonId}/creation` - Create a team
@@ -49,5 +57,4 @@ This document lists all the API endpoints available in the HackHub application.
 ## WinnerChoiceBoundary
 - **PATCH** `/api/winner/{hackathonId}/auto` - Choose winner automatically
 - **PATCH** `/api/winner/{hackathonId}/manual/{teamId}` - Choose winner manually
-- **PATCH** `/api/winner/{hackathon}/proclaim` - Proclaim winner</content>
-<parameter name="filePath">C:\Users\utente\Desktop\UNICAM\Ingegneria Del Software\Progetto\HackHub\hackhub\README.md
+- **PATCH** `/api/winner/{hackathon}/proclaim` - Proclaim winner

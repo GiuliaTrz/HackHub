@@ -1,6 +1,6 @@
 package com.project.hackhub.boundary;
 
-import com.project.hackhub.dto.AnagraficaDTO;
+import com.project.hackhub.dto.PersonalDataDTO;
 import com.project.hackhub.handler.AccountHandler;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -19,8 +19,8 @@ public class AccountBoundary {
 
     @PostMapping("/registration")
     public ResponseEntity<Void> createAccount(
-            @Valid @RequestBody AnagraficaDTO anagraficaDto){
-        accountHandler.createAccount(anagraficaDto);
+            @Valid @RequestBody PersonalDataDTO personalDataDto){
+        accountHandler.createAccount(personalDataDto);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 

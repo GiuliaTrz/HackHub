@@ -1,7 +1,7 @@
 package com.project.hackhub.model.hackathon.builder;
 
 import com.project.hackhub.model.hackathon.Hackathon;
-import com.project.hackhub.model.utente.UtenteRegistrato;
+import com.project.hackhub.model.user.User;
 import lombok.Getter;
 
 import java.util.ArrayList;
@@ -48,7 +48,7 @@ public class HackathonBuilderMemento implements Memento {
      */
     public static HackathonBuilderMemento fromBuilder(
             HackathonBuilder builder,
-            UtenteRegistrato author
+            User author
     ) {
 
         Hackathon hackathon = builder.getProduct();
@@ -70,7 +70,7 @@ public class HackathonBuilderMemento implements Memento {
                     new ArrayList<>(
                             hackathon.getMentorsList()
                                     .stream()
-                                    .map(UtenteRegistrato::getId)
+                                    .map(User::getId)
                                     .toList()
                     )
             );

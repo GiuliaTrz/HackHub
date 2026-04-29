@@ -5,14 +5,14 @@ import com.project.hackhub.dto.HackathonDTO;
 import com.project.hackhub.dto.TaskDTO;
 import com.project.hackhub.model.hackathon.state.HackathonStateType;
 import com.project.hackhub.model.hackathon.Hackathon;
-import com.project.hackhub.model.hackathon.Prenotazione;
+import com.project.hackhub.model.hackathon.Reservation;
 import com.project.hackhub.model.hackathon.Task;
 import com.project.hackhub.model.hackathon.builder.Director;
 import com.project.hackhub.model.hackathon.builder.HackathonBuilder;
 import com.project.hackhub.model.hackathon.builder.HackathonBuilderMemento;
 import com.project.hackhub.model.hackathon.builder.HackathonSnapshot;
-import com.project.hackhub.model.utente.UtenteRegistrato;
-import com.project.hackhub.model.utente.state.UserStateType;
+import com.project.hackhub.model.user.User;
+import com.project.hackhub.model.user.state.UserStateType;
 import com.project.hackhub.repository.*;
 import com.project.hackhub.service.UserStateService;
 import jakarta.transaction.Transactional;
@@ -21,7 +21,7 @@ import org.springframework.stereotype.Component;
 import java.util.Optional;
 import java.util.UUID;
 
-import static com.project.hackhub.model.utente.state.Permission.CAN_ADD_TASK;
+import static com.project.hackhub.model.user.state.Permission.CAN_ADD_TASK;
 
 @Component
 @AllArgsConstructor
@@ -30,21 +30,21 @@ public class HackathonCreationHandler {
     private final TaskRepository taskRepository;
     private final HackathonRepository hackathonRepo;
     private final HackathonSnapshotRepository snapshotRepository;
-    private final PrenotazioneRepository prenotazioneRepository;
-    private final UtenteRegistratoRepository userRepository;
+    private final ReservationRepository reservationRepository;
+    private final UserRepository userRepository;
     private final UserStateService userStateService;
 
     @Transactional
     public void insertTask(UUID coordinator, TaskDTO taskDTO, UUID hackathonId) {
 
-        UtenteRegistrato c = userRepository.findById(coordinator)
+        User c = userRepository.findById(coordinator)
                 .orElseThrow(() -> new IllegalArgumentException("Coordinator can't null"));
 
         Hackathon h = hackathonRepo.findById(hackathonId)
                 .orElseThrow(() -> new IllegalArgumentException("Hackathon can't null"));
 
-        if(!c.hasPermission(CAN_ADD_TASK, h) || !h.getState().getStateType().equals(HackathonStateType.IN_ISCRIZIONE))
-            throw new UnsupportedOperationException("User doesn't have permission to add task or hackathon is not in iscrizione state");
+        if(!c.hasPermission(CAN_ADD_TASK, h) || !h.getState().getStateType().equals(HackathonStateType.SUBSCRIPTION_PHASE))
+            throw new UnsupportedOperationException("User doesn't have permission to add task or hackathon is not in state IN_ISCRIZIONE");
 
         Task t = new Task(taskDTO.title(), taskDTO.description(), taskDTO.template());
         this.taskRepository.save(t);
@@ -60,7 +60,7 @@ public class HackathonCreationHandler {
      * @author Giorgia Branchesi
      * @author Giulia Trozzi
      */
-    public boolean isReservationAvailable(Prenotazione reservation) {
+    public boolean isReservationAvailable(Reservation reservation) {
 
         if (reservation == null)
             return false;
@@ -68,7 +68,7 @@ public class HackathonCreationHandler {
         if (reservation.getLocation() == null || reservation.getTimeInterval() == null)
             return false;
 
-        return !prenotazioneRepository.existsByLocationAndTimeInterval(
+        return !reservationRepository.existsByLocationAndTimeInterval(
                 reservation.getLocation(),
                 reservation.getTimeInterval()
         );
@@ -85,7 +85,7 @@ public class HackathonCreationHandler {
         }
 
         // Get coordinator
-        UtenteRegistrato coordinator = userRepository.findById(coordinatorId)
+        User coordinator = userRepository.findById(coordinatorId)
                 .orElseThrow(() -> new IllegalArgumentException("Coordinator not found"));
 
         if(!coordinator.isOrganizer()) throw new IllegalArgumentException("this user cannot organize hackathons!");
@@ -100,7 +100,7 @@ public class HackathonCreationHandler {
             builder.restoreFromSnapshot(snapshot, userRepository);
         });
 
-        Prenotazione p = dto.reservation();
+        Reservation p = dto.reservation();
         if (p == null) {
             p = existingSnapshot.map(HackathonSnapshot::getReservation).orElse(null);
         }
@@ -118,7 +118,7 @@ public class HackathonCreationHandler {
 
     private HackathonCreationResponse completeHackathonCreation(
             HackathonBuilder builder,
-            UtenteRegistrato coordinator,
+            User coordinator,
             Optional<HackathonSnapshot> existingSnapshot
     ) {
         // Set final properties
@@ -127,7 +127,7 @@ public class HackathonCreationHandler {
 
         // Save hackathon
         Hackathon hackathon = builder.getProduct();
-        prenotazioneRepository.save(hackathon.getReservation());
+        reservationRepository.save(hackathon.getReservation());
         hackathonRepo.save(hackathon);
 
         // Update staff states
@@ -143,7 +143,7 @@ public class HackathonCreationHandler {
 
     private HackathonCreationResponse suspendHackathonCreation(
             HackathonBuilder builder,
-            UtenteRegistrato coordinator,
+            User coordinator,
             Optional<HackathonSnapshot> existingSnapshot
     ) {
         // Create or update snapshot
@@ -184,12 +184,12 @@ public class HackathonCreationHandler {
     }
 
     private void updateStaffState(Hackathon hackathon) {
-        userStateService.changeUserState(hackathon.getJudge(), true, hackathon, UserStateType.GIUDICE);
-        userStateService.changeUserState(hackathon.getCoordinator(), true, hackathon, UserStateType.ORGANIZZATORE);
+        userStateService.changeUserState(hackathon.getJudge(), true, hackathon, UserStateType.JUDGE);
+        userStateService.changeUserState(hackathon.getCoordinator(), true, hackathon, UserStateType.COORDINATOR);
 
         if (hackathon.getMentorsList() != null) {
-            for (UtenteRegistrato mentor : hackathon.getMentorsList()) {
-                userStateService.changeUserState(mentor, true, hackathon, UserStateType.MENTORE);
+            for (User mentor : hackathon.getMentorsList()) {
+                userStateService.changeUserState(mentor, true, hackathon, UserStateType.MENTOR);
             }
         }
     }

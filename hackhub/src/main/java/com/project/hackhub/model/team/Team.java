@@ -2,7 +2,7 @@ package com.project.hackhub.model.team;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.project.hackhub.model.hackathon.Hackathon;
-import com.project.hackhub.model.utente.UtenteRegistrato;
+import com.project.hackhub.model.user.User;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -32,33 +32,33 @@ public class Team {
     private Hackathon hackathon;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Invito> invitationList = new ArrayList<>();
+    private List<Invitation> invitationList = new ArrayList<>();
 
-    @ManyToMany
+    @OneToMany
     @JoinTable(
             name = "team_members",
             joinColumns = @JoinColumn(name = "team_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id")
     )
-    private List<UtenteRegistrato> teamMembersList = new ArrayList<>();
+    private List<User> teamMembersList = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name = "team_leader_id")
-    private UtenteRegistrato teamLeader;
+    private User teamLeader;
 
     @Column(name = "pending_call_proposal")
     private boolean hasPendingCallProposal;
 
     private Float grade = (float) 0.00;
 
-    public Team(@NonNull String name, @NonNull Hackathon hackathon, @NonNull UtenteRegistrato teamLeader) {
+    public Team(@NonNull String name, @NonNull Hackathon hackathon, @NonNull User teamLeader) {
         this.name = name;
         this.hackathon = hackathon;
         this.teamLeader = teamLeader;
     }
 
     /**
-     * Aggiunge un {@link UtenteRegistrato} alla lista dei membri del team.
+     * Aggiunge un {@link User} alla lista dei membri del team.
      *
      * @param u l'utente da aggiungere; non può essere null
      * @throws IllegalArgumentException se l'utente è null
@@ -67,9 +67,12 @@ public class Team {
      *
      * @author Giulia Trozzi
      */
-    public void addTeamMember(UtenteRegistrato u) {
+    public void addTeamMember(User u) {
         if (u == null)
             throw new IllegalArgumentException("L'utente non può essere null.");
+        System.out.println("DEBUG -> Team: " + this.name);
+        System.out.println("DEBUG -> Membri attuali: " + teamMembersList.size());
+        System.out.println("DEBUG -> Limite Hackathon: " + (hackathon != null ? hackathon.getMaxTeamDimension() : "NULL"));
 
         if (teamMembersList.contains(u))
             throw new IllegalStateException("Utente già presente nel team.");
@@ -82,7 +85,7 @@ public class Team {
     }
 
     /**
-     * Rimuove un {@link UtenteRegistrato} dalla lista dei membri del team.
+     * Rimuove un {@link User} dalla lista dei membri del team.
      *
      * @param u l'utente da rimuovere; non può essere null
      * @throws IllegalArgumentException se l'utente è null
@@ -91,7 +94,7 @@ public class Team {
      *
      * @author Giulia Trozzi
      */
-    public void removeTeamMember(UtenteRegistrato u) {
+    public void removeTeamMember(User u) {
         if (u == null)
             throw new IllegalArgumentException("Utente non valido.");
 
@@ -106,7 +109,7 @@ public class Team {
 
 
     /**
-     * Rimuove un {@link Invito} dalla lista degli inviti del team.
+     * Rimuove un {@link Invitation} dalla lista degli inviti del team.
      *
      * @param i l'invito da rimuovere; non può essere null
      * @return true se l'invito è stato rimosso, false se non era presente nella lista
@@ -114,7 +117,7 @@ public class Team {
      *
      * @author Giulia Trozzi
      */
-    public boolean removeInvitationFromList(Invito i) {
+    public boolean removeInvitationFromList(Invitation i) {
         if (i == null)
             throw new IllegalArgumentException("Invito nullo.");
 
@@ -122,7 +125,7 @@ public class Team {
     }
 
     /**
-     * Aggiunge un {@link Invito} alla lista degli inviti del team.
+     * Aggiunge un {@link Invitation} alla lista degli inviti del team.
      *
      * @param i l'invito da aggiungere; non può essere null
      * @throws IllegalArgumentException se l'invito è null
@@ -130,7 +133,7 @@ public class Team {
      *
      * @author Giulia Trozzi
      */
-    public void addInvitation(Invito i) {
+    public void addInvitation(Invitation i) {
         if (i == null)
             throw new IllegalArgumentException("Invito nullo.");
 
@@ -141,7 +144,7 @@ public class Team {
     }
 
     /**
-     * Imposta il {@link UtenteRegistrato} come leader del team.
+     * Imposta il {@link User} come leader del team.
      *
      * @param leader l'utente che diventerà leader; non può essere null
      * @throws IllegalArgumentException se il leader è null
@@ -149,7 +152,7 @@ public class Team {
      *
      * @author Giulia Trozzi
      */
-    public void setTeamLeader(UtenteRegistrato leader) {
+    public void setTeamLeader(User leader) {
         if (leader == null)
             throw new IllegalArgumentException("Leader non valido.");
 

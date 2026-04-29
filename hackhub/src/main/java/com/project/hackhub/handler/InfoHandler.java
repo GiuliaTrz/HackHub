@@ -4,9 +4,9 @@ import com.project.hackhub.model.hackathon.Hackathon;
 import com.project.hackhub.model.hackathon.report.Report;
 import com.project.hackhub.model.hackathon.report.ReportData;
 import com.project.hackhub.model.hackathon.report.HackathonReportAssembler;
-import com.project.hackhub.model.utente.UtenteRegistrato;
+import com.project.hackhub.model.user.User;
 import com.project.hackhub.repository.HackathonRepository;
-import com.project.hackhub.repository.UtenteRegistratoRepository;
+import com.project.hackhub.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Component;
 
@@ -17,12 +17,12 @@ import java.util.UUID;
 @Component
 public class InfoHandler {
     private final HackathonRepository hackathonRepository;
-    private final UtenteRegistratoRepository utenteRegistratoRepository;
+    private final UserRepository userRepository;
     private final HackathonReportAssembler reportBuilder = new HackathonReportAssembler();
 
-    public InfoHandler(HackathonRepository hr, UtenteRegistratoRepository ur){
+    public InfoHandler(HackathonRepository hr, UserRepository ur){
         this.hackathonRepository = hr;
-        this.utenteRegistratoRepository = ur;
+        this.userRepository = ur;
     }
 
     /**
@@ -41,20 +41,20 @@ public class InfoHandler {
      * Return a report containing information about a given Hackathon according to the state of the Hackathon
      * and the user's permissions.
      * @param hackathonId a unique id associated to a certain Hackathon
-     * @param utenteId a unique id associate to the user that wants to access the report (can be null for visitors)
+     * @param userId a unique id associate to the user that wants to access the report (can be null for visitors)
      * @return a Report of the Hackathon if the hackathonId is mapped to a Hackathon
      * * @throws IllegalArgumentException if hackathonId is not mapped to a Hackathon
      * @author Chiara Marinucci
      */
     @Transactional
-    public Report getHackathonReport(UUID hackathonId, UUID utenteId){
+    public Report getHackathonReport(UUID hackathonId, UUID userId){
         Hackathon h = hackathonRepository.findById(hackathonId).orElse(null);
         if (h == null)
             throw new IllegalArgumentException("Hackathon given does not exist");
 
-        UtenteRegistrato u = null;
-        if (utenteId != null) {
-            u = utenteRegistratoRepository.findById(utenteId).orElse(null);
+        User u = null;
+        if (userId != null) {
+            u = userRepository.findById(userId).orElse(null);
         }
 
         ReportData data = h.getState().getReportData(h);
