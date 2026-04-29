@@ -38,4 +38,21 @@ public class TeamBoundary {
         teamHandler.createTeam(creatorId, hackathonId, teamName);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
+    @PatchMapping("/{teamId}")
+    public ResponseEntity<Team> updateTeam(
+            @AuthenticationPrincipal UUID editorId,
+            @PathVariable UUID teamId,
+            @RequestBody String newName) {
+        Team updated = teamHandler.updateTeam(editorId, teamId, newName);
+        return ResponseEntity.ok(updated);
+    }
+
+    @DeleteMapping("/{teamId}/members/{memberId}")
+    public ResponseEntity<Void> removeMember(
+            @AuthenticationPrincipal UUID requesterId,
+            @PathVariable UUID teamId,
+            @PathVariable UUID memberId) {
+        teamHandler.removeMember(requesterId, teamId, memberId);
+        return ResponseEntity.ok().build();
+    }
 }
