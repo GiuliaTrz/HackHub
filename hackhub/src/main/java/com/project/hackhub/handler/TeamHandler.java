@@ -6,7 +6,6 @@ import com.project.hackhub.model.utente.UtenteRegistrato;
 import com.project.hackhub.model.utente.state.Permission;
 import com.project.hackhub.model.utente.state.UserStateType;
 import com.project.hackhub.repository.HackathonRepository;
-import com.project.hackhub.repository.InvitoRepository;
 import com.project.hackhub.repository.TeamRepository;
 import com.project.hackhub.repository.UtenteRegistratoRepository;
 import com.project.hackhub.service.UserStateService;
@@ -30,7 +29,6 @@ public class TeamHandler {
      * @param creatorId ID dell'utente creatore
      * @param hackathonId ID dell'hackathon
      * @param teamName nome del team
-     * @return il team creato e salvato
      */
     @Transactional
     public void createTeam(UUID creatorId, UUID hackathonId, String teamName) {
@@ -43,7 +41,7 @@ public class TeamHandler {
         if (!creator.hasPermission(Permission.CAN_CREATE_TEAM, hackathon)) {
             throw new UnsupportedOperationException("User cannot create a team in this hackathon");
         }
-        createTeamInternal(teamName, creator, hackathon);
+        createTeam(teamName, creator, hackathon);
     }
 
     /**
@@ -92,13 +90,13 @@ public class TeamHandler {
         if (!isLeader && !isOrganizer) {
             throw new UnsupportedOperationException("Insufficient permissions");
         }
-        removeTeamMemberInternal(member, team);
+        removeTeamMember(member, team);
     }
 
     /**
-     * Metodo interno per la creazione del team (già esistente, adattato).
+     * Metodo privato per la creazione effettiva del team.
      */
-    private void createTeamInternal(String name, UtenteRegistrato leader, Hackathon hackathon) {
+    private void createTeam(String name, UtenteRegistrato leader, Hackathon hackathon) {
         if (name == null || name.isBlank())
             throw new IllegalArgumentException("Team name cannot be null or blank.");
         if (leader == null)
@@ -118,9 +116,9 @@ public class TeamHandler {
     }
 
     /**
-     * Metodo interno per rimuovere un membro (adattato dal tuo originale).
+     * Metodo privato per rimuovere un membro del team.
      */
-    private void removeTeamMemberInternal(UtenteRegistrato user, Team team) {
+    private void removeTeamMember(UtenteRegistrato user, Team team) {
         if (user == null)
             throw new IllegalArgumentException("User cannot be null.");
         if (team == null)
@@ -136,5 +134,4 @@ public class TeamHandler {
         team.removeTeamMember(user);
         teamRepository.save(team);
     }
-
 }
