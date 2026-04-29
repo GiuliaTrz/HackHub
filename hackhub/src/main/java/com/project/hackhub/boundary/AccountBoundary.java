@@ -13,6 +13,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 
+/**
+ * Boundary for account management.
+ * Handles registration, update and deletion of user accounts.
+ */
 @AllArgsConstructor
 @RestController
 @Validated
@@ -22,7 +26,11 @@ public class AccountBoundary {
     private final AccountHandler accountHandler;
 
     /**
-     * Registrazione di un nuovo account.
+     * Registers a new user account.
+     *
+     * @param anagraficaDto the validated personal data of the new user
+     * @return a {@link ResponseEntity} with status 201 CREATED
+     * @throws IllegalArgumentException if the email is already registered or required fields are missing
      */
     @PostMapping("/registration")
     public ResponseEntity<Void> createAccount(
@@ -32,13 +40,17 @@ public class AccountBoundary {
     }
 
     /**
-     * Modifica i dati del proprio account.
+     * Updates the personal data of the authenticated user.
+     *
+     * @param userId the authenticated user ID
+     * @param dto    the new personal data
+     * @return a {@link ResponseEntity} with status 200 OK
+     * @throws IllegalArgumentException if the user does not exist
      */
     @PutMapping
     public ResponseEntity<Void> updateAccount(
             @AuthenticationPrincipal UUID userId,
             @Valid @RequestBody AnagraficaDTO dto) {
-        // Converte DTO in Anagrafica
         Anagrafica nuovaAnagrafica = new Anagrafica(
                 dto.userName(),
                 dto.userSurname(),
@@ -51,7 +63,11 @@ public class AccountBoundary {
     }
 
     /**
-     * Elimina il proprio account.
+     * Deletes the authenticated user's account.
+     *
+     * @param userId the authenticated user ID
+     * @return a {@link ResponseEntity} with status 204 NO CONTENT
+     * @throws IllegalArgumentException if the user does not exist
      */
     @DeleteMapping
     public ResponseEntity<Void> deleteAccount(
