@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.UUID;
 
 /**
- * Boundary class for team-related operations in the HackHub application.
- * This REST controller handles HTTP requests related to teams.
+ * Boundary for team-related operations.
+ * Allows creation, modification and member removal of teams.
  */
 @RestController
 @RequestMapping("/api/team")
@@ -23,10 +23,12 @@ public class TeamBoundary {
     /**
      * Creates a new team for a given hackathon.
      *
-     * @param creatorId the ID of the user creating the team
-     * @param hackathonId the ID of the hackathon for which the team is created
-     * @param teamName the name of the team to be created
-     * @return a ResponseEntity with status CREATED if successful
+     * @param creatorId   the authenticated user creating the team
+     * @param hackathonId the ID of the hackathon
+     * @param teamName    the name of the new team
+     * @return a {@link ResponseEntity} with status 201 CREATED
+     * @throws IllegalArgumentException      if the team name is blank or already exists in the hackathon
+     * @throws UnsupportedOperationException if the user does not have permission to create a team
      */
     @PostMapping("/{hackathonId}/creation")
     public ResponseEntity<Void> createTeam(
@@ -35,5 +37,42 @@ public class TeamBoundary {
             @RequestBody String teamName) {
         teamHandler.createTeam(creatorId, hackathonId, teamName);
         return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+    /**
+     * Updates the name of a team.
+     *
+     * @param editorId the authenticated user (must be team leader or organizer)
+     * @param teamId   the ID of the team
+     * @param newName  the new team name
+     * @return a {@link ResponseEntity} containing the updated {@link Team}
+     * @throws UnsupportedOperationException if the user is neither team leader nor organizer
+     */
+    @PatchMapping("/{teamId}")
+    public ResponseEntity<Team> updateTeam(
+            @AuthenticationPrincipal UUID editorId,
+            @PathVariable UUID teamId,
+            @RequestBody String newName) {
+        Team updated = teamHandler.updateTeam(editorId, teamId, newName);
+        return ResponseEntity.ok(updated);
+    }
+
+    /**
+     * Removes a member from a team.
+     *
+     * @param requesterId the authenticated user (team leader or organizer)
+     * @param teamId      the ID of the team
+     * @param memberId    the ID of the member to remove
+     * @return a {@link ResponseEntity} with status 200 OK
+     * @throws UnsupportedOperationException if the user lacks permission or tries to remove the team leader
+     * @throws IllegalStateException         if the member is not part of the team
+     */
+    @DeleteMapping("/{teamId}/members/{memberId}")
+    public ResponseEntity<Void> removeMember(
+            @AuthenticationPrincipal UUID requesterId,
+            @PathVariable UUID teamId,
+            @PathVariable UUID memberId) {
+        teamHandler.removeMember(requesterId, teamId, memberId);
+        return ResponseEntity.ok().build();
     }
 }

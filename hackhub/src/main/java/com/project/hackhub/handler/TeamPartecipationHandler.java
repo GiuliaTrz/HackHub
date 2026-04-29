@@ -8,9 +8,10 @@ import com.project.hackhub.repository.UserRepository;
 import com.project.hackhub.service.UserStateService;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
-
+import org.springframework.stereotype.Component;
 import java.util.UUID;
 
+@Component
 @AllArgsConstructor
 public class TeamPartecipationHandler {
 
