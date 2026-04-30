@@ -23,57 +23,57 @@ public class PrizeHandler {
     private final UserRepository utenteRepository;
 
     /**
-     * Riscuote il premio in denaro per un membro del team vincitore.
-     * Il premio viene diviso equamente tra i membri del team.
-     * Simula il reindirizzamento a un sistema di pagamento esterno.
+     * Claims the monetary prize for a team member winner.
+     * The prize is divided equally among team members.
+     * Simulates redirection to an external payment system.
      *
-     * @param userId      ID del membro del team che richiede la riscossione
-     * @param hackathonId ID dell'hackathon
-     * @throws IllegalStateException se l'hackathon non ha un vincitore o il premio è già stato riscosso
+     * @param userId      ID of the team member requesting the prize redemption
+     * @param hackathonId ID of the hackathon
+     * @throws IllegalStateException if the hackathon has no winner or the prize has already been claimed
      * @author Giulia Trozzi
      */
     @Transactional
     public void claimPrize(UUID userId, UUID hackathonId) {
         User user = utenteRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("Utente non trovato"));
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
         Hackathon hackathon = hackathonRepository.findById(hackathonId)
-                .orElseThrow(() -> new IllegalArgumentException("Hackathon non trovato"));
+                .orElseThrow(() -> new IllegalArgumentException("Hackathon not found"));
 
-        // Verifica che l'hackathon sia terminato, e quindi nello stato "CONCLUSO"
+        // Verify that the hackathon is finished, and therefore in "CONCLUDED" state
         if (hackathon.getState().getStateType() != HackathonStateType.CONCLUDED) {
-            throw new IllegalStateException("L'hackathon non è ancora terminato");
-        }
+             throw new IllegalStateException("The hackathon is not yet finished");
+         }
 
-        Team winner = hackathon.getWinner();
-        if (winner == null) {
-            throw new IllegalStateException("Nessun team vincitore proclamato per questo hackathon");
-        }
+         Team winner = hackathon.getWinner();
+         if (winner == null) {
+             throw new IllegalStateException("No winning team declared for this hackathon");
+         }
 
-        if (!winner.getTeamMembersList().contains(user)) {
-            throw new UnsupportedOperationException("Solo i membri del team vincitore possono riscuotere il premio");
-        }
+         if (!winner.getTeamMembersList().contains(user)) {
+             throw new UnsupportedOperationException("Only members of the winning team can claim the prize");
+         }
 
-        Money totalPrize = hackathon.getMoneyPrice();
-        double totalAmount = totalPrize.getQuantity();   // <-- Usa il getter corretto
-        int teamSize = winner.getTeamMembersList().size();
+         Money totalPrize = hackathon.getMoneyPrice();
+         double totalAmount = totalPrize.getQuantity();   // <-- Uses the correct getter
+         int teamSize = winner.getTeamMembersList().size();
 
-        // conversione necessaria per avere una
-        // divisione precisa e l' arrotondamento
-        BigDecimal amountPerMember = BigDecimal.valueOf(totalAmount)
-                .divide(BigDecimal.valueOf(teamSize), 2, RoundingMode.HALF_UP);
+         // conversion necessary to have a
+         // precise division and rounding
+         BigDecimal amountPerMember = BigDecimal.valueOf(totalAmount)
+                 .divide(BigDecimal.valueOf(teamSize), 2, RoundingMode.HALF_UP);
 
-        // Simula il reindirizzamento al sistema di pagamento esterno
-        boolean paymentSuccessful = externalPaymentService(user, amountPerMember);
+         // Simulates redirection to the external payment system
+         boolean paymentSuccessful = externalPaymentService(user, amountPerMember);
 
-        if (!paymentSuccessful) {
-            throw new RuntimeException("Pagamento fallito. I dati inseriti non sono validi");
-        }
+         if (!paymentSuccessful) {
+             throw new RuntimeException("Payment failed. The entered data is not valid");
+         }
 
-    }
+     }
 
-    // Simulazione del servizio di pagamento esterno
+    // Simulation of the external payment service
     private boolean externalPaymentService(User user, BigDecimal amount) {
-        // Qui si integrerebbe con un gateway di pagamento reale (estendibilità)
-        return true;
-    }
+         // Here you would integrate with a real payment gateway (extensibility)
+         return true;
+     }
 }

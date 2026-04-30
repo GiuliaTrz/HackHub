@@ -25,10 +25,10 @@ public class TeamHandler {
     private final UserStateService userStateService;
 
     /**
-     * Crea un nuovo team. L'utente che crea diventa Team Leader.
-     * @param creatorId ID dell'utente creatore
-     * @param hackathonId ID dell'hackathon
-     * @param teamName nome del team
+     * Creates a new team. The user who creates it becomes the Team Leader.
+     * @param creatorId ID of the creator user
+     * @param hackathonId ID of the hackathon
+     * @param teamName name of the team
      */
     @Transactional
     public void createTeam(UUID creatorId, UUID hackathonId, String teamName) {
@@ -45,11 +45,11 @@ public class TeamHandler {
     }
 
     /**
-     * Modifica il nome di un team. Solo team leader o organizzatore.
-     * @param editorId ID dell'utente che richiede la modifica
-     * @param teamId ID del team
-     * @param newName nuovo nome
-     * @return team aggiornato
+     * Modifies the name of a team. Only team leader or organizer.
+     * @param editorId ID of the user requesting the modification
+     * @param teamId ID of the team
+     * @param newName new name
+     * @return updated team
      */
     @Transactional
     public Team updateTeam(UUID editorId, UUID teamId, String newName) {
@@ -70,10 +70,10 @@ public class TeamHandler {
     }
 
     /**
-     * Rimuove un membro dal team. Solo team leader o organizzatore.
-     * @param requesterId ID di chi richiede l'operazione
-     * @param teamId ID del team
-     * @param memberId ID del membro da rimuovere
+     * Removes a member from the team. Only team leader or organizer.
+     * @param requesterId ID of the requester
+     * @param teamId ID of the team
+     * @param memberId ID of the member to remove
      */
     @Transactional
     public void removeMember(UUID requesterId, UUID teamId, UUID memberId) {
@@ -94,7 +94,7 @@ public class TeamHandler {
     }
 
     /**
-     * Metodo privato per la creazione effettiva del team.
+     * Private method for the actual team creation.
      */
     private void createTeam(String name, User leader, Hackathon hackathon) {
         if (name == null || name.isBlank())
@@ -116,7 +116,7 @@ public class TeamHandler {
     }
 
     /**
-     * Metodo privato per rimuovere un membro del team.
+     * Private method to remove a team member.
      */
     private void removeTeamMember(User user, Team team) {
         if (user == null)

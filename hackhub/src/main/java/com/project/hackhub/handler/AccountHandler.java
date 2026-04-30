@@ -19,24 +19,24 @@ public class AccountHandler {
     private final UserRepository utenteRepository;
 
     /**
-     * Crea un nuovo account a partire dai dati anagrafici.
+     * Creates a new account from personal data.
      *
-     * @param personalDataDto dati del nuovo utente
-     * @throws IllegalArgumentException se i dati non sono validi (es. email già esistente)
+     * @param personalDataDto personal data of the new user
+     * @throws IllegalArgumentException if the data is not valid (e.g. email already exists)
      * @author Giulia Trozzi
      */
     @Transactional
     public void createAccount(PersonalDataDTO personalDataDto) {
 
-        // Validazione campi obbligatori
+        // Validation of mandatory fields
         if (personalDataDto.email() == null || personalDataDto.email().isBlank()) {
-            throw new IllegalArgumentException("Email is required");
-        }
-        if (personalDataDto.userName() == null || personalDataDto.userName().isBlank()) {
-            throw new IllegalArgumentException("Name is required");
-        }
-        // Verifica unicità email (supponendo che l'email sia univoca)
-        if (utenteRepository.existsByPersonalData_Email(personalDataDto.email())) {
+             throw new IllegalArgumentException("Email is required");
+         }
+         if (personalDataDto.userName() == null || personalDataDto.userName().isBlank()) {
+             throw new IllegalArgumentException("Name is required");
+         }
+         // Verify email uniqueness (assuming the email is unique)
+         if (utenteRepository.existsByPersonalData_Email(personalDataDto.email())) {
             throw new IllegalArgumentException("Email already registered");
         }
 
@@ -53,32 +53,32 @@ public class AccountHandler {
     }
 
     /**
-     * Modifica i dati anagrafici di un utente esistente.
-     * @param userId ID dell'utente da modificare (deve corrispondere all'utente loggato o avere permessi admin)
-     * @param nuovaPersonalData nuovi dati
-     * @return utente aggiornato
-     *  @author Giulia Trozzi
+     * Modifies personal data of an existing user.
+     * @param userId ID of the user to modify (must correspond to the logged-in user or have admin permissions)
+     * @param nuovaPersonalData new data
+     * @return updated user
+     * @author Giulia Trozzi
      */
     @Transactional
     public User updateAccount(UUID userId, PersonalData nuovaPersonalData) {
         User utente = utenteRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
-        //l'utente può modificare solo se stesso oppure è admin (aggiungere logica)
+        // the user can modify only themselves or is an admin (add logic)
         utente.setPersonalData(nuovaPersonalData);
         return utenteRepository.save(utente);
     }
 
     /**
-     * Elimina un account.
-     * @param userId ID dell'utente da eliminare
-     *@author Giulia Trozzi
+     * Deletes an account.
+     * @param userId ID of the user to be deleted
+     * @author Giulia Trozzi
      */
     @Transactional
     public void deleteAccount(UUID userId) {
         if (!utenteRepository.existsById(userId)) {
-            throw new IllegalArgumentException("User not found");
-        }
-        //eventuali controlli di permessi (solo admin o l'utente stesso)
-        utenteRepository.deleteById(userId);
+             throw new IllegalArgumentException("User not found");
+         }
+         // possible permission checks (only admin or the user themselves)
+         utenteRepository.deleteById(userId);
     }
 }

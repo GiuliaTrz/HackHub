@@ -29,9 +29,9 @@ public class HackathonHandler {
     private final EliminazioneHackathonListener eliminazioneHackathonListener;
 
     /**
-     * Elimina un hackathon (solo organizzatore con permessi globali).
-     * Prima di cancellare, raccoglie tutti i partecipanti (staff + membri team)
-     * e li passa al listener per il reset degli stati.
+     * Deletes a hackathon (only organizer).
+     * Before deletion, collects all participants (staff + team members)
+     * and passes them to the listener for state reset.
      */
     @Transactional
     public void deleteHackathon(UUID deleterId, UUID hackathonId) {
@@ -73,16 +73,16 @@ public class HackathonHandler {
                 .distinct()
                 .collect(Collectors.toList());
 
-        // 2. Notifica al listener per il reset degli stati
-        eliminazioneHackathonListener.updateUsers(utentiUnici, "Hackathon eliminato", hackathon);
+        // 2. Notify the listener for state reset
+        eliminazioneHackathonListener.updateUsers(utentiUnici, "Hackathon deleted", hackathon);
 
         // 3. Eliminazione dell'hackathon
         hackathonRepo.delete(hackathon);
     }
 
     /**
-     * Modifica i dati di base di un hackathon usando un DTO.
-     * La prenotazione non viene mai modificata.
+     * Modifies the basic data of a hackathon using a DTO.
+     * The reservation is never modified.
      */
     @Transactional
     public Hackathon updateHackathon(UUID editorId, UUID hackathonId, HackathonDTO dto) {
@@ -95,22 +95,22 @@ public class HackathonHandler {
             throw new UnsupportedOperationException("Insufficient permissions");
         }
 
-        // Aggiorna solo i campi modificabili; la prenotazione viene ignorata
+        // Updates only modifiable fields; the reservation is ignored
         hackathon.setName(dto.name());
         hackathon.setRuleBook(dto.ruleBook());
         hackathon.setExpiredSubscriptionsDate(dto.expiredSubscriptionsDate());
         hackathon.setMaxTeamDimension(dto.maxTeamDimension());
-        // Staff e premi vanno modificati tramite appositi metodi
+        // Staff and prizes must be modified through specific methods
 
         return hackathonRepo.save(hackathon);
     }
 
     /**
-     * Modifica lo staff dell'hackathon.
-     * Regole:
-     * - L'organizzatore non può essere rimosso, solo aggiunto se assente.
-     * - Il giudice può solo essere sostituito, non rimosso.
-     * - Non si può rimuovere l'ultimo mentore.
+     * Modifies the hackathon staff.
+     * Rules:
+     * - The organizer cannot be removed, only added if absent.
+     * - The judge can only be replaced, not removed.
+     * - The last mentor cannot be removed.
      */
     @Transactional
     public void modifyStaff(UUID editorId, UUID hackathonId, UUID staffMemberId, String role, boolean add) {
@@ -129,13 +129,13 @@ public class HackathonHandler {
             case "ORGANIZER":
                 if (add) {
                     if (hackathon.getCoordinator() != null) {
-                        throw new IllegalStateException("Hackathon ha già un organizzatore.");
+                         throw new IllegalStateException("Hackathon already has an organizer.");
                     }
                     hackathon.setCoordinator(member);
                     userStateService.changeUserState(member, true, hackathon, UserStateType.COORDINATOR);
                 } else {
                     if (hackathon.getCoordinator() == null || !hackathon.getCoordinator().getId().equals(staffMemberId)) {
-                        throw new IllegalArgumentException("L'utente non è l'organizzatore di questo hackathon");
+                         throw new IllegalArgumentException("User is not the organizer of this hackathon");
                     }
                     hackathon.setCoordinator(null);
                     userStateService.changeUserState(member, false, hackathon, UserStateType.DEFAULT_STATE);
@@ -149,7 +149,7 @@ public class HackathonHandler {
                 } else {
                     // Controllo: non si può rimuovere l'ultimo mentore
                     if (hackathon.getMentorsList() == null || hackathon.getMentorsList().size() <= 1) {
-                        throw new IllegalStateException("Non è possibile rimuovere l'ultimo mentore.");
+                         throw new IllegalStateException("Cannot remove the last mentor.");
                     }
                     hackathon.removeMentor(member);
                     userStateService.changeUserState(member, false, hackathon, UserStateType.DEFAULT_STATE);
@@ -167,12 +167,12 @@ public class HackathonHandler {
                     hackathon.setJudge(member);
                     userStateService.changeUserState(member, true, hackathon, UserStateType.JUDGE);
                 } else {
-                    throw new UnsupportedOperationException("Il giudice non può essere rimosso, può solo essere sostituito.");
+                    throw new UnsupportedOperationException("Judge cannot be removed, only replaced.");
                 }
                 break;
 
             default:
-                throw new IllegalArgumentException("Ruolo non valido. Usare ORGANIZER, MENTOR o JUDGE");
+                throw new IllegalArgumentException("Invalid role. Use ORGANIZER, MENTOR, or JUDGE");
         }
 
         hackathonRepo.save(hackathon);

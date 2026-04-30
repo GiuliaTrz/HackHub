@@ -84,13 +84,11 @@ public class HackathonCreationHandler {
             throw new IllegalArgumentException("HackathonDTO cannot be null");
         }
 
-        // Get coordinator
         User coordinator = userRepository.findById(coordinatorId)
                 .orElseThrow(() -> new IllegalArgumentException("Coordinator not found"));
 
         if(!coordinator.isOrganizer()) throw new IllegalArgumentException("this user cannot organize hackathons!");
 
-        // Initialize builder
         HackathonBuilder builder = new HackathonBuilder();
         Optional<HackathonSnapshot> existingSnapshot = snapshotRepository.findByAuthor(coordinator);
         builder.reset();
@@ -116,24 +114,28 @@ public class HackathonCreationHandler {
         }
     }
 
+    /**
+     * Completes the hackathon creation process by saving it to the database and updating staff states.
+     *
+     * @param builder the HackathonBuilder containing the configured hackathon
+     * @param coordinator the coordinator creating the hackathon
+     * @param existingSnapshot optional snapshot to be deleted after successful creation
+     * @return HackathonCreationResponse with success message
+     */
     private HackathonCreationResponse completeHackathonCreation(
             HackathonBuilder builder,
             User coordinator,
             Optional<HackathonSnapshot> existingSnapshot
     ) {
-        // Set final properties
         builder.setCoordinator(coordinator);
         builder.setState();
 
-        // Save hackathon
         Hackathon hackathon = builder.getProduct();
         reservationRepository.save(hackathon.getReservation());
         hackathonRepo.save(hackathon);
 
-        // Update staff states
         updateStaffState(hackathon);
 
-        // Clean up snapshot
         existingSnapshot.ifPresent(snapshotRepository::delete);
         coordinator.setOrganizer(false);
         userRepository.save(coordinator);
@@ -141,6 +143,14 @@ public class HackathonCreationHandler {
         return new HackathonCreationResponse(true, "Hackathon created successfully");
     }
 
+    /**
+     * Suspends the hackathon creation process by saving an incomplete snapshot to be resumed later.
+     *
+     * @param builder the HackathonBuilder containing partial hackathon configuration
+     * @param coordinator the coordinator creating the hackathon
+     * @param existingSnapshot optional existing snapshot to update or merge with
+     * @return HackathonCreationResponse with suspension message
+     */
     private HackathonCreationResponse suspendHackathonCreation(
             HackathonBuilder builder,
             User coordinator,
@@ -167,7 +177,6 @@ public class HackathonCreationHandler {
             snapshot.setJudge(currentState.getJudge() != null ? currentState.getJudge() : snapshot.getJudge());
             snapshot.setMentorsList(currentState.getMentorsList() != null ? currentState.getMentorsList() : snapshot.getMentorsList());
         } else {
-            // First time saving
             snapshot.setName(currentState.getName());
             snapshot.setRuleBook(currentState.getRuleBook());
             snapshot.setExpiredSubscriptionsDate(currentState.getExpiredSubscriptionsDate());
@@ -183,6 +192,11 @@ public class HackathonCreationHandler {
         return new HackathonCreationResponse(false, "Hackathon creation suspended, missing information");
     }
 
+    /**
+     * Updates the user states of all staff members assigned to the hackathon (coordinator, judge, and mentors).
+     *
+     * @param hackathon the hackathon for which to update staff user states
+     */
     private void updateStaffState(Hackathon hackathon) {
         userStateService.changeUserState(hackathon.getJudge(), true, hackathon, UserStateType.JUDGE);
         userStateService.changeUserState(hackathon.getCoordinator(), true, hackathon, UserStateType.COORDINATOR);
