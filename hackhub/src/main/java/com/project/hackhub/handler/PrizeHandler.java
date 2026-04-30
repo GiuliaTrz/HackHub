@@ -39,41 +39,41 @@ public class PrizeHandler {
         Hackathon hackathon = hackathonRepository.findById(hackathonId)
                 .orElseThrow(() -> new IllegalArgumentException("Hackathon not found"));
 
-        // Verify that the hackathon is finished, and therefore in "CONCLUDED" state
+        // Check that the hackathon has ended, and therefore is in the "CONCLUDED" state
         if (hackathon.getState().getStateType() != HackathonStateType.CONCLUDED) {
-             throw new IllegalStateException("The hackathon is not yet finished");
-         }
+            throw new IllegalStateException("Hackathon has not concluded yet");
+        }
 
-         Team winner = hackathon.getWinner();
-         if (winner == null) {
-             throw new IllegalStateException("No winning team declared for this hackathon");
-         }
+        Team winner = hackathon.getWinner();
+        if (winner == null) {
+            throw new IllegalStateException("No winning team proclaimed for this hackathon");
+        }
 
-         if (!winner.getTeamMembersList().contains(user)) {
-             throw new UnsupportedOperationException("Only members of the winning team can claim the prize");
-         }
+        if (!winner.getTeamMembersList().contains(user)) {
+            throw new UnsupportedOperationException("Only members of the winning team can collect the prize");
+        }
 
-         Money totalPrize = hackathon.getMoneyPrice();
-         double totalAmount = totalPrize.getQuantity();   // <-- Uses the correct getter
-         int teamSize = winner.getTeamMembersList().size();
+        Money totalPrize = hackathon.getMoneyPrice();
+        double totalAmount = totalPrize.getQuantity();   // <-- Uses the correct getter
+        int teamSize = winner.getTeamMembersList().size();
 
-         // conversion necessary to have a
-         // precise division and rounding
-         BigDecimal amountPerMember = BigDecimal.valueOf(totalAmount)
-                 .divide(BigDecimal.valueOf(teamSize), 2, RoundingMode.HALF_UP);
+        // conversion necessary for precise
+        // division and rounding
+        BigDecimal amountPerMember = BigDecimal.valueOf(totalAmount)
+                .divide(BigDecimal.valueOf(teamSize), 2, RoundingMode.HALF_UP);
 
-         // Simulates redirection to the external payment system
-         boolean paymentSuccessful = externalPaymentService(user, amountPerMember);
+        // Simulates redirection to external payment system
+        boolean paymentSuccessful = externalPaymentService(user, amountPerMember);
 
-         if (!paymentSuccessful) {
-             throw new RuntimeException("Payment failed. The entered data is not valid");
-         }
+        if (!paymentSuccessful) {
+            throw new RuntimeException("Payment failed. Inserted data is not valid");
+        }
 
      }
 
-    // Simulation of the external payment service
+    // Simulation of external payment service
     private boolean externalPaymentService(User user, BigDecimal amount) {
-         // Here you would integrate with a real payment gateway (extensibility)
-         return true;
-     }
+        // Here you would integrate with a real payment gateway (extensibility)
+        return true;
+    }
 }

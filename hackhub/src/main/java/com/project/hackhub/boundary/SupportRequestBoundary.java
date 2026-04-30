@@ -80,11 +80,11 @@ public class SupportRequestBoundary {
      * @throws IllegalArgumentException      if no active request exists for the team
      */
     @DeleteMapping("/{hackathonId}/teams/{teamId}")
-    public ResponseEntity<Void> deleteSupportRequest(
+    public ResponseEntity<String> deleteSupportRequest(
             @AuthenticationPrincipal UUID userId,
             @PathVariable UUID hackathonId,
             @PathVariable UUID teamId) {
         supportRequestHandler.deleteSupportRequest(userId, hackathonId, teamId);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok("support request deleted");
     }
 }

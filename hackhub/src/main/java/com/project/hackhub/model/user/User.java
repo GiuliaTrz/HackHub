@@ -24,7 +24,7 @@ public class User {
     private Set<Invitation> invitationsList = new LinkedHashSet<>();
 
     @Embedded
-    @Setter @NonNull private PersonalData personalData;
+    @Setter @Getter @NonNull private PersonalData personalData;
 
     @Getter private String passwordHash;
 

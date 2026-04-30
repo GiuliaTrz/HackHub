@@ -64,6 +64,8 @@ public class AccountHandler {
         User utente = utenteRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
         // the user can modify only themselves or is an admin (add logic)
+        if(!nuovaPersonalData.getEmail().equals(utente.getPersonalData().getEmail()))
+            throw new IllegalArgumentException("associated email cannot change");
         utente.setPersonalData(nuovaPersonalData);
         return utenteRepository.save(utente);
     }

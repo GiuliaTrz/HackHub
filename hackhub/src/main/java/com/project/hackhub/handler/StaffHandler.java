@@ -1,5 +1,6 @@
 package com.project.hackhub.handler;
 
+import com.project.hackhub.exceptions.UserNotAvailableException;
 import com.project.hackhub.model.hackathon.Hackathon;
 import com.project.hackhub.model.user.User;
 import com.project.hackhub.model.user.state.Permission;
@@ -70,12 +71,14 @@ public class StaffHandler {
                 .orElseThrow(() -> new IllegalArgumentException("Mentor not found"));
 
         if (!organizer.hasPermission(Permission.CAN_MANAGE_STAFF, hackathon)) {
-             throw new UnsupportedOperationException("Insufficient permissions to manage staff");
-         }
+            throw new UnsupportedOperationException("Insufficient permissions to manage staff");
+        }
 
-         if (!hackathon.getMentorsList().contains(mentor)) {
-             throw new IllegalArgumentException("User is not a mentor of this hackathon");
-         }
+        if (!hackathon.getMentorsList().contains(mentor)) {
+            throw new IllegalArgumentException("User is not a mentor of this hackathon");
+        }
+        if(hackathon.getMentorsList().size() == 1)
+            throw new IllegalStateException("Cannot remove the only mentor");
 
         hackathon.removeMentor(mentor);
         userStateService.changeUserState(mentor, false, hackathon, UserStateType.DEFAULT_STATE);
@@ -101,31 +104,35 @@ public class StaffHandler {
     @Transactional
     public void changeStaffRole(UUID organizerId, UUID hackathonId, UUID targetUserId, String newRole) {
         User organizer = userRepository.findById(organizerId)
-                .orElseThrow(() -> new IllegalArgumentException("Organizzatore non trovato"));
+                .orElseThrow(() -> new IllegalArgumentException("Organizer not found"));
         Hackathon hackathon = hackathonRepository.findById(hackathonId)
-                .orElseThrow(() -> new IllegalArgumentException("Hackathon non trovato"));
+                .orElseThrow(() -> new IllegalArgumentException("Hackathon not found"));
         User targetUser = userRepository.findById(targetUserId)
-                .orElseThrow(() -> new IllegalArgumentException("Utente target non trovato"));
+                .orElseThrow(() -> new IllegalArgumentException("Target user not found"));
 
         if (!organizer.hasPermission(Permission.CAN_MANAGE_STAFF, hackathon)) {
-            throw new UnsupportedOperationException("Permessi insufficienti per gestire lo staff");
+            throw new UnsupportedOperationException("Insufficient permissions to manage staff");
         }
 
         UserStateType targetState = parseRole(newRole);
 
         if (organizer.getId().equals(targetUserId)) {
-            throw new UnsupportedOperationException("Un organizzatore non può modificare il proprio ruolo");
+            throw new UnsupportedOperationException("An organizer cannot change their own role");
         }
 
         boolean isCurrentlyOrganizer = hackathon.getCoordinator() != null &&
                 hackathon.getCoordinator().getId().equals(targetUserId);
         if (isCurrentlyOrganizer && targetState != UserStateType.COORDINATOR) {
-            throw new UnsupportedOperationException("Impossibile cambiare ruolo all'unico organizzatore dell'hackathon");
+            throw new UnsupportedOperationException("Cannot change role of the only organizer of the hackathon");
         }
 
         if (!targetUser.isAvailable(hackathon.getReservation())) {
-            removeUserFromAllStaffRoles(targetUser, hackathon);
-        }
+            if(targetUser.equals(hackathon.getJudge()) || hackathon.getMentorsList().size() == 1)
+            throw new UserNotAvailableException("Must have at least a judge and a mentor; please switch with another user.");
+            else
+                throw new UserNotAvailableException("User not available as staff");
+            }
+
 
         assignRoleToUser(targetUser, hackathon, targetState);
         userStateService.changeUserState(targetUser, true, hackathon, targetState);
@@ -136,30 +143,19 @@ public class StaffHandler {
 
     private UserStateType parseRole(String role) {
         return switch (role.toUpperCase()) {
-            case "ORGANIZER" -> UserStateType.COORDINATOR;
+            case "COORDINATOR" -> UserStateType.COORDINATOR;
             case "MENTOR" -> UserStateType.MENTOR;
             case "JUDGE" -> UserStateType.JUDGE;
-            default -> throw new IllegalArgumentException("Ruolo non valido. Usare ORGANIZER, MENTOR o JUDGE");
+            default -> throw new IllegalArgumentException("Invalid role. Use ORGANIZER, MENTOR, or JUDGE");
         };
     }
 
-    private void removeUserFromAllStaffRoles(User user, Hackathon hackathon) {
-        if (hackathon.getMentorsList().contains(user)) {
-            hackathon.removeMentor(user);
-        }
-        if (user.equals(hackathon.getJudge())) {
-            hackathon.setJudge(null);
-        }
-        if (user.equals(hackathon.getCoordinator())) {
-            throw new UnsupportedOperationException("Impossibile rimuovere l'organizzatore con questo metodo");
-        }
-    }
 
     private void assignRoleToUser(User user, Hackathon hackathon, UserStateType role) {
         switch (role) {
             case COORDINATOR -> {
                 if (hackathon.getCoordinator() != null) {
-                    throw new IllegalStateException("Hackathon ha già un organizzatore. Il modello attuale supporta un solo organizzatore.");
+                    throw new IllegalStateException("Hackathon already has an organizer. Current model supports only one organizer.");
                 }
                 hackathon.setCoordinator(user);
             }
@@ -172,7 +168,7 @@ public class StaffHandler {
                 }
                 hackathon.setJudge(user);
             }
-            default -> throw new IllegalArgumentException("Ruolo non gestito: " + role);
+            default -> throw new IllegalArgumentException("Unhandled role: " + role);
         }
     }
 }

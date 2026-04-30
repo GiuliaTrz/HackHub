@@ -41,23 +41,19 @@ public class InfractionHandler {
      */
     @Transactional
     public void deleteInfraction(UUID deleterId, UUID hackathonId, int infractionIndex) {
-         User deleter = userRepository.findById(deleterId)
-                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
-         Hackathon hackathon = hackathonRepository.findById(hackathonId)
-                 .orElseThrow(() -> new IllegalArgumentException("Hackathon not found"));
+        User deleter = userRepository.findById(deleterId)
+                .orElseThrow(() -> new IllegalArgumentException("Utente non trovato"));
+        Hackathon hackathon = hackathonRepository.findById(hackathonId)
+                .orElseThrow(() -> new IllegalArgumentException("Hackathon non trovato"));
+        if(!deleter.hasPermission(Permission.CAN_DELETE_INFRACTION, hackathon))
+            throw new UnsupportedOperationException("User lacks required permission");
 
-         boolean isOrganizer = deleter.equals(hackathon.getCoordinator());
-         boolean isMentor = hackathon.getMentorsList().contains(deleter);
-         if (!isOrganizer && !isMentor) {
-             throw new UnsupportedOperationException("Only organizer or mentor can delete an infraction");
-         }
+        if (infractionIndex < 0 || infractionIndex >= hackathon.getInfractions().size()) {
+            throw new IllegalArgumentException("Indice segnalazione non valido");
+        }
 
-         if (infractionIndex < 0 || infractionIndex >= hackathon.getInfractions().size()) {
-             throw new IllegalArgumentException("Invalid infraction index");
-         }
-
-         hackathon.getInfractions().remove(infractionIndex);
-         hackathonRepository.save(hackathon);
+        hackathon.getInfractions().remove(infractionIndex);
+        hackathonRepository.save(hackathon);
     }
 
     /**
