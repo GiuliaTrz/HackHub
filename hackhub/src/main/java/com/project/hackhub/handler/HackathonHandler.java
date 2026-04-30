@@ -29,9 +29,9 @@ public class HackathonHandler {
     private final EliminazioneHackathonListener eliminazioneHackathonListener;
 
     /**
-     * Elimina un hackathon (solo organizzatore con permessi globali).
-     * Prima di cancellare, raccoglie tutti i partecipanti (staff + membri team)
-     * e li passa al listener per il reset degli stati.
+     * Deletes a hackathon (only organizer).
+     * Before deletion, collects all participants (staff + team members)
+     * and passes them to the listener for state reset.
      */
     @Transactional
     public void deleteHackathon(UUID deleterId, UUID hackathonId) {
@@ -73,16 +73,16 @@ public class HackathonHandler {
                 .distinct()
                 .collect(Collectors.toList());
 
-        // 2. Notifica al listener per il reset degli stati
-        eliminazioneHackathonListener.updateUsers(utentiUnici, "Hackathon eliminato", hackathon);
+        // 2. Notify the listener for state reset
+        eliminazioneHackathonListener.updateUsers(utentiUnici, "Hackathon deleted", hackathon);
 
         // 3. Eliminazione dell'hackathon
         hackathonRepo.delete(hackathon);
     }
 
     /**
-     * Modifica i dati di base di un hackathon usando un DTO.
-     * La prenotazione non viene mai modificata.
+     * Modifies the basic data of a hackathon using a DTO.
+     * The reservation is never modified.
      */
     @Transactional
     public Hackathon updateHackathon(UUID editorId, UUID hackathonId, HackathonDTO dto) {
@@ -94,10 +94,11 @@ public class HackathonHandler {
         if (!editor.hasPermission(Permission.CAN_MODIFY_HACKATHON, hackathon)) {
             throw new UnsupportedOperationException("Insufficient permissions");
         }
+
         if(dto.judge() != null || !dto.mentorsList().isEmpty())
             throw new IllegalArgumentException("Staff roles cannot be modified through this endpoint;" +
                     "Please use the appropriate staff management endpoints.");
-        // Aggiorna solo i campi modificabili; la prenotazione viene ignorata
+      
         hackathon.setName(dto.name());
         hackathon.setRuleBook(dto.ruleBook());
         hackathon.setExpiredSubscriptionsDate(dto.expiredSubscriptionsDate());

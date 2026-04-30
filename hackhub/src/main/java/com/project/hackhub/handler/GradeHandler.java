@@ -46,7 +46,7 @@ public class GradeHandler {
                 .orElseThrow(() -> new IllegalArgumentException("Submission not found"));
         Team t = s.getTeam();
         if(!t.getHackathon().getState().getStateType().equals(HackathonStateType.APPRAISAL))
-            throw new IllegalStateException("Hackathon is not IN_VALUTAZIONE");
+             throw new IllegalStateException("Hackathon is not in APPRAISAL state");
         if(!j.hasPermission(Permission.CAN_GRADE_SUBMISSION, t.getHackathon()))
             throw new IllegalArgumentException("User does not have required permission");
         s.setGrade(num);

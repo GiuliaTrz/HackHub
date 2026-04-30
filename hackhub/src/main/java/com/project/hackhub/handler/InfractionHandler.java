@@ -31,12 +31,12 @@ public class InfractionHandler {
     private final TeamRepository teamRepository;
 
     /**
-     * Elimina una segnalazione di illecito.
-     * Poiché Infraction è un @Embeddable senza ID, la identifico tramite hackathonId e indice.
+     * Deletes an infraction report.
+     * Since Infraction is an @Embeddable without ID, it is identified via hackathonId and index.
      *
-     * @param deleterId       ID dell'utente (organizzatore o mentore)
-     * @param hackathonId     ID dell'hackathon
-     * @param infractionIndex posizione della segnalazione nella lista
+     * @param deleterId       ID of the user (organizer or mentor)
+     * @param hackathonId     ID of the hackathon
+     * @param infractionIndex position of the infraction in the list
      * @author Giulia Trozzi
      */
     @Transactional
@@ -61,7 +61,7 @@ public class InfractionHandler {
      * @param team the team to expel
      * @param coordinator the coordinator of the Hackathon
      * @throws IllegalArgumentException if the parameters do not exist in their repository
-     * or if the state of the Hackathon is not {@link HackathonStateType#ONGOING} o {@link HackathonStateType#APPRAISAL}
+     * or if the state of the Hackathon is not {@link HackathonStateType#ONGOING} or {@link HackathonStateType#APPRAISAL}
      * or if the coordinator does not have the permission to expel the team
      * @author Giorgia Branchesi
      */
@@ -88,10 +88,10 @@ public class InfractionHandler {
     /**
      * Lets a coordinator handle an infraction
      * @param coordinator the coordinator
-     * @param team the team that committed the infraciton
+     * @param team the team that committed the infraction
      * @throws IllegalArgumentException if any of the parameters are null, if the coordinator
      * does not have the permission, if it does not exist an infraction committed
-     * by that team or if the Hackathon is not in {@link HackathonStateType#ONGOING} o {@link HackathonStateType#APPRAISAL}
+     * by that team or if the Hackathon is not in {@link HackathonStateType#ONGOING} or {@link HackathonStateType#APPRAISAL}
      */
     @Transactional
     public void handleInfraction(UUID coordinator, UUID team) {
@@ -119,7 +119,7 @@ public class InfractionHandler {
      * @param points point to remove from the team final grade
      * @throws IllegalArgumentException if any of the parameters are null, if the coordinator
      * does not have the permission, if it does not exist an infraction committed
-     * by that team or if the Hackathon is not in {@link HackathonStateType#ONGOING} o {@link HackathonStateType#APPRAISAL}
+     * by that team or if the Hackathon is not in {@link HackathonStateType#ONGOING} or {@link HackathonStateType#APPRAISAL}
      */
     @Transactional
     public void penalizeTeam(UUID coordinator, UUID team, float points) {
@@ -156,8 +156,8 @@ public class InfractionHandler {
     @Transactional
     public void reportInfraction(UUID mentor, InfractionDTO dto) {
 
-        User m = userRepository.findById(mentor).orElseThrow(
-                () -> new IllegalArgumentException("mentor cannt be null"));
+         User m = userRepository.findById(mentor).orElseThrow(
+                 () -> new IllegalArgumentException("Mentor cannot be null"));
         if(dto == null) throw new IllegalArgumentException("dto cannot be null");
         if(!checkInfractionData(dto)) throw new IllegalArgumentException("dto is not valid");
         Team t = teamRepository.findById(dto.team()).orElseThrow(
@@ -177,7 +177,7 @@ public class InfractionHandler {
     /**
      * Checks if the information in the DTO is completed and can be used to report a new {@link Infraction}
      * @param dto the dto containing the information
-     * @return true if the dto is complete ad valid, false if not
+     * @return true if the dto is complete and valid, false if not
      * @author Giorgia Branchesi
      */
     private boolean checkInfractionData(InfractionDTO dto) {

@@ -38,7 +38,7 @@ public class WinnerChoiceHandler {
 
     /**
      * Checks the judge having valid credentials and permission for the operation, as well as that
-     * the Hackathon is in the state IN_VALUTAZIONE
+     * the Hackathon is in the state APPRAISAL
      * @param judge the id of the user
      * @param hackathon the id of the Hackathon of interest
      * @throws IllegalArgumentException if no corresponding registered users or hackathon are found,
@@ -52,9 +52,9 @@ public class WinnerChoiceHandler {
         Hackathon h = this.hackathonRepository.findById(hackathon)
                 .orElseThrow(() -> new IllegalArgumentException("Hackathon not found"));
         if(h.getState().getStateType()!= HackathonStateType.APPRAISAL)
-            throw new IllegalStateException("Hackathon must be in state IN_VALUTAZIONE");
+             throw new IllegalStateException("Hackathon must be in state APPRAISAL");
         if(!j.hasPermission(Permission.CAN_CHOOSE_WINNER, h))
-            throw new IllegalArgumentException("user does not have required permission");
+             throw new IllegalArgumentException("user does not have required permission");
         return h;
     }
 
@@ -118,12 +118,12 @@ public class WinnerChoiceHandler {
 
     /**
      * Allows a coordinator to officially declare, if present, a winner. This action will change
-     * the Hackathon's state to CONCLUSO.
+     * the Hackathon's state to CONCLUDED.
      * @param hackathon the id of the Hackathon of interest
      * @param coord the id of the user
      * @throws IllegalArgumentException if the coordinator or the Hackathon are not found, or if the coordinator
      * lacks required permission for the action.
-     * @throws IllegalStateException if the Hackathon's state is not IN_VALUTAZIONE
+     * @throws IllegalStateException if the Hackathon's state is not APPRAISAL
      * @author Chiara Marinucci
      */
     @Transactional
@@ -133,22 +133,22 @@ public class WinnerChoiceHandler {
         Hackathon h = this.hackathonRepository.findById(hackathon)
                 .orElseThrow(() -> new IllegalArgumentException("Hackathon not found"));
         if(h.getState().getStateType()!= HackathonStateType.APPRAISAL)
-            throw new IllegalStateException("Hackathon must be in state IN_VALUTAZIONE");
+             throw new IllegalStateException("Hackathon must be in state APPRAISAL");
         if(!c.hasPermission(Permission.CAN_PROCLAIM_WINNER, h))
-            throw new IllegalArgumentException("user does not have required permission");
+             throw new IllegalArgumentException("user does not have required permission");
 
         if(h.getWinner()!= null){
-            List<User> toBeNotified = new ArrayList<>();
-            for(Team t : h.getTeamsList()){
-            toBeNotified.addAll(t.getTeamMembersList());
-            }
-            EventManager.getInstance().notify(PROCLAIM_WINNER,toBeNotified , h);
-        }
-        setConcluso(h);
-    }
+             List<User> toBeNotified = new ArrayList<>();
+             for(Team t : h.getTeamsList()){
+             toBeNotified.addAll(t.getTeamMembersList());
+             }
+             EventManager.getInstance().notify(PROCLAIM_WINNER,toBeNotified , h);
+         }
+         setConcluso(h);
+     }
 
     /**
-     * Helper method that sets the Hackathon state to CONCLUSO and saves changes.
+     * Helper method that sets the Hackathon state to CONCLUDED and saves changes.
      * @param h the Hackathon of interest
      */
     private void setConcluso(Hackathon h) {

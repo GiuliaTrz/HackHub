@@ -12,8 +12,10 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.UUID;
-
+/**
+ * REST Controller for managing user account operations.
+ * Exposes endpoints for account registration and management.
+ */
 @AllArgsConstructor
 @RestController
 @Validated
@@ -22,7 +24,12 @@ public class AccountBoundary {
 
     private final AccountHandler accountHandler;
 
-    // 1. Registrazione nuovo account
+    /**
+     * Creates a new user account with the provided personal data.
+     *
+     * @param personalDataDto DTO containing user personal information
+     * @return ResponseEntity with HTTP 201 Created status
+     */
     @PostMapping("/registration")
     public ResponseEntity<Void> createAccount(@Valid @RequestBody PersonalDataDTO personalDataDto) {
         accountHandler.createAccount(personalDataDto);

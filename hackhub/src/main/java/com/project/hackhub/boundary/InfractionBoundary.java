@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.UUID;
 
 /**
- * REST Controller per la gestione delle infrazioni all'interno degli hackathon.
- * Espone endpoint per segnalare, gestire, penalizzare ed eliminare infrazioni.
+ * REST Controller for managing infractions within hackathon events.
+ * Exposes endpoints for reporting, handling, penalizing, and deleting infractions.
  */
 @RestController
 @RequestMapping("api/infraction")
@@ -21,11 +21,11 @@ public class InfractionBoundary {
     private final InfractionHandler infractionHandler;
 
     /**
-     * Segnala una nuova infrazione per un team.
+     * Reports a new infraction for a team.
      *
-     * @param mentor ID del mentor autenticato che segnala l'infrazione
-     * @param dto DTO contenente i dettagli dell'infrazione
-     * @return ResponseEntity vuoto con status 200 OK
+     * @param mentor UUID of the authenticated mentor reporting the infraction
+     * @param dto DTO containing infraction details
+     * @return ResponseEntity with HTTP 200 OK status
      */
     @PostMapping("/report")
     public ResponseEntity<String> reportInfraction(
@@ -37,11 +37,11 @@ public class InfractionBoundary {
     }
 
     /**
-     * Espelle un team dall'hackathon.
+     * Expels a team from the hackathon.
      *
-     * @param coordinator ID del coordinatore autenticato
-     * @param team ID del team da espellere
-     * @return messaggio di conferma dell'operazione
+     * @param coordinator UUID of the authenticated coordinator
+     * @param team UUID of the team to expel
+     * @return confirmation message
      */
     @DeleteMapping("/{team}/expel")
     public ResponseEntity<String> expelTeam(
@@ -49,16 +49,16 @@ public class InfractionBoundary {
             @PathVariable UUID team) {
 
         infractionHandler.expelTeam(team, coordinator);
-        return ResponseEntity.ok("team has been successfully expelled");
+        return ResponseEntity.ok("Team has been successfully expelled");
     }
 
     /**
-     * Penalizza un team sottraendo un certo numero di punti.
+     * Penalizes a team by deducting a specified number of points.
      *
-     * @param coordinator ID del coordinatore autenticato
-     * @param team ID del team da penalizzare
-     * @param pointsToDeduct numero di punti da sottrarre
-     * @return messaggio di conferma dell'operazione
+     * @param coordinator UUID of the authenticated coordinator
+     * @param team UUID of the team to penalize
+     * @param pointsToDeduct number of points to deduct
+     * @return confirmation message
      */
     @PatchMapping("/{team}/penalize")
     public ResponseEntity<String> penalizeTeam(
@@ -67,16 +67,16 @@ public class InfractionBoundary {
             @RequestBody float pointsToDeduct) {
 
         infractionHandler.penalizeTeam(coordinator, team, pointsToDeduct);
-        return ResponseEntity.ok("team will be penalized subtracting " + pointsToDeduct + " points from final grade");
+        return ResponseEntity.ok("Team will be penalized by deducting " + pointsToDeduct + " points from final grade");
     }
 
     /**
-     * Gestisce la presenza di un'infrazione per un team.
-     * Il coordinatore potrà successivamente decidere se penalizzare o espellere il team.
+     * Handles an infraction for a team.
+     * The coordinator can then decide whether to penalize or expel the team.
      *
-     * @param coordinator ID del coordinatore autenticato
-     * @param team ID del team con infrazione
-     * @return messaggio informativo
+     * @param coordinator UUID of the authenticated coordinator
+     * @param team UUID of the team with infraction
+     * @return informational message
      */
     @PostMapping("/handle")
     public ResponseEntity<String> handleInfraction(
@@ -84,16 +84,16 @@ public class InfractionBoundary {
             @RequestBody UUID team) {
 
         infractionHandler.handleInfraction(coordinator, team);
-        return ResponseEntity.ok("Infraction to be handled: please, penalize or expel team");
+        return ResponseEntity.ok("Infraction to be handled: please penalize or expel the team");
     }
 
     /**
-     * Elimina una specifica infrazione da un hackathon.
+     * Deletes a specific infraction from a hackathon.
      *
-     * @param userId ID dell'utente autenticato
-     * @param hackathonId ID dell'hackathon
-     * @param infractionIndex indice dell'infrazione da rimuovere
-     * @return ResponseEntity vuoto con status 204 No Content
+     * @param userId UUID of the authenticated user
+     * @param hackathonId UUID of the hackathon
+     * @param infractionIndex index of the infraction to remove
+     * @return ResponseEntity with HTTP 204 No Content status
      */
     @DeleteMapping("/{hackathonId}/{infractionIndex}")
     public ResponseEntity<Void> deleteInfraction(

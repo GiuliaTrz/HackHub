@@ -74,10 +74,10 @@ public class Hackathon {
 
     public void addMentor(User u) {
         if (u == null)
-            throw new IllegalArgumentException("Mentor nullo.");
+            throw new IllegalArgumentException("Mentor cannot be null.");
 
         if (mentorsList.contains(u))
-            throw new IllegalStateException("Mentor già presente.");
+            throw new IllegalStateException("Mentor already present.");
 
         mentorsList.add(u);
     }
@@ -90,21 +90,21 @@ public class Hackathon {
     }
 
     /**
-     * Rimuove un mentore
-     * @param u utente registrato
+     * Removes a mentor
+     * @param u registered user
      * @author Giulia Trozzi
      */
     public void removeMentor(User u) {
         if (u == null)
-            throw new IllegalArgumentException("Mentor nullo.");
+            throw new IllegalArgumentException("Mentor cannot be null.");
         if (!mentorsList.contains(u))
-            throw new IllegalStateException("Mentor non presente nella lista.");
+            throw new IllegalStateException("Mentor not present in the list.");
         mentorsList.remove(u);
     }
 
     public void removeTeam(Team t) {
         if (t == null)
-            throw new IllegalArgumentException("Team nullo.");
+            throw new IllegalArgumentException("Team cannot be null.");
 
         teamsList.remove(t);
     }
@@ -129,7 +129,7 @@ public class Hackathon {
     public void removeInfractionByTeam(Team t) {
 
         if(t == null)
-            throw new IllegalArgumentException("team cannot be null");
+            throw new IllegalArgumentException("Team cannot be null");
 
         for(Infraction i : this.infractions) {
             if(i.getITeam().equals(t)) {
@@ -141,7 +141,7 @@ public class Hackathon {
 
     public void addInfraction(Infraction i) {
         if(i == null)
-            throw new IllegalArgumentException("infraction to remove cannot be null");
+            throw new IllegalArgumentException("Infraction to remove cannot be null");
 
         this.infractions.add(i);
     }

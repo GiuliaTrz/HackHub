@@ -23,13 +23,13 @@ public class PrizeHandler {
     private final UserRepository utenteRepository;
 
     /**
-     * Collects the money prize for a member of the winning team.
-     * The prize is divided equally among the team members.
+     * Claims the monetary prize for a team member winner.
+     * The prize is divided equally among team members.
      * Simulates redirection to an external payment system.
      *
-     * @param userId      ID of the team member requesting the prize
+     * @param userId      ID of the team member requesting the prize redemption
      * @param hackathonId ID of the hackathon
-     * @throws IllegalStateException if the hackathon has no winner or prize has already been collected
+     * @throws IllegalStateException if the hackathon has no winner or the prize has already been claimed
      * @author Giulia Trozzi
      */
     @Transactional
@@ -69,7 +69,7 @@ public class PrizeHandler {
             throw new RuntimeException("Payment failed. Inserted data is not valid");
         }
 
-    }
+     }
 
     // Simulation of external payment service
     private boolean externalPaymentService(User user, BigDecimal amount) {

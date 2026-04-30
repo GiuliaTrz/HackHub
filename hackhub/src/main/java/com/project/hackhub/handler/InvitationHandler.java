@@ -54,7 +54,7 @@ public class InvitationHandler {
         );
 
         if (!t.getHackathon().getState().getStateType().equals(HackathonStateType.SUBSCRIPTION_PHASE))
-                throw new IllegalStateException("Hackathon must be IN_ISCRIZIONE to invite users.");
+                throw new IllegalStateException("Hackathon must be in SUBSCRIPTION_PHASE to invite users.");
         if(!teamLeader1.hasPermission(Permission.CAN_INVITE_USERS, t.getHackathon()))
             throw new UnsupportedOperationException("Action not allowed.");
         if(!teamLeader1.equals(t.getTeamLeader()))

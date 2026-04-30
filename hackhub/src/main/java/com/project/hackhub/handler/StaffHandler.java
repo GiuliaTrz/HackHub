@@ -27,7 +27,7 @@ public class StaffHandler {
      * @param organizerId ID of the organizer performing the action
      * @param hackathonId ID of the hackathon
      * @param mentorId ID of the user to add as mentor
-     * @throws UnsupportedOperationException if the organizer does not have permissions
+     * @throws UnsupportedOperationException if the organizer doesn't have permissions
      * @throws IllegalArgumentException if one of the IDs does not correspond to an entity
      * @author Giulia Trozzi
      */
@@ -56,9 +56,9 @@ public class StaffHandler {
 
     /**
      * Removes a mentor from the hackathon (assigns DEFAULT state).
-     * @param organizerId organizer ID
-     * @param hackathonId hackathon ID
-     * @param mentorId mentor ID to remove
+     * @param organizerId ID organizer
+     * @param hackathonId ID hackathon
+     * @param mentorId ID mentor to remove
      * @author Giulia Trozzi
      */
     @Transactional
@@ -87,19 +87,19 @@ public class StaffHandler {
     }
 
     /**
-     * Changes the role of a user within a hackathon.
-     * Can be performed only by an organizer with staff management permissions.
+     * Modifies the role of a user within a hackathon.
+     * Can only be executed by an organizer with staff management permissions.
      * The organizer cannot change their own role nor leave the hackathon without organizers.
      *
      * @param organizerId  ID of the organizer performing the operation
      * @param hackathonId  ID of the hackathon
-     * @param targetUserId ID of the user whose role is to be changed
+     * @param targetUserId ID of the user whose role is to be modified
      * @param newRole      new role to assign ("ORGANIZER", "MENTOR", "JUDGE")
-     * @throws IllegalArgumentException      if one of the IDs does not correspond to an entity or if the role is invalid
+     * @throws IllegalArgumentException      if one of the IDs does not correspond to an entity or if the role is not valid
      * @throws UnsupportedOperationException if the organizer does not have the necessary permissions,
-     *                                       if they try to change their own role,
+     *                                       if they try to modify their own role,
      *                                       or if the operation would leave the hackathon without organizers
-     * @throws IllegalStateException         if the target user is not available (has an incompatible state already)
+     * @throws IllegalStateException         if the target user is not available (already has an incompatible state)
      */
     @Transactional
     public void changeStaffRole(UUID organizerId, UUID hackathonId, UUID targetUserId, String newRole) {
@@ -143,7 +143,7 @@ public class StaffHandler {
 
     private UserStateType parseRole(String role) {
         return switch (role.toUpperCase()) {
-            case "ORGANIZER" -> UserStateType.COORDINATOR;
+            case "COORDINATOR" -> UserStateType.COORDINATOR;
             case "MENTOR" -> UserStateType.MENTOR;
             case "JUDGE" -> UserStateType.JUDGE;
             default -> throw new IllegalArgumentException("Invalid role. Use ORGANIZER, MENTOR, or JUDGE");

@@ -58,106 +58,106 @@ public class Team {
     }
 
     /**
-     * Aggiunge un {@link User} alla lista dei membri del team.
+     * Adds a {@link User} to the team members list.
      *
-     * @param u l'utente da aggiungere; non può essere null
-     * @throws IllegalArgumentException se l'utente è null
-     * @throws IllegalStateException se l'utente è già presente nel team
-     * o se la dimensione massima del team è stata raggiunta
+     * @param u the user to add; cannot be null
+     * @throws IllegalArgumentException if the user is null
+     * @throws IllegalStateException if the user is already in the team
+     * or if the maximum team size has been reached
      *
      * @author Giulia Trozzi
      */
     public void addTeamMember(User u) {
         if (u == null)
-            throw new IllegalArgumentException("L'utente non può essere null.");
+            throw new IllegalArgumentException("User cannot be null.");
         System.out.println("DEBUG -> Team: " + this.name);
-        System.out.println("DEBUG -> Membri attuali: " + teamMembersList.size());
-        System.out.println("DEBUG -> Limite Hackathon: " + (hackathon != null ? hackathon.getMaxTeamDimension() : "NULL"));
+        System.out.println("DEBUG -> Current members: " + teamMembersList.size());
+        System.out.println("DEBUG -> Hackathon limit: " + (hackathon != null ? hackathon.getMaxTeamDimension() : "NULL"));
 
         if (teamMembersList.contains(u))
-            throw new IllegalStateException("Utente già presente nel team.");
+            throw new IllegalStateException("User already present in team.");
 
         if (hackathon != null &&
                 teamMembersList.size() >= hackathon.getMaxTeamDimension())
-            throw new IllegalStateException("Dimensione massima del team raggiunta.");
+            throw new IllegalStateException("Maximum team size reached.");
 
         teamMembersList.add(u);
     }
 
     /**
-     * Rimuove un {@link User} dalla lista dei membri del team.
+     * Removes a {@link User} from the team members list.
      *
-     * @param u l'utente da rimuovere; non può essere null
-     * @throws IllegalArgumentException se l'utente è null
-     * @throws IllegalStateException se l'utente non è presente nel team
-     * o se si tenta di rimuovere il team leader
+     * @param u the user to remove; cannot be null
+     * @throws IllegalArgumentException if the user is null
+     * @throws IllegalStateException if the user is not in the team
+     * or if attempting to remove the team leader
      *
      * @author Giulia Trozzi
      */
     public void removeTeamMember(User u) {
         if (u == null)
-            throw new IllegalArgumentException("Utente non valido.");
+            throw new IllegalArgumentException("Invalid user.");
 
         if (!teamMembersList.contains(u))
-            throw new IllegalStateException("Utente non presente nel team.");
+            throw new IllegalStateException("User not present in team.");
 
         if (u.equals(teamLeader))
-            throw new IllegalStateException("Non puoi rimuovere il team leader.");
+            throw new IllegalStateException("Cannot remove the team leader.");
 
         teamMembersList.remove(u);
     }
 
 
     /**
-     * Rimuove un {@link Invitation} dalla lista degli inviti del team.
+     * Removes an {@link Invitation} from the team invitations list.
      *
-     * @param i l'invito da rimuovere; non può essere null
-     * @return true se l'invito è stato rimosso, false se non era presente nella lista
-     * @throws IllegalArgumentException se l'invito è null
+     * @param i the invitation to remove; cannot be null
+     * @return true if the invitation was removed, false if it was not in the list
+     * @throws IllegalArgumentException if the invitation is null
      *
      * @author Giulia Trozzi
      */
     public boolean removeInvitationFromList(Invitation i) {
         if (i == null)
-            throw new IllegalArgumentException("Invito nullo.");
+            throw new IllegalArgumentException("Invitation cannot be null.");
 
         return invitationList.remove(i);
     }
 
     /**
-     * Aggiunge un {@link Invitation} alla lista degli inviti del team.
+     * Adds an {@link Invitation} to the team invitations list.
      *
-     * @param i l'invito da aggiungere; non può essere null
-     * @throws IllegalArgumentException se l'invito è null
-     * @throws IllegalStateException se l'invito è già presente nella lista
+     * @param i the invitation to add; cannot be null
+     * @throws IllegalArgumentException if the invitation is null
+     * @throws IllegalStateException if the invitation is already in the list
      *
      * @author Giulia Trozzi
      */
     public void addInvitation(Invitation i) {
         if (i == null)
-            throw new IllegalArgumentException("Invito nullo.");
+            throw new IllegalArgumentException("Invitation cannot be null.");
 
         if (invitationList.contains(i))
-            throw new IllegalStateException("Invito già presente.");
+            throw new IllegalStateException("Invitation already present.");
 
         invitationList.add(i);
     }
 
     /**
-     * Imposta il {@link User} come leader del team.
+     * Sets the {@link User} as the team leader.
      *
-     * @param leader l'utente che diventerà leader; non può essere null
-     * @throws IllegalArgumentException se il leader è null
-     * @throws IllegalStateException se l'utente non è già membro del team
+     * @param leader the user who will become leader; cannot be null
+     * @throws IllegalArgumentException if the leader is null
+     * @throws IllegalStateException if the user is not already a team member
      *
      * @author Giulia Trozzi
      */
     public void setTeamLeader(User leader) {
         if (leader == null)
-            throw new IllegalArgumentException("Leader non valido.");
+            throw new IllegalArgumentException("Invalid leader.");
 
         if (!teamMembersList.contains(leader))
-            throw new IllegalStateException("Il leader deve essere membro del team.");
+            throw new IllegalStateException("The leader must be a team member.");
 
         this.teamLeader = leader;
     }

@@ -40,7 +40,7 @@ public class SubmissionHandler {
      *                    including team ID, task ID, and file information.
      * @throws IllegalArgumentException if the leader, team, or task ID does not exist,
      * or if the provided user is not the designated leader of the team.
-     * @throws IllegalStateException    if the hackathon is not currently in the "IN_CORSO" state.
+     * @throws IllegalStateException    if the hackathon is not currently in the "ONGOING" state.
      * @author Chiara Marinucci
      */
     @Transactional
@@ -49,7 +49,7 @@ public class SubmissionHandler {
         Team t = teamRepository.findById(dto.teamId()).orElseThrow(()-> new IllegalArgumentException("Team not found"));
         Task ta = taskRepository.findById(dto.taskId()).orElseThrow(()-> new IllegalArgumentException("Task can't be null"));
         if(!t.getTeamLeader().equals(leader)) throw new IllegalArgumentException("TeamLeader doesn't match the given Team");
-        if(!t.getHackathon().getState().getStateType().equals(HackathonStateType.ONGOING)) throw new IllegalStateException("Hackathon is not IN_CORSO");
+        if(!t.getHackathon().getState().getStateType().equals(HackathonStateType.ONGOING)) throw new IllegalStateException("Hackathon is not in ONGOING state");
         if(leader.hasPermission(Permission.CAN_SEND_SUBMISSION, t.getHackathon())){
             FileTemplate ft = new FileTemplate();
             ft.setFileName(dto.fileName());
@@ -63,10 +63,10 @@ public class SubmissionHandler {
 
     /**
      * Returns a list of all most recent submissions sent by a Team according to the user's permissions.
-     * Staff can view Submissions before and after they have been evaluated, in Hackathon's states IN_VALUTAZIONE
-     * and CONCLUSO.
+     * Staff can view Submissions before and after they have been evaluated, in Hackathon's states APPRAISAL
+     * and CONCLUDED.
      * A Team Member will only get access to its own team's submissions once the hackathon's state
-     * is "CONCLUSO" to check the given grade for each submission.
+     * is "CONCLUDED" to check the given grade for each submission.
      * @param user the user attempting to view the list
      * @param team  the team whose submissions are of interest
      * @return a list of all most recent submissions sent by a Team
@@ -88,13 +88,13 @@ public class SubmissionHandler {
     private List<Submission> getSubmissionsAsStaff(Team t){
         if(t.getHackathon().getState().getStateType() != HackathonStateType.APPRAISAL &&
                 t.getHackathon().getState().getStateType() != HackathonStateType.CONCLUDED)
-            throw new IllegalStateException("Hackathon state is not IN_VALUTAZIONE or CONCLUSO");
+            throw new IllegalStateException("Hackathon state is not APPRAISAL or CONCLUDED");
         return this.submissionRepository.findLatestSubmissionsByTeamId(t.getId());
     }
 
     private List<Submission> getSubmissionsAsTeamMember(Team t) {
         if(t.getHackathon().getState().getStateType() != HackathonStateType.CONCLUDED)
-            throw new IllegalStateException("Hackathon state is not CONCLUSO");
+            throw new IllegalStateException("Hackathon state is not CONCLUDED");
         return this.submissionRepository.findLatestSubmissionsByTeamId(t.getId());
     }
 
