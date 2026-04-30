@@ -183,9 +183,9 @@ public class SupportRequestHandler {
     @Transactional
     public List<AidRequest> getAllSupportRequests(UUID viewerId, UUID hackathonId) {
         User viewer = userRepository.findById(viewerId)
-                .orElseThrow(() -> new IllegalArgumentException("Utente non trovato"));
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
         Hackathon hackathon = hackathonRepository.findById(hackathonId)
-                .orElseThrow(() -> new IllegalArgumentException("Hackathon non trovato"));
+                .orElseThrow(() -> new IllegalArgumentException("Hackathon not found"));
         if(!viewer.hasPermission(Permission.STAFF_PERMISSION, hackathon))
             throw new UnsupportedOperationException("user lacks required permissions for the operation");
 
