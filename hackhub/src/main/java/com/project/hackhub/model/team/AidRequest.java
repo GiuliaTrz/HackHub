@@ -1,5 +1,8 @@
 package com.project.hackhub.model.team;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import com.project.hackhub.model.hackathon.Hackathon;
 import com.project.hackhub.service.calendar.Slot;
 import jakarta.persistence.Embeddable;
@@ -18,6 +21,7 @@ public class AidRequest {
     @Embedded
     private Slot slot;
 
+    @JsonIgnoreProperties({"hackathon", "invitationList", "teamMembersList", "teamLeader", "hasPendingCallProposal", "grade"})
     @ManyToOne @Getter
     private Team team;
 
@@ -34,6 +38,7 @@ public class AidRequest {
         this(t, type, null, slot);
     }
 
+    @JsonIgnore
     public Hackathon getHackathon() {
         if (team == null)
             throw new IllegalStateException("Team not associated.");

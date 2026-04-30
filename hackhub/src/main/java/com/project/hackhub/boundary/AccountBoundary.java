@@ -31,12 +31,12 @@ public class AccountBoundary {
 
     // 2. Aggiornamento dati profilo (Corretto il tipo di ritorno e la logica)
     @PutMapping("/update")
-    public ResponseEntity<User> updateAccount(
+    public ResponseEntity<String> updateAccount(
             @AuthenticationPrincipal UUID userId,
             @Valid @RequestBody PersonalData personalData) {
 
         User updated = accountHandler.updateAccount(userId, personalData);
-        return ResponseEntity.ok(updated);
+        return ResponseEntity.ok("updated successfully");
     }
 
     // 3. Eliminazione account

@@ -45,12 +45,8 @@ public class InfractionHandler {
                 .orElseThrow(() -> new IllegalArgumentException("Utente non trovato"));
         Hackathon hackathon = hackathonRepository.findById(hackathonId)
                 .orElseThrow(() -> new IllegalArgumentException("Hackathon non trovato"));
-
-        boolean isOrganizer = deleter.equals(hackathon.getCoordinator());
-        boolean isMentor = hackathon.getMentorsList().contains(deleter);
-        if (!isOrganizer && !isMentor) {
-            throw new UnsupportedOperationException("Solo organizzatore o mentore possono eliminare una segnalazione");
-        }
+        if(!deleter.hasPermission(Permission.CAN_DELETE_INFRACTION, hackathon))
+            throw new UnsupportedOperationException("User lacks required permission");
 
         if (infractionIndex < 0 || infractionIndex >= hackathon.getInfractions().size()) {
             throw new IllegalArgumentException("Indice segnalazione non valido");

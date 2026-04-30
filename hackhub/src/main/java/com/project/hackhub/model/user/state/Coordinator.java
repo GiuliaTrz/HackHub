@@ -14,7 +14,9 @@ public class Coordinator extends UserState {
                 Permission.CAN_ADD_TASK,
                 Permission.CAN_EXPEL_TEAM,
                 Permission.CAN_PENALIZE_TEAM,
-                Permission.CAN_DELETE_HACKATHON
+                Permission.CAN_DELETE_HACKATHON,
+                Permission.CAN_MANAGE_STAFF,
+                Permission.CAN_DELETE_INFRACTION
                 ));
 
     }

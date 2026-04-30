@@ -94,88 +94,16 @@ public class HackathonHandler {
         if (!editor.hasPermission(Permission.CAN_MODIFY_HACKATHON, hackathon)) {
             throw new UnsupportedOperationException("Insufficient permissions");
         }
-
+        if(dto.judge() != null || !dto.mentorsList().isEmpty())
+            throw new IllegalArgumentException("Staff roles cannot be modified through this endpoint;" +
+                    "Please use the appropriate staff management endpoints.");
         // Aggiorna solo i campi modificabili; la prenotazione viene ignorata
         hackathon.setName(dto.name());
         hackathon.setRuleBook(dto.ruleBook());
         hackathon.setExpiredSubscriptionsDate(dto.expiredSubscriptionsDate());
         hackathon.setMaxTeamDimension(dto.maxTeamDimension());
-        // Staff e premi vanno modificati tramite appositi metodi
+        hackathon.setMoneyPrice(dto.moneyPrice());
 
         return hackathonRepo.save(hackathon);
-    }
-
-    /**
-     * Modifica lo staff dell'hackathon.
-     * Regole:
-     * - L'organizzatore non può essere rimosso, solo aggiunto se assente.
-     * - Il giudice può solo essere sostituito, non rimosso.
-     * - Non si può rimuovere l'ultimo mentore.
-     */
-    @Transactional
-    public void modifyStaff(UUID editorId, UUID hackathonId, UUID staffMemberId, String role, boolean add) {
-        User editor = utenteRepository.findById(editorId)
-                .orElseThrow(() -> new IllegalArgumentException("Editor not found"));
-        Hackathon hackathon = hackathonRepo.findById(hackathonId)
-                .orElseThrow(() -> new IllegalArgumentException("Hackathon not found"));
-        User member = utenteRepository.findById(staffMemberId)
-                .orElseThrow(() -> new IllegalArgumentException("Staff member not found"));
-
-        if (!editor.hasPermission(Permission.CAN_MANAGE_STAFF, hackathon)) {
-            throw new UnsupportedOperationException("Insufficient permissions to manage staff");
-        }
-
-        switch (role.toUpperCase()) {
-            case "ORGANIZER":
-                if (add) {
-                    if (hackathon.getCoordinator() != null) {
-                        throw new IllegalStateException("Hackathon ha già un organizzatore.");
-                    }
-                    hackathon.setCoordinator(member);
-                    userStateService.changeUserState(member, true, hackathon, UserStateType.COORDINATOR);
-                } else {
-                    if (hackathon.getCoordinator() == null || !hackathon.getCoordinator().getId().equals(staffMemberId)) {
-                        throw new IllegalArgumentException("L'utente non è l'organizzatore di questo hackathon");
-                    }
-                    hackathon.setCoordinator(null);
-                    userStateService.changeUserState(member, false, hackathon, UserStateType.DEFAULT_STATE);
-                }
-                break;
-
-            case "MENTOR":
-                if (add) {
-                    hackathon.addMentor(member);
-                    userStateService.changeUserState(member, true, hackathon, UserStateType.MENTOR);
-                } else {
-                    // Controllo: non si può rimuovere l'ultimo mentore
-                    if (hackathon.getMentorsList() == null || hackathon.getMentorsList().size() <= 1) {
-                        throw new IllegalStateException("Non è possibile rimuovere l'ultimo mentore.");
-                    }
-                    hackathon.removeMentor(member);
-                    userStateService.changeUserState(member, false, hackathon, UserStateType.DEFAULT_STATE);
-                }
-                break;
-
-            case "JUDGE":
-                // Il giudice non può essere rimosso, solo sostituito
-                if (add) {
-                    if (hackathon.getJudge() != null) {
-                        User oldJudge = hackathon.getJudge();
-                        hackathon.setJudge(null);
-                        userStateService.changeUserState(oldJudge, false, hackathon, UserStateType.DEFAULT_STATE);
-                    }
-                    hackathon.setJudge(member);
-                    userStateService.changeUserState(member, true, hackathon, UserStateType.JUDGE);
-                } else {
-                    throw new UnsupportedOperationException("Il giudice non può essere rimosso, può solo essere sostituito.");
-                }
-                break;
-
-            default:
-                throw new IllegalArgumentException("Ruolo non valido. Usare ORGANIZER, MENTOR o JUDGE");
-        }
-
-        hackathonRepo.save(hackathon);
-        utenteRepository.save(member);
     }
 }
