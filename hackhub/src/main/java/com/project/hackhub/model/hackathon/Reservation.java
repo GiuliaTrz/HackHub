@@ -36,12 +36,12 @@ public class Reservation {
     }
 
     /**
-     * Verifica se questa prenotazione si sovrappone con un'altra prenotazione.
+     * Verifies if this reservation overlaps with another reservation.
      *
-     * @param other la prenotazione con cui verificare la sovrapposizione; non può essere null
-     * @return true se gli intervalli temporali si sovrappongono, false altrimenti
-     * @throws IllegalArgumentException se la prenotazione da confrontare è null
-     * @throws IllegalStateException se uno dei due intervalli temporali non è impostato
+     * @param other the reservation to check overlap with; cannot be null
+     * @return true if the time intervals overlap, false otherwise
+     * @throws IllegalArgumentException if the reservation to compare is null
+     * @throws IllegalStateException if one of the time intervals is not set
      *
      * @author Giulia Trozzi
      */
@@ -56,12 +56,12 @@ public class Reservation {
     }
 
     /**
-     * Controlla se questa prenotazione ha la stessa {@link Location} di un'altra prenotazione.
+     * Checks if this reservation has the same {@link Location} as another reservation.
      *
-     * @param other la prenotazione da confrontare; non può essere null
-     * @return true se le due prenotazioni condividono la stessa location, false altrimenti
-     * @throws IllegalArgumentException se la prenotazione da confrontare è null
-     * @throws IllegalStateException se la location di una delle due prenotazioni non è impostata
+     * @param other the reservation to compare; cannot be null
+     * @return true if the two reservations share the same location, false otherwise
+     * @throws IllegalArgumentException if the reservation to compare is null
+     * @throws IllegalStateException if the location of one of the reservations is not set
      *
      * @author Giulia Trozzi
      */

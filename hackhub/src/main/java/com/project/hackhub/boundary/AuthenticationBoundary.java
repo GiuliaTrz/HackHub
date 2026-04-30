@@ -12,6 +12,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * REST Controller for user authentication operations.
+ * Handles user login and authentication token generation.
+ */
 @RestController
 @AllArgsConstructor
 @Validated
@@ -20,6 +24,12 @@ public class AuthenticationBoundary {
 
     private final AuthenticationHandler authenticationHandler;
 
+    /**
+     * Authenticates a user with provided credentials.
+     *
+     * @param dto DTO containing login credentials
+     * @return ResponseEntity with authentication response including JWT token
+     */
     @PostMapping()
     public ResponseEntity<AuthResponse> authenticateUser(
             @Valid @RequestBody LoginDTO dto) {
