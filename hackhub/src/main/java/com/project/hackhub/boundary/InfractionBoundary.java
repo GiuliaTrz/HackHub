@@ -28,12 +28,12 @@ public class InfractionBoundary {
      * @return ResponseEntity vuoto con status 200 OK
      */
     @PostMapping("/report")
-    public ResponseEntity<Void> reportInfraction(
+    public ResponseEntity<String> reportInfraction(
             @AuthenticationPrincipal UUID mentor,
             @RequestBody InfractionDTO dto) {
 
         infractionHandler.reportInfraction(mentor, dto);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok("infraction has been successfully reported");
     }
 
     /**

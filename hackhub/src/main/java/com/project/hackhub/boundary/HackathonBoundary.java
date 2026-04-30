@@ -1,6 +1,7 @@
 package com.project.hackhub.boundary;
 
 import com.project.hackhub.dto.HackathonDTO;
+import com.project.hackhub.dto.UpdateStaffRequestDTO;
 import com.project.hackhub.handler.HackathonHandler;
 import com.project.hackhub.handler.StaffHandler;
 import com.project.hackhub.model.hackathon.Hackathon;
@@ -58,28 +59,4 @@ public class HackathonBoundary {
         return ResponseEntity.ok(updated);
     }
 
-    /**
-     * Changes the role of a staff member inside a hackathon.
-     *
-     * @param organizerId  the authenticated organizer
-     * @param hackathonId  the ID of the hackathon
-     * @param request      contains the target user ID and the new role
-     * @return a {@link ResponseEntity} with status 200 OK
-     * @throws IllegalArgumentException      if the role is invalid
-     * @throws UnsupportedOperationException if the organizer lacks permissions or tries to change their own role
-     */
-    @PostMapping("/{hackathonId}/staff/change-role")
-    public ResponseEntity<Void> modifyStaff(
-            @AuthenticationPrincipal UUID organizerId,
-            @PathVariable UUID hackathonId,
-            @RequestBody StaffRoleChangeRequest request) {
-        staffHandler.changeStaffRole(organizerId, hackathonId,
-                request.targetUserId(), request.newRole());
-        return ResponseEntity.ok().build();
-    }
-
-    /**
-     * DTO for a staff role change request.
-     */
-    public record StaffRoleChangeRequest(UUID targetUserId, String newRole) {}
 }

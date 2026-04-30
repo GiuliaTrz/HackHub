@@ -1,5 +1,6 @@
 package com.project.hackhub.boundary;
 
+import com.project.hackhub.dto.UpdateStaffRequestDTO;
 import com.project.hackhub.handler.StaffHandler;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -31,12 +32,12 @@ public class StaffBoundary {
      * @throws IllegalStateException         if the mentor is not available for the hackathon
      */
     @PostMapping("/{hackathonId}/mentors")
-    public ResponseEntity<Void> addMentor(
+    public ResponseEntity<String> addMentor(
             @AuthenticationPrincipal UUID organizerId,
             @PathVariable UUID hackathonId,
             @RequestBody UUID mentorId) {
         staffHandler.addMentor(organizerId, hackathonId, mentorId);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok("mentor has been successfully added");
     }
 
     /**
@@ -51,11 +52,32 @@ public class StaffBoundary {
      *
      */
     @DeleteMapping("/{hackathonId}/mentors/{mentorId}")
-    public ResponseEntity<Void> removeMentor(
+    public ResponseEntity<String> removeMentor(
             @AuthenticationPrincipal UUID organizerId,
             @PathVariable UUID hackathonId,
             @PathVariable UUID mentorId) {
         staffHandler.removeMentor(organizerId, hackathonId, mentorId);
+        return ResponseEntity.ok("mentor has been successfully removed");
+    }
+
+
+    /**
+     * Changes the role of a staff member inside a hackathon.
+     *
+     * @param organizerId  the authenticated organizer
+     * @param hackathonId  the ID of the hackathon
+     * @param request      contains the target user ID and the new role
+     * @return a {@link ResponseEntity} with status 200 OK
+     * @throws IllegalArgumentException      if the role is invalid
+     * @throws UnsupportedOperationException if the organizer lacks permissions or tries to change their own role
+     */
+    @PostMapping("/{hackathonId}/staff/change-role")
+    public ResponseEntity<Void> modifyStaff(
+            @AuthenticationPrincipal UUID organizerId,
+            @PathVariable UUID hackathonId,
+            @RequestBody UpdateStaffRequestDTO request) {
+        staffHandler.changeStaffRole(organizerId, hackathonId,
+                request.toChange(), request.role());
         return ResponseEntity.ok().build();
     }
 }

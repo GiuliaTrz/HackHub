@@ -1,5 +1,6 @@
 package com.project.hackhub.handler;
 
+import com.project.hackhub.exceptions.UserNotAvailableException;
 import com.project.hackhub.model.hackathon.Hackathon;
 import com.project.hackhub.model.user.User;
 import com.project.hackhub.model.user.state.Permission;
@@ -76,6 +77,8 @@ public class StaffHandler {
         if (!hackathon.getMentorsList().contains(mentor)) {
             throw new IllegalArgumentException("L'utente non è un mentore di questo hackathon");
         }
+        if(hackathon.getMentorsList().size() == 1)
+            throw new IllegalStateException("Cannot remove the only mentor");
 
         hackathon.removeMentor(mentor);
         userStateService.changeUserState(mentor, false, hackathon, UserStateType.DEFAULT_STATE);
@@ -124,8 +127,12 @@ public class StaffHandler {
         }
 
         if (!targetUser.isAvailable(hackathon.getReservation())) {
-            removeUserFromAllStaffRoles(targetUser, hackathon);
-        }
+            if(targetUser.equals(hackathon.getJudge()) || hackathon.getMentorsList().size() == 1)
+            throw new UserNotAvailableException("Must have at least a judge and a mentor; please switch with another user.");
+            else
+                throw new UserNotAvailableException("User not available as staff");
+            }
+
 
         assignRoleToUser(targetUser, hackathon, targetState);
         userStateService.changeUserState(targetUser, true, hackathon, targetState);
@@ -143,17 +150,6 @@ public class StaffHandler {
         };
     }
 
-    private void removeUserFromAllStaffRoles(User user, Hackathon hackathon) {
-        if (hackathon.getMentorsList().contains(user)) {
-            hackathon.removeMentor(user);
-        }
-        if (user.equals(hackathon.getJudge())) {
-            hackathon.setJudge(null);
-        }
-        if (user.equals(hackathon.getCoordinator())) {
-            throw new UnsupportedOperationException("Impossibile rimuovere l'organizzatore con questo metodo");
-        }
-    }
 
     private void assignRoleToUser(User user, Hackathon hackathon, UserStateType role) {
         switch (role) {

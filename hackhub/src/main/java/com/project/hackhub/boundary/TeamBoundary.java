@@ -50,12 +50,12 @@ public class TeamBoundary {
      * @throws UnsupportedOperationException if the user is neither team leader nor organizer
      */
     @PatchMapping("/{teamId}")
-    public ResponseEntity<Team> updateTeam(
+    public ResponseEntity<String> updateTeam(
             @AuthenticationPrincipal UUID editorId,
             @PathVariable UUID teamId,
             @RequestBody String newName) {
         Team updated = teamHandler.updateTeam(editorId, teamId, newName);
-        return ResponseEntity.ok(updated);
+        return ResponseEntity.ok("team has been successfully updated");
     }
 
     /**

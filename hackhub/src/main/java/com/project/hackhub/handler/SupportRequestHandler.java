@@ -186,13 +186,9 @@ public class SupportRequestHandler {
                 .orElseThrow(() -> new IllegalArgumentException("Utente non trovato"));
         Hackathon hackathon = hackathonRepository.findById(hackathonId)
                 .orElseThrow(() -> new IllegalArgumentException("Hackathon non trovato"));
+        if(!viewer.hasPermission(Permission.STAFF_PERMISSION, hackathon))
+            throw new UnsupportedOperationException("user lacks required permissions for the operation");
 
-        boolean isMentor = hackathon.getMentorsList().contains(viewer);
-        boolean isOrganizer = viewer.equals(hackathon.getCoordinator());
-
-        if (!isMentor && !isOrganizer) {
-            throw new UnsupportedOperationException("Permessi insufficienti per visualizzare le richieste");
-        }
         return hackathon.getAidRequests();
     }
 }
