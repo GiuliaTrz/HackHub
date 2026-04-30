@@ -29,9 +29,9 @@ public class InfoBoundary {
     /**
      * Endpoint for getting a report of a given hackathon for a user based on hackathon's state
      * and the user's permissions
-     * @param hackathonId
-     * @param userId
-     * @return a report
+     * @param hackathonId the id of the hackathon of interest
+     * @param userId the id of the user performing the action
+     * @return a report according to the hackathon's state and the user's permissions
      */
     @GetMapping("/{hackathonId}/report")
     public ResponseEntity<Report> getHackathonReport(@PathVariable UUID hackathonId,
