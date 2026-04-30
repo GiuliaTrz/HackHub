@@ -65,7 +65,7 @@ public class Hackathon {
     @ElementCollection
     private List<AidRequest> aidRequests = new ArrayList<>();
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Task> taskList = new ArrayList<>();
 
     @OneToOne
