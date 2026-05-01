@@ -44,6 +44,8 @@ public class StaffHandler {
         if (!organizer.hasPermission(Permission.CAN_MANAGE_STAFF, hackathon)) {
             throw new UnsupportedOperationException("Insufficient permissions to manage staff");
         }
+        if(!hackathon.getStateType().equals(HackathonStateType.SUBSCRIPTION_PHASE))
+            throw new IllegalStateException("Hackathon must be in subscription phase to add mentors");
 
         if (!mentor.isAvailable(hackathon.getReservation())) {
             throw new IllegalStateException("Mentor is not available for this hackathon");
@@ -111,7 +113,7 @@ public class StaffHandler {
         User targetUser = userRepository.findById(targetUserId)
                 .orElseThrow(() -> new IllegalArgumentException("Target user not found"));
 
-        if(!hackathon.getStateType().equals(HackathonStateType.ONGOING)) {
+        if(!hackathon.getStateType().equals(HackathonStateType.SUBSCRIPTION_PHASE)) {
             throw new UnsupportedOperationException("Operation cannot be performed if this state");
         }
 

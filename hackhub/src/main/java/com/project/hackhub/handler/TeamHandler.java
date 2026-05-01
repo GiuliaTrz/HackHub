@@ -53,7 +53,7 @@ public class TeamHandler {
      * @return updated team
      */
     @Transactional
-    public Team updateTeam(UUID editorId, UUID teamId, String newName) {
+    public void updateTeam(UUID editorId, UUID teamId, String newName) {
         User editor = userRepository.findById(editorId)
                 .orElseThrow(() -> new IllegalArgumentException("Editor not found"));
         Team team = teamRepository.findById(teamId)
@@ -71,7 +71,7 @@ public class TeamHandler {
         }
 
         team.setName(newName);
-        return teamRepository.save(team);
+        teamRepository.save(team);
     }
 
     /**

@@ -1,7 +1,7 @@
 package com.project.hackhub.boundary;
 
 import com.project.hackhub.dto.AidRequestDTO;
-import com.project.hackhub.handler.SupportRequestHandler;
+import com.project.hackhub.handler.AidRequestHandler;
 import com.project.hackhub.model.team.AidRequest;
 import com.project.hackhub.service.calendar.Slot;
 import lombok.AllArgsConstructor;
@@ -19,9 +19,9 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/support")
 @AllArgsConstructor
-public class SupportRequestBoundary {
+public class AidRequestBoundary {
 
-    private final SupportRequestHandler supportRequestHandler;
+    private final AidRequestHandler aidRequestHandler;
 
     /** As interaction with the external system Calendar is simulated,
      * inconsistencies can be expected during testing
@@ -30,7 +30,7 @@ public class SupportRequestBoundary {
     public ResponseEntity<List<Slot>> getAvailableSlots(
             @AuthenticationPrincipal UUID user,
             @PathVariable UUID hackathon){
-        return ResponseEntity.ok(supportRequestHandler.getAvailableSlots(user, hackathon));
+        return ResponseEntity.ok(aidRequestHandler.getAvailableSlots(user, hackathon));
     }
     /** As interaction with the external system Calendar is simulated,
      * inconsistencies can be expected during testing
@@ -41,7 +41,7 @@ public class SupportRequestBoundary {
             @RequestBody Slot slot,
             @PathVariable UUID team
     ){
-        supportRequestHandler.proposeCall(mentor, slot, team);
+        aidRequestHandler.proposeCall(mentor, slot, team);
         return ResponseEntity.ok("call proposed");
     }
 
@@ -49,7 +49,7 @@ public class SupportRequestBoundary {
     public ResponseEntity<String> sendAidRequest(
             @AuthenticationPrincipal UUID leader,
             @RequestBody AidRequestDTO dto) {
-        supportRequestHandler.sendAidRequest(leader, dto);
+        aidRequestHandler.sendAidRequest(leader, dto);
         return ResponseEntity.ok("aid request sent");
     }
 
@@ -62,10 +62,10 @@ public class SupportRequestBoundary {
      * @throws UnsupportedOperationException if the user lacks permission
      */
     @GetMapping("/{hackathonId}")
-    public ResponseEntity<List<AidRequest>> getSupportRequests(
+    public ResponseEntity<List<AidRequest>> getAidRequests(
             @AuthenticationPrincipal UUID userId,
             @PathVariable UUID hackathonId) {
-        List<AidRequest> requests = supportRequestHandler.getAllSupportRequests(userId, hackathonId);
+        List<AidRequest> requests = aidRequestHandler.getAllAidRequests(userId, hackathonId);
         return ResponseEntity.ok(requests);
     }
 
@@ -80,11 +80,11 @@ public class SupportRequestBoundary {
      * @throws IllegalArgumentException      if no active request exists for the team
      */
     @DeleteMapping("/{hackathonId}/teams/{teamId}")
-    public ResponseEntity<String> deleteSupportRequest(
+    public ResponseEntity<String> deleteAidRequest(
             @AuthenticationPrincipal UUID userId,
             @PathVariable UUID hackathonId,
             @PathVariable UUID teamId) {
-        supportRequestHandler.deleteSupportRequest(userId, hackathonId, teamId);
+        aidRequestHandler.deleteAidRequest(userId, hackathonId, teamId);
         return ResponseEntity.ok("support request deleted");
     }
 }

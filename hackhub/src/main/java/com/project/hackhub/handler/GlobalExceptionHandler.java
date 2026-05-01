@@ -42,4 +42,8 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handleIllegalState(IllegalStateException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
     }
+    @ExceptionHandler(UnsupportedOperationException.class)
+    public ResponseEntity<String> handleUnsupportedOperation(UnsupportedOperationException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+    }
 }
