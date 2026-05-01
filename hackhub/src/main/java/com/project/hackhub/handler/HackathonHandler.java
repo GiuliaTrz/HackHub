@@ -61,7 +61,7 @@ public class HackathonHandler {
                 }
             }
         }
-        
+
 
         EventManager.getInstance().notify(EventType.HACKATHON_DELETION, participants, hackathon);
 

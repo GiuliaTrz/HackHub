@@ -158,11 +158,8 @@ public class SupportRequestHandler {
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("Team does not partecipate in this hackathon"));
 
-        boolean isTeamLeader = team.getTeamLeader().getId().equals(requesterId);
-        boolean isMentor = hackathon.getMentorsList().contains(requester);
-        if (!isTeamLeader && !isMentor) {
-            throw new UnsupportedOperationException("Only team leader or mentor can delete the support request");
-        }
+        if (!requester.hasPermission(Permission.CAN_HANDLE_AID_REQUEST, hackathon))
+            throw new UnsupportedOperationException("User does not have required permission");
 
         AidRequest toRemove = hackathon.getAidRequests().stream()
                 .filter(r -> r.getTeam().equals(team))
