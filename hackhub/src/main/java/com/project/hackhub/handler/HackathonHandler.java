@@ -98,9 +98,12 @@ public class HackathonHandler {
         hackathon.setMaxTeamDimension(dto.maxTeamDimension());
         hackathon.setMoneyPrice(dto.moneyPrice());
 
+
         List<User> usersToUpdate = new ArrayList<>();
         for(Team t : hackathon.getTeamsList()) {
             usersToUpdate.addAll(t.getTeamMembersList());
+            usersToUpdate.add(hackathon.getJudge());
+            usersToUpdate.addAll(hackathon.getMentorsList());
         }
         EventManager.getInstance().notify(EventType.MODIFIED_HACKATHON, usersToUpdate, hackathon);
 
