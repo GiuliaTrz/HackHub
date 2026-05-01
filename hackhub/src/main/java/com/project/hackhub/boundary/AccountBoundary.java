@@ -12,6 +12,8 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.UUID;
+
 /**
  * REST Controller for managing user account operations.
  * Exposes endpoints for account registration and management.
@@ -36,7 +38,6 @@ public class AccountBoundary {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    // 2. Aggiornamento dati profilo (Corretto il tipo di ritorno e la logica)
     @PutMapping("/update")
     public ResponseEntity<String> updateAccount(
             @AuthenticationPrincipal UUID userId,
@@ -46,7 +47,6 @@ public class AccountBoundary {
         return ResponseEntity.ok("updated successfully");
     }
 
-    // 3. Eliminazione account
     @DeleteMapping("/delete")
     public ResponseEntity<Void> deleteAccount(@AuthenticationPrincipal UUID userId) {
         accountHandler.deleteAccount(userId);

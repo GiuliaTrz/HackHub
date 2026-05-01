@@ -92,7 +92,7 @@ public class WinnerChoiceHandler {
      * A method that allows a judge to choose manually a winner team in a situation where more teams are tied.
      * @param judge the id of the user
      * @param hackathon the id of the Hackathon of interest
-     * @param team the winner that has been choosen
+     * @param team the winner that has been chosen
      * @throws IllegalArgumentException if the given team is not registered to the Hackathon or
      * if the team is not among the tied winners list.
      * @author Chiara Marinucci
@@ -144,14 +144,14 @@ public class WinnerChoiceHandler {
              }
              EventManager.getInstance().notify(PROCLAIM_WINNER,toBeNotified , h);
          }
-         setConcluso(h);
+         setConcluded(h);
      }
 
     /**
      * Helper method that sets the Hackathon state to CONCLUDED and saves changes.
      * @param h the Hackathon of interest
      */
-    private void setConcluso(Hackathon h) {
+    private void setConcluded(Hackathon h) {
         h.setStateType(HackathonStateType.CONCLUDED);
         this.hackathonRepository.save(h);
     }

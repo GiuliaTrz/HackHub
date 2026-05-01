@@ -53,7 +53,7 @@ public class WinnerChoiceBoundary {
 
     /**
      * Allows a coordinator to officially proclaim the winner team for a hackathon
-     * afetr a judge has selected one. This action triggers hackathon to enter state "CONCLUSO".
+     * afterr a judge has selected one. This action triggers hackathon to enter state "CONCLUDED".
      * @param hackathon the id of the hackathon for which to proclaim the winner
      * @param coord the id of the coordinator performing the action
      * @return a response entity confirming the proclamation of the winner team for the specified hackathon

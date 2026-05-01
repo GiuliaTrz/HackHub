@@ -15,17 +15,17 @@ import java.util.List;
 public class CalendarAdapter {
 
     public List<Slot> getAvailableSlots(Hackathon hackathon) {
-        return simlutaleExternalCalendar(hackathon);
+        return simulateExternalCalendar(hackathon);
     }
 
     /**
      * This method simulates an interaction with an external calendar system
      * by returning a list of mock slots for the given hackathon. As such, it is to
      * be replaced with actual logic to interact with the external calendar system in a real implementation.
-     * @param hackathon
+     * @param hackathon the hackathon for which to retrieve available slots for call proposal
      * @return a list of available slots for call proposal for the given hackathon
      */
-    private List<Slot> simlutaleExternalCalendar(Hackathon hackathon) {
+    private List<Slot> simulateExternalCalendar(Hackathon hackathon) {
         List<Slot> mockSlots = new ArrayList<>();
         mockSlots.add(
                 new Slot(LocalDateTime.of(2026, Month.MAY,15,10,30,0),

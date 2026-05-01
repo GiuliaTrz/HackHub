@@ -42,14 +42,14 @@ public class InfractionHandler {
     @Transactional
     public void deleteInfraction(UUID deleterId, UUID hackathonId, int infractionIndex) {
         User deleter = userRepository.findById(deleterId)
-                .orElseThrow(() -> new IllegalArgumentException("Utente non trovato"));
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
         Hackathon hackathon = hackathonRepository.findById(hackathonId)
-                .orElseThrow(() -> new IllegalArgumentException("Hackathon non trovato"));
+                .orElseThrow(() -> new IllegalArgumentException("Hackathon not found"));
         if(!deleter.hasPermission(Permission.CAN_DELETE_INFRACTION, hackathon))
             throw new UnsupportedOperationException("User lacks required permission");
 
         if (infractionIndex < 0 || infractionIndex >= hackathon.getInfractions().size()) {
-            throw new IllegalArgumentException("Indice segnalazione non valido");
+            throw new IllegalArgumentException("infraction index not valid");
         }
 
         hackathon.getInfractions().remove(infractionIndex);
@@ -109,7 +109,7 @@ public class InfractionHandler {
                 !h.getStateType().equals(HackathonStateType.APPRAISAL)))
             throw new UnsupportedOperationException("cannot perform this action");
 
-        //MESSAGGIO AD API "ESPELLI O PENALIZZA TEAM"
+        //API MESSAGE: "EXPEL OR PENALIZE TEAM"
     }
 
     /**

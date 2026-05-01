@@ -32,13 +32,7 @@ public class HackathonBuilderMemento implements Memento {
     /**
      * Factory method that creates a HackathonBuilderMemento from the current builder state.
      * This method extracts all relevant data from the builder's internal {@link Hackathon} object
-     * and stores it in a new {@link HackathonSnapshot}. Associated users (mentors, judge, coordinator)
-     * are converted to their UUID representations to:
-     * <ul>
-     *   <li>Decouple the snapshot from entity relationships</li>
-     *   <li>Allow lightweight persistence without incomplete Hackathon entities in the database</li>
-     *   <li>Simplify snapshot serialization and storage</li>
-     * </ul>
+     * and stores it in a new {@link HackathonSnapshot}.
      *
      * @param builder the builder containing the hackathon state to capture; must not be null
      * @param author the user creating this memento, used for eventual retrieval; must not be null

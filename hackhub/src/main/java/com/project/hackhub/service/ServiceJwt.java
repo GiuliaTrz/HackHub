@@ -13,9 +13,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.UUID;
 
-/**
- * Pattern: Singleton, gestione dei token Jwt
- */
+
 @Service
 public class ServiceJwt {
 

@@ -17,7 +17,7 @@ public class OnGoing implements HackathonState {
         r.setRuleBook(h.getRuleBook());
         r.setState(h.getState());
         r.setTeamsList(h.getTeamsList());
-        //dettagli
+        //details
         r.setCoordinator(h.getCoordinator());
         r.setJudge(h.getJudge());
         r.setMentorsList(h.getMentorsList());

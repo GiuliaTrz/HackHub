@@ -146,7 +146,7 @@ public class StaffHandler {
             case "COORDINATOR" -> UserStateType.COORDINATOR;
             case "MENTOR" -> UserStateType.MENTOR;
             case "JUDGE" -> UserStateType.JUDGE;
-            default -> throw new IllegalArgumentException("Invalid role. Use ORGANIZER, MENTOR, or JUDGE");
+            default -> throw new IllegalArgumentException("Invalid role. Use COORDINATOR, MENTOR, or JUDGE");
         };
     }
 
@@ -155,7 +155,7 @@ public class StaffHandler {
         switch (role) {
             case COORDINATOR -> {
                 if (hackathon.getCoordinator() != null) {
-                    throw new IllegalStateException("Hackathon already has an organizer. Current model supports only one organizer.");
+                    throw new IllegalStateException("Hackathon already has a coordinator. Current model supports only one organizer.");
                 }
                 hackathon.setCoordinator(user);
             }

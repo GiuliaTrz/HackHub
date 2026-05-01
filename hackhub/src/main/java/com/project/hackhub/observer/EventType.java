@@ -8,12 +8,9 @@ import lombok.Getter;
 
 public enum EventType {
 
-    //le varie class sono da cambiare, le ho messe solo per reference
-    ELIMINAZIONE_HACKATHON(Hackathon .class),
-    RIMOZIONE_DA_TEAM(Hackathon .class),
-    MODIFICA_HACKATHON(Hackathon .class),
-
-    //giuste
+    HACKATHON_DELETION(Hackathon .class),
+    REMOVED_MEMBER_FROM_TEAM(Hackathon .class),
+    MODIFIED_HACKATHON(Hackathon .class),
     INFRACTION(Hackathon .class),
     PROCLAIM_WINNER(Hackathon .class),
     EXPULSION_TEAM(Hackathon .class),

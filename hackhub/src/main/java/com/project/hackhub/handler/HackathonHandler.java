@@ -5,14 +5,13 @@ import com.project.hackhub.model.hackathon.Hackathon;
 import com.project.hackhub.model.team.Team;
 import com.project.hackhub.model.user.User;
 import com.project.hackhub.model.user.state.Permission;
-import com.project.hackhub.model.user.state.UserStateType;
+import com.project.hackhub.observer.EventType;
 import com.project.hackhub.repository.HackathonRepository;
 import com.project.hackhub.repository.UserRepository;
-import com.project.hackhub.service.UserStateService;
 import jakarta.transaction.Transactional;
-import com.project.hackhub.observer.EliminazioneHackathonListener;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import com.project.hackhub.observer.EventManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,9 +23,7 @@ import java.util.stream.Collectors;
 public class HackathonHandler {
 
     private final HackathonRepository hackathonRepo;
-    private final UserRepository utenteRepository; // <-- AGGIUNTO
-    private final UserStateService userStateService;
-    private final EliminazioneHackathonListener eliminazioneHackathonListener;
+    private final UserRepository utenteRepository;
 
     /**
      * Deletes a hackathon (only organizer).
@@ -45,38 +42,32 @@ public class HackathonHandler {
             throw new UnsupportedOperationException("Insufficient permissions to delete hackathon");
         }
 
-        // 1. Raccolta di tutti gli utenti coinvolti
-        List<User> partecipanti = new ArrayList<>();
+        List<User> participants = new ArrayList<>();
 
-        // Staff
         if (hackathon.getCoordinator() != null) {
-            partecipanti.add(hackathon.getCoordinator());
+            participants.add(hackathon.getCoordinator());
         }
         if (hackathon.getJudge() != null) {
-            partecipanti.add(hackathon.getJudge());
+            participants.add(hackathon.getJudge());
         }
         if (hackathon.getMentorsList() != null) {
-            partecipanti.addAll(hackathon.getMentorsList());
+            participants.addAll(hackathon.getMentorsList());
         }
 
-        // Membri dei team
         if (hackathon.getTeamsList() != null) {
             for (Team team : hackathon.getTeamsList()) {
                 if (team.getTeamMembersList() != null) {
-                    partecipanti.addAll(team.getTeamMembersList());
+                    participants.addAll(team.getTeamMembersList());
                 }
             }
         }
 
-        // Rimozione duplicati
-        List<User> utentiUnici = partecipanti.stream()
+        List<User> uniqueUsers = participants.stream()
                 .distinct()
                 .collect(Collectors.toList());
 
-        // 2. Notify the listener for state reset
-        eliminazioneHackathonListener.updateUsers(utentiUnici, "Hackathon deleted", hackathon);
+        EventManager.getInstance().notify(EventType.HACKATHON_DELETION, uniqueUsers, hackathon);
 
-        // 3. Eliminazione dell'hackathon
         hackathonRepo.delete(hackathon);
     }
 
@@ -104,6 +95,12 @@ public class HackathonHandler {
         hackathon.setExpiredSubscriptionsDate(dto.expiredSubscriptionsDate());
         hackathon.setMaxTeamDimension(dto.maxTeamDimension());
         hackathon.setMoneyPrice(dto.moneyPrice());
+
+        List<User> usersToUpdate = new ArrayList<>();
+        for(Team t : hackathon.getTeamsList()) {
+            usersToUpdate.addAll(t.getTeamMembersList());
+        }
+        EventManager.getInstance().notify(EventType.MODIFIED_HACKATHON, usersToUpdate, hackathon);
 
         return hackathonRepo.save(hackathon);
     }

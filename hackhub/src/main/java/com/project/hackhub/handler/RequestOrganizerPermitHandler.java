@@ -39,7 +39,7 @@ public class RequestOrganizerPermitHandler {
 
     private boolean checkTemplateValidity(FileTemplate f) {
 
-        //file simulato, validità simulata
+        //simulated validity
         return true;
     }
 
