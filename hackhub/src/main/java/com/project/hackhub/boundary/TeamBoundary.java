@@ -54,7 +54,7 @@ public class TeamBoundary {
             @AuthenticationPrincipal UUID editorId,
             @PathVariable UUID teamId,
             @RequestBody String newName) {
-        Team updated = teamHandler.updateTeam(editorId, teamId, newName);
+        teamHandler.updateTeam(editorId, teamId, newName);
         return ResponseEntity.ok("team has been successfully updated");
     }
 

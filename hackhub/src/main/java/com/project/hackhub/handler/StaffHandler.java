@@ -2,6 +2,7 @@ package com.project.hackhub.handler;
 
 import com.project.hackhub.exceptions.UserNotAvailableException;
 import com.project.hackhub.model.hackathon.Hackathon;
+import com.project.hackhub.model.hackathon.state.HackathonStateType;
 import com.project.hackhub.model.user.User;
 import com.project.hackhub.model.user.state.Permission;
 import com.project.hackhub.model.user.state.UserStateType;
@@ -110,6 +111,10 @@ public class StaffHandler {
         User targetUser = userRepository.findById(targetUserId)
                 .orElseThrow(() -> new IllegalArgumentException("Target user not found"));
 
+        if(!hackathon.getStateType().equals(HackathonStateType.ONGOING)) {
+            throw new UnsupportedOperationException("Operation cannot be performed if this state");
+        }
+
         if (!organizer.hasPermission(Permission.CAN_MANAGE_STAFF, hackathon)) {
             throw new UnsupportedOperationException("Insufficient permissions to manage staff");
         }
@@ -120,12 +125,6 @@ public class StaffHandler {
             throw new UnsupportedOperationException("An organizer cannot change their own role");
         }
 
-        boolean isCurrentlyOrganizer = hackathon.getCoordinator() != null &&
-                hackathon.getCoordinator().getId().equals(targetUserId);
-        if (isCurrentlyOrganizer && targetState != UserStateType.COORDINATOR) {
-            throw new UnsupportedOperationException("Cannot change role of the only organizer of the hackathon");
-        }
-
         if (!targetUser.isAvailable(hackathon.getReservation())) {
             if(targetUser.equals(hackathon.getJudge()) || hackathon.getMentorsList().size() == 1)
             throw new UserNotAvailableException("Must have at least a judge and a mentor; please switch with another user.");
@@ -133,10 +132,8 @@ public class StaffHandler {
                 throw new UserNotAvailableException("User not available as staff");
             }
 
-
         assignRoleToUser(targetUser, hackathon, targetState);
         userStateService.changeUserState(targetUser, true, hackathon, targetState);
-
         hackathonRepository.save(hackathon);
         userRepository.save(targetUser);
     }

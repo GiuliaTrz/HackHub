@@ -85,7 +85,7 @@ public class HackathonHandler {
         }
 
         if(!hackathon.getStateType().equals(HackathonStateType.ONGOING)) {
-            throw new UnsupportedOperationException("Operation cannot be performed if the hackathon state is set on: on going");
+            throw new UnsupportedOperationException("Operation cannot be performed in this state");
         }
 
         if(dto.judge() != null || !dto.mentorsList().isEmpty())

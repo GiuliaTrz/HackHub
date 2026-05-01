@@ -1,6 +1,7 @@
 package com.project.hackhub.handler;
 
 import com.project.hackhub.model.hackathon.Hackathon;
+import com.project.hackhub.model.hackathon.state.HackathonStateType;
 import com.project.hackhub.model.team.Team;
 import com.project.hackhub.model.user.User;
 import com.project.hackhub.model.user.state.Permission;
@@ -57,6 +58,10 @@ public class TeamHandler {
                 .orElseThrow(() -> new IllegalArgumentException("Editor not found"));
         Team team = teamRepository.findById(teamId)
                 .orElseThrow(() -> new IllegalArgumentException("Team not found"));
+
+        if(!team.getHackathon().getStateType().equals(HackathonStateType.SUBSCRIPTION_PHASE)) {
+            throw new UnsupportedOperationException("Operation cannot be performed in this state");
+        }
 
         boolean isLeader = team.getTeamLeader().getId().equals(editorId);
         boolean isOrganizer = editor.hasPermission(Permission.CAN_MANAGE_TEAMS, team.getHackathon());
