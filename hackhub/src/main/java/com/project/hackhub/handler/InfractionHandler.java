@@ -52,6 +52,10 @@ public class InfractionHandler {
             throw new IllegalArgumentException("infraction index not valid");
         }
 
+        if(!hackathon.getStateType().equals(HackathonStateType.ONGOING)) {
+            throw new UnsupportedOperationException("cannot perform this action");
+        }
+
         hackathon.getInfractions().remove(infractionIndex);
         hackathonRepository.save(hackathon);
     }
