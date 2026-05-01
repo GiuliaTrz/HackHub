@@ -2,6 +2,7 @@ package com.project.hackhub.handler;
 
 import com.project.hackhub.dto.HackathonDTO;
 import com.project.hackhub.model.hackathon.Hackathon;
+import com.project.hackhub.model.hackathon.state.HackathonStateType;
 import com.project.hackhub.model.team.Team;
 import com.project.hackhub.model.user.User;
 import com.project.hackhub.model.user.state.Permission;
@@ -81,6 +82,10 @@ public class HackathonHandler {
 
         if (!editor.hasPermission(Permission.CAN_MODIFY_HACKATHON, hackathon)) {
             throw new UnsupportedOperationException("Insufficient permissions");
+        }
+
+        if(!hackathon.getStateType().equals(HackathonStateType.ONGOING)) {
+            throw new UnsupportedOperationException("Operation cannot be performed if the hackathon state is set on: on going");
         }
 
         if(dto.judge() != null || !dto.mentorsList().isEmpty())

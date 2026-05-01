@@ -53,7 +53,7 @@ public class InfractionHandler {
         }
 
         if(!hackathon.getStateType().equals(HackathonStateType.ONGOING)) {
-            throw new UnsupportedOperationException("cannot perform this action");
+            throw new UnsupportedOperationException("Operation cannot be performed if the hackathon state is on: on going");
         }
 
         hackathon.getInfractions().remove(infractionIndex);
