@@ -41,7 +41,7 @@ public class HackathonHandler {
         if (!deleter.hasPermission(Permission.CAN_DELETE_HACKATHON, hackathon)) {
             throw new UnsupportedOperationException("Insufficient permissions to delete hackathon");
         }
-        
+
         List<User> participants = new ArrayList<>();
 
         if (hackathon.getCoordinator() != null) {
@@ -61,12 +61,9 @@ public class HackathonHandler {
                 }
             }
         }
+        
 
-        List<User> uniqueUsers = participants.stream()
-                .distinct()
-                .collect(Collectors.toList());
-
-        EventManager.getInstance().notify(EventType.HACKATHON_DELETION, uniqueUsers, hackathon);
+        EventManager.getInstance().notify(EventType.HACKATHON_DELETION, participants, hackathon);
 
         hackathonRepo.delete(hackathon);
     }
