@@ -187,6 +187,10 @@ public class SupportRequestHandler {
         if(!viewer.hasPermission(Permission.STAFF_PERMISSION, hackathon))
             throw new UnsupportedOperationException("user lacks required permissions for the operation");
 
+        if(hackathon.getStateType().equals(HackathonStateType.SUBSCRIPTION_PHASE)) {
+            throw new UnsupportedOperationException("Operation cannot be performed if this state");
+        }
+        
         return hackathon.getAidRequests();
     }
 }

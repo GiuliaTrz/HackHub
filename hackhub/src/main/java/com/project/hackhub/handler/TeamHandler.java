@@ -89,6 +89,10 @@ public class TeamHandler {
         User member = userRepository.findById(memberId)
                 .orElseThrow(() -> new IllegalArgumentException("Member not found"));
 
+        if(!team.getHackathon().getStateType().equals(HackathonStateType.SUBSCRIPTION_PHASE)) {
+            throw new UnsupportedOperationException("Operation cannot be performed in this state");
+        }
+
         boolean isLeader = team.getTeamLeader().getId().equals(requesterId);
         boolean isOrganizer = requester.hasPermission(Permission.CAN_MANAGE_TEAMS, team.getHackathon());
 
