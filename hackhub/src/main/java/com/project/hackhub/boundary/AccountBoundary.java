@@ -3,7 +3,6 @@ package com.project.hackhub.boundary;
 import com.project.hackhub.dto.PersonalDataDTO;
 import com.project.hackhub.handler.AccountHandler;
 import com.project.hackhub.model.user.PersonalData;
-import com.project.hackhub.model.user.User;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -43,13 +42,13 @@ public class AccountBoundary {
             @AuthenticationPrincipal UUID userId,
             @Valid @RequestBody PersonalData personalData) {
 
-        User updated = accountHandler.updateAccount(userId, personalData);
+        accountHandler.updateAccount(userId, personalData);
         return ResponseEntity.ok("updated successfully");
     }
 
     @DeleteMapping("/delete")
-    public ResponseEntity<Void> deleteAccount(@AuthenticationPrincipal UUID userId) {
+    public ResponseEntity<String> deleteAccount(@AuthenticationPrincipal UUID userId) {
         accountHandler.deleteAccount(userId);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok("Account deleted");
     }
 }

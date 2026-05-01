@@ -45,12 +45,12 @@ public class InvitationBoundary {
      * @return ResponseEntity with HTTP 204 No Content status
      */
     @DeleteMapping("/cancel/{invitation}")
-    public ResponseEntity<Void> cancelInvitation(
+    public ResponseEntity<String> cancelInvitation(
             @PathVariable UUID invitation,
             @AuthenticationPrincipal UUID teamMember
     ) {
         invitationHandler.cancelInvitation(invitation, teamMember);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok("Invitation deleted");
     }
 
 }

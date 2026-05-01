@@ -29,10 +29,10 @@ public class PrizeBoundary {
      * @throws UnsupportedOperationException if the user is not in the winning team
      */
     @PostMapping("/{hackathonId}/claim")
-    public ResponseEntity<Void> claimPrize(
+    public ResponseEntity<String> claimPrize(
             @AuthenticationPrincipal UUID userId,
             @PathVariable UUID hackathonId) {
         prizeHandler.claimPrize(userId, hackathonId);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok("Prize claimed successfully");
     }
 }

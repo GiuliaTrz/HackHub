@@ -69,11 +69,11 @@ public class TeamBoundary {
      * @throws IllegalStateException         if the member is not part of the team
      */
     @DeleteMapping("/{teamId}/members/{memberId}")
-    public ResponseEntity<Void> removeMember(
+    public ResponseEntity<String> removeMember(
             @AuthenticationPrincipal UUID requesterId,
             @PathVariable UUID teamId,
             @PathVariable UUID memberId) {
         teamHandler.removeMember(requesterId, teamId, memberId);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok("Member removed from team");
     }
 }

@@ -96,12 +96,12 @@ public class InfractionBoundary {
      * @return ResponseEntity with HTTP 204 No Content status
      */
     @DeleteMapping("/{hackathonId}/{infractionIndex}")
-    public ResponseEntity<Void> deleteInfraction(
+    public ResponseEntity<String> deleteInfraction(
             @AuthenticationPrincipal UUID userId,
             @PathVariable UUID hackathonId,
             @PathVariable int infractionIndex) {
 
         infractionHandler.deleteInfraction(userId, hackathonId, infractionIndex);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok("Infraction deleted");
     }
 }
