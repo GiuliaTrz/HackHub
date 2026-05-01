@@ -156,7 +156,7 @@ public class SupportRequestHandler {
         Team team = hackathon.getTeamsList().stream()
                 .filter(t -> t.getId().equals(teamId))
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("Team does not partecipate in this hackathon"));
+                .orElseThrow(() -> new IllegalArgumentException("Team does not participate in this hackathon"));
 
         if (!requester.hasPermission(Permission.CAN_HANDLE_AID_REQUEST, hackathon))
             throw new UnsupportedOperationException("User does not have required permission");
@@ -172,7 +172,7 @@ public class SupportRequestHandler {
     }
 
     /**
-     * Gets all AidRequests of an hackathon
+     * Gets all AidRequests of a hackathon
      * @param viewerId    user ID (mentor or coordinator
      * @param hackathonId hackathon ID
      * @return AidRequest list
