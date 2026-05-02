@@ -90,12 +90,13 @@ public class HackathonHandler {
         if(dto.judge() != null || !(dto.mentorsList() == null))
             throw new IllegalArgumentException("Staff roles cannot be modified through this endpoint;" +
                     "Please use the appropriate staff management endpoints.");
-      
-        hackathon.setName(dto.name());
-        hackathon.setRuleBook(dto.ruleBook());
-        hackathon.setExpiredSubscriptionsDate(dto.expiredSubscriptionsDate());
-        hackathon.setMaxTeamDimension(dto.maxTeamDimension());
-        hackathon.setMoneyPrice(dto.moneyPrice());
+        if(dto.reservation() != null)
+            throw new UnsupportedOperationException("The reservation cannot be changed; please remove and try again");
+        if(dto.name() != null) hackathon.setName(dto.name());
+        if(dto.ruleBook() != null) hackathon.setRuleBook(dto.ruleBook());
+        if(dto.expiredSubscriptionsDate() != null)hackathon.setExpiredSubscriptionsDate(dto.expiredSubscriptionsDate());
+        if(dto.maxTeamDimension() != null)hackathon.setMaxTeamDimension(dto.maxTeamDimension());
+        if(dto.moneyPrice()!= null) hackathon.setMoneyPrice(dto.moneyPrice());
 
 
         List<User> usersToUpdate = new ArrayList<>();

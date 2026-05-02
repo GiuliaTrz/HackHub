@@ -60,6 +60,9 @@ public class InvitationHandler {
         if(!teamLeader1.equals(t.getTeamLeader()))
             throw new IllegalArgumentException("Cannot invite users to other people's team!");
 
+        if(invitationRepository.existsBySenderAndAddresseeAndPendingTrue(t, userToInvite))
+            throw new IllegalArgumentException("An invitation has already been sent to this user for this team!");
+
        if (userToInvite.isAvailable(t.getHackathon().getReservation())) {
             Invitation invitation = new Invitation(t, userToInvite);
             t.addInvitation(invitation);

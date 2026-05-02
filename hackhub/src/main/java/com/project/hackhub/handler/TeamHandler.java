@@ -45,6 +45,9 @@ public class TeamHandler {
         if (!creator.hasPermission(Permission.CAN_CREATE_TEAM, hackathon)) {
             throw new UnsupportedOperationException("User cannot create a team in this hackathon");
         }
+        if(hackathon.getStateType() != HackathonStateType.SUBSCRIPTION_PHASE) {
+            throw new UnsupportedOperationException("Teams can only be created during the subscription phase");
+        }
         createTeam(teamName, creator, hackathon);
     }
 

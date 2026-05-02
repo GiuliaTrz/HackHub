@@ -21,7 +21,7 @@ public class User {
     @Getter private UUID id;
 
     @OneToMany(mappedBy = "addressee")
-    private Set<Invitation> invitationsList = new LinkedHashSet<>();
+    @Getter private Set<Invitation> invitationsList = new LinkedHashSet<>();
 
     @Embedded
     @Setter @Getter @NonNull private PersonalData personalData;
