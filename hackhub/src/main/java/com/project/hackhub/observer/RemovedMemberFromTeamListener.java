@@ -27,9 +27,8 @@ public class RemovedMemberFromTeamListener implements EventListener {
         if (!(entity instanceof Hackathon hackathon)) {
             throw new IllegalArgumentException("Entity must be a Hackathon");
         }
-        for (User user : usersList) {
-            userStateService.changeUserState(user, false, hackathon, UserStateType.DEFAULT_STATE);
-        }
+
+        userStateService.changeUserState(usersList.getFirst(), false, hackathon, UserStateType.DEFAULT_STATE);
     }
 
     @Override

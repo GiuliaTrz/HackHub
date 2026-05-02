@@ -6,6 +6,8 @@ import com.project.hackhub.model.team.Team;
 import com.project.hackhub.model.user.User;
 import com.project.hackhub.model.user.state.Permission;
 import com.project.hackhub.model.user.state.UserStateType;
+import com.project.hackhub.observer.EventManager;
+import com.project.hackhub.observer.EventType;
 import com.project.hackhub.repository.HackathonRepository;
 import com.project.hackhub.repository.TeamRepository;
 import com.project.hackhub.repository.UserRepository;
@@ -14,6 +16,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.UUID;
 
 @Component
@@ -50,7 +53,6 @@ public class TeamHandler {
      * @param editorId ID of the user requesting the modification
      * @param teamId ID of the team
      * @param newName new name
-     * @return updated team
      */
     @Transactional
     public void updateTeam(UUID editorId, UUID teamId, String newName) {
@@ -139,7 +141,7 @@ public class TeamHandler {
         if (!team.getTeamMembersList().contains(user))
             throw new IllegalStateException("User is not a member of the team.");
 
-        userStateService.changeUserState(user, false, team.getHackathon(), UserStateType.DEFAULT_STATE);
+        EventManager.getInstance().notify(EventType.REMOVED_MEMBER_FROM_TEAM, List.of(user), team);
         team.removeTeamMember(user);
         teamRepository.save(team);
     }

@@ -17,7 +17,6 @@ import com.project.hackhub.observer.EventManager;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
@@ -74,7 +73,7 @@ public class HackathonHandler {
      * The reservation is never modified.
      */
     @Transactional
-    public Hackathon updateHackathon(UUID editorId, UUID hackathonId, HackathonDTO dto) {
+    public void updateHackathon(UUID editorId, UUID hackathonId, HackathonDTO dto) {
         User editor = utenteRepository.findById(editorId)
                 .orElseThrow(() -> new IllegalArgumentException("Editor not found"));
         Hackathon hackathon = hackathonRepo.findById(hackathonId)
@@ -102,11 +101,11 @@ public class HackathonHandler {
         List<User> usersToUpdate = new ArrayList<>();
         for(Team t : hackathon.getTeamsList()) {
             usersToUpdate.addAll(t.getTeamMembersList());
-            usersToUpdate.add(hackathon.getJudge());
-            usersToUpdate.addAll(hackathon.getMentorsList());
         }
+        usersToUpdate.add(hackathon.getJudge());
+        usersToUpdate.addAll(hackathon.getMentorsList());
         EventManager.getInstance().notify(EventType.MODIFIED_HACKATHON, usersToUpdate, hackathon);
 
-        return hackathonRepo.save(hackathon);
+        hackathonRepo.save(hackathon);
     }
 }
