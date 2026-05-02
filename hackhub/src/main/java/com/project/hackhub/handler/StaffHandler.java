@@ -5,7 +5,10 @@ import com.project.hackhub.model.hackathon.Hackathon;
 import com.project.hackhub.model.hackathon.state.HackathonStateType;
 import com.project.hackhub.model.user.User;
 import com.project.hackhub.model.user.state.Permission;
+import com.project.hackhub.model.user.state.UserState;
 import com.project.hackhub.model.user.state.UserStateType;
+import com.project.hackhub.observer.EventManager;
+import com.project.hackhub.observer.EventType;
 import com.project.hackhub.repository.HackathonRepository;
 import com.project.hackhub.repository.UserRepository;
 import com.project.hackhub.service.UserStateService;
@@ -13,6 +16,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.UUID;
 
 @Component
@@ -34,6 +38,7 @@ public class StaffHandler {
      */
     @Transactional
     public void addMentor(UUID organizerId, UUID hackathonId, UUID mentorId) {
+
         User organizer = userRepository.findById(organizerId)
                 .orElseThrow(() -> new IllegalArgumentException("Organizer not found"));
         Hackathon hackathon = hackathonRepository.findById(hackathonId)
@@ -66,6 +71,7 @@ public class StaffHandler {
      */
     @Transactional
     public void removeMentor(UUID organizerId, UUID hackathonId, UUID mentorId) {
+
         User organizer = userRepository.findById(organizerId)
                 .orElseThrow(() -> new IllegalArgumentException("Organizer not found"));
         Hackathon hackathon = hackathonRepository.findById(hackathonId)
@@ -106,6 +112,7 @@ public class StaffHandler {
      */
     @Transactional
     public void changeStaffRole(UUID organizerId, UUID hackathonId, UUID targetUserId, String newRole) {
+
         User organizer = userRepository.findById(organizerId)
                 .orElseThrow(() -> new IllegalArgumentException("Organizer not found"));
         Hackathon hackathon = hackathonRepository.findById(hackathonId)
@@ -124,7 +131,7 @@ public class StaffHandler {
         UserStateType targetState = parseRole(newRole);
 
         if (organizer.getId().equals(targetUserId)) {
-            throw new UnsupportedOperationException("An organizer cannot change their own role");
+            throw new UnsupportedOperationException("A coordinator cannot change their own role");
         }
 
         if (!targetUser.isAvailable(hackathon.getReservation())) {
@@ -135,9 +142,7 @@ public class StaffHandler {
             }
 
         assignRoleToUser(targetUser, hackathon, targetState);
-        userStateService.changeUserState(targetUser, true, hackathon, targetState);
         hackathonRepository.save(hackathon);
-        userRepository.save(targetUser);
     }
 
     private UserStateType parseRole(String role) {
@@ -157,13 +162,18 @@ public class StaffHandler {
                     throw new IllegalStateException("Hackathon already has a coordinator. Current model supports only one organizer.");
                 }
                 hackathon.setCoordinator(user);
+                userStateService.changeUserState(user, true, hackathon, UserStateType.COORDINATOR);
             }
-            case MENTOR -> hackathon.addMentor(user);
+            case MENTOR -> {
+                hackathon.addMentor(user);
+                userStateService.changeUserState(user, true, hackathon, UserStateType.MENTOR);
+
+            }
             case JUDGE -> {
                 if (hackathon.getJudge() != null) {
                     User oldJudge = hackathon.getJudge();
-                    hackathon.setJudge(null);
-                    userStateService.changeUserState(oldJudge, false, hackathon, UserStateType.DEFAULT_STATE);
+                    EventManager.getInstance().notify(EventType.CHANGE_STAFF_ROLE, List.of(oldJudge), "you have been replaced on the hackathon" + hackathon.getId(), hackathon);
+                    userStateService.changeUserState(user, true, hackathon, UserStateType.JUDGE);
                 }
                 hackathon.setJudge(user);
             }

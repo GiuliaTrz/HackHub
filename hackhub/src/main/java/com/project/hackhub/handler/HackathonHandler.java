@@ -63,7 +63,7 @@ public class HackathonHandler {
         }
 
 
-        EventManager.getInstance().notify(EventType.HACKATHON_DELETION, participants, hackathon);
+        EventManager.getInstance().notify(EventType.HACKATHON_DELETION, participants, "the hackathon" + hackathonId +  "has been deleted!",  hackathon);
 
         hackathonRepo.delete(hackathon);
     }
@@ -104,7 +104,7 @@ public class HackathonHandler {
         }
         usersToUpdate.add(hackathon.getJudge());
         usersToUpdate.addAll(hackathon.getMentorsList());
-        EventManager.getInstance().notify(EventType.MODIFIED_HACKATHON, usersToUpdate, hackathon);
+        EventManager.getInstance().notify(EventType.MODIFIED_HACKATHON, usersToUpdate, "some fields of the hackathon" + hackathonId + "have been modified", hackathon);
 
         hackathonRepo.save(hackathon);
     }

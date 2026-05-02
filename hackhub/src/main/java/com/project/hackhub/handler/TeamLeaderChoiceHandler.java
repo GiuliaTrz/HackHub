@@ -59,6 +59,6 @@ public class TeamLeaderChoiceHandler {
         team.setTeamLeader(newLeaderU);
         teamRepository.save(team);
         EventManager notifier = EventManager.getInstance();
-        notifier.notify(EventType.NEW_LEADER, List.of(oldLeaderU, newLeaderU), team);
+        notifier.notify(EventType.NEW_LEADER, List.of(oldLeaderU, newLeaderU), "you have been chosen as new team leader for the team" + team.getId(), team);
     }
 }

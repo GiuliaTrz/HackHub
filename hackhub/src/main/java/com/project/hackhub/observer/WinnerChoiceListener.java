@@ -15,6 +15,7 @@ public class WinnerChoiceListener implements EventListener{
 
     @Override
     public void updateUsers(List<User> usersList, String message, Object entity) {
+
         if(usersList == null || usersList.isEmpty())
             return;
         if(message == null) throw new IllegalArgumentException("message needed");

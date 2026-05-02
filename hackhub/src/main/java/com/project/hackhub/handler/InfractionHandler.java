@@ -85,7 +85,7 @@ public class InfractionHandler {
         h.removeInfractionByTeam(t);
         hackathonRepository.save(h);
         List<User> teamMembers = t.getTeamMembersList();
-        EventManager.getInstance().notify(EventType.EXPULSION_TEAM, teamMembers, h);
+        EventManager.getInstance().notify(EventType.EXPULSION_TEAM, teamMembers, "the team you were partecipating in the hackathon" + h.getId() + "has been expelled",  h);
         teamRepository.delete(t);
     }
 
@@ -146,7 +146,7 @@ public class InfractionHandler {
         grade = grade - points;
         t.setGrade(grade);
         teamRepository.save(t);
-        EventManager.getInstance().notify(PENALIZED_TEAM, t.getTeamMembersList(), h);
+        EventManager.getInstance().notify(PENALIZED_TEAM, t.getTeamMembersList(), "the team you were participating in the hackathon" + h.getId() + "has been penalized", h);
     }
 
     /**
@@ -175,7 +175,7 @@ public class InfractionHandler {
         Infraction infraction = new Infraction(t, dto.description(), dto.type());
         h.addInfraction(infraction);
         hackathonRepository.save(h);
-        EventManager.getInstance().notify(INFRACTION, List.of(h.getCoordinator()), h);
+        EventManager.getInstance().notify(INFRACTION, List.of(h.getCoordinator()), "an infraction has been reported for the hackathon" + h.getId() + "!", h);
     }
 
     /**

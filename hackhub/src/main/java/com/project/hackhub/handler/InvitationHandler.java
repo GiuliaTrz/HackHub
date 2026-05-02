@@ -65,7 +65,7 @@ public class InvitationHandler {
             t.addInvitation(invitation);
             teamRepository.save(t);
             EventManager notifier = EventManager.getInstance();
-            notifier.notify(EventType.USER_INVITATION, List.of(userToInvite), invitation);
+            notifier.notify(EventType.USER_INVITATION, List.of(userToInvite), "you have been invited on a team!", invitation);
         } else {
             throw new UserNotAvailableException("User is not available and cannot be invited!");
         }
