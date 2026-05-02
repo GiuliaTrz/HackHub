@@ -52,6 +52,10 @@ public class User {
     }
 
     public void setState(Reservation reservation, UserStateType newStateType){
+
+        if(stateInHackathon.containsKey(reservation))
+            return;
+
         this.stateInHackathon.put(reservation, newStateType);
     }
 
