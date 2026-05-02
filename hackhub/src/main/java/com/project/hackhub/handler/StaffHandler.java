@@ -135,11 +135,15 @@ public class StaffHandler {
         }
 
         if (!targetUser.isAvailable(hackathon.getReservation())) {
-            if(targetUser.equals(hackathon.getJudge()) || hackathon.getMentorsList().size() == 1)
-            throw new UserNotAvailableException("Must have at least a judge and a mentor; please switch with another user.");
+            if (targetUser.equals(hackathon.getJudge()))
+                    throw new UserNotAvailableException("Must have at least a judge");
+            else if(hackathon.getMentorsList().contains(targetUser) && hackathon.getMentorsList().size() == 1)
+                throw new UserNotAvailableException("Must have at least a mentor");
+            //if not only mentor the operation can continue
+            else if (hackathon.getMentorsList().contains(targetUser));
             else
                 throw new UserNotAvailableException("User not available as staff");
-            }
+        }
 
         assignRoleToUser(targetUser, hackathon, targetState);
         hackathonRepository.save(hackathon);
