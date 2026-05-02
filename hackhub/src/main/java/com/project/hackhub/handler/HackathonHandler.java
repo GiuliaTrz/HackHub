@@ -2,31 +2,28 @@ package com.project.hackhub.handler;
 
 import com.project.hackhub.dto.HackathonDTO;
 import com.project.hackhub.model.hackathon.Hackathon;
+import com.project.hackhub.model.hackathon.state.HackathonStateType;
 import com.project.hackhub.model.team.Team;
 import com.project.hackhub.model.user.User;
 import com.project.hackhub.model.user.state.Permission;
-import com.project.hackhub.model.user.state.UserStateType;
+import com.project.hackhub.observer.EventType;
 import com.project.hackhub.repository.HackathonRepository;
 import com.project.hackhub.repository.UserRepository;
-import com.project.hackhub.service.UserStateService;
 import jakarta.transaction.Transactional;
-import com.project.hackhub.observer.EliminazioneHackathonListener;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import com.project.hackhub.observer.EventManager;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
 public class HackathonHandler {
 
     private final HackathonRepository hackathonRepo;
-    private final UserRepository utenteRepository; // <-- AGGIUNTO
-    private final UserStateService userStateService;
-    private final EliminazioneHackathonListener eliminazioneHackathonListener;
+    private final UserRepository utenteRepository;
 
     /**
      * Deletes a hackathon (only organizer).
@@ -44,39 +41,33 @@ public class HackathonHandler {
         if (!deleter.hasPermission(Permission.CAN_DELETE_HACKATHON, hackathon)) {
             throw new UnsupportedOperationException("Insufficient permissions to delete hackathon");
         }
+        if(!hackathon.getStateType().equals(HackathonStateType.SUBSCRIPTION_PHASE)) {
+            throw new UnsupportedOperationException("Hackathon cannot be deleted in this state");
+        }
 
-        // 1. Raccolta di tutti gli utenti coinvolti
-        List<User> partecipanti = new ArrayList<>();
+        List<User> participants = new ArrayList<>();
 
-        // Staff
         if (hackathon.getCoordinator() != null) {
-            partecipanti.add(hackathon.getCoordinator());
+            participants.add(hackathon.getCoordinator());
         }
         if (hackathon.getJudge() != null) {
-            partecipanti.add(hackathon.getJudge());
+            participants.add(hackathon.getJudge());
         }
         if (hackathon.getMentorsList() != null) {
-            partecipanti.addAll(hackathon.getMentorsList());
+            participants.addAll(hackathon.getMentorsList());
         }
 
-        // Membri dei team
         if (hackathon.getTeamsList() != null) {
             for (Team team : hackathon.getTeamsList()) {
                 if (team.getTeamMembersList() != null) {
-                    partecipanti.addAll(team.getTeamMembersList());
+                    participants.addAll(team.getTeamMembersList());
                 }
             }
         }
 
-        // Rimozione duplicati
-        List<User> utentiUnici = partecipanti.stream()
-                .distinct()
-                .collect(Collectors.toList());
 
-        // 2. Notify the listener for state reset
-        eliminazioneHackathonListener.updateUsers(utentiUnici, "Hackathon deleted", hackathon);
+        EventManager.getInstance().notify(EventType.HACKATHON_DELETION, participants, "the hackathon" + hackathonId +  "has been deleted!",  hackathon);
 
-        // 3. Eliminazione dell'hackathon
         hackathonRepo.delete(hackathon);
     }
 
@@ -85,7 +76,7 @@ public class HackathonHandler {
      * The reservation is never modified.
      */
     @Transactional
-    public Hackathon updateHackathon(UUID editorId, UUID hackathonId, HackathonDTO dto) {
+    public void updateHackathon(UUID editorId, UUID hackathonId, HackathonDTO dto) {
         User editor = utenteRepository.findById(editorId)
                 .orElseThrow(() -> new IllegalArgumentException("Editor not found"));
         Hackathon hackathon = hackathonRepo.findById(hackathonId)
@@ -95,16 +86,30 @@ public class HackathonHandler {
             throw new UnsupportedOperationException("Insufficient permissions");
         }
 
-        if(dto.judge() != null || !dto.mentorsList().isEmpty())
+        if(!hackathon.getStateType().equals(HackathonStateType.SUBSCRIPTION_PHASE)) {
+            throw new UnsupportedOperationException("Operation cannot be performed in this state");
+        }
+
+        if(dto.judge() != null || !(dto.mentorsList() == null))
             throw new IllegalArgumentException("Staff roles cannot be modified through this endpoint;" +
                     "Please use the appropriate staff management endpoints.");
-      
-        hackathon.setName(dto.name());
-        hackathon.setRuleBook(dto.ruleBook());
-        hackathon.setExpiredSubscriptionsDate(dto.expiredSubscriptionsDate());
-        hackathon.setMaxTeamDimension(dto.maxTeamDimension());
-        hackathon.setMoneyPrice(dto.moneyPrice());
+        if(dto.reservation() != null)
+            throw new UnsupportedOperationException("The reservation cannot be changed; please remove and try again");
+        if(dto.name() != null) hackathon.setName(dto.name());
+        if(dto.ruleBook() != null) hackathon.setRuleBook(dto.ruleBook());
+        if(dto.expiredSubscriptionsDate() != null)hackathon.setExpiredSubscriptionsDate(dto.expiredSubscriptionsDate());
+        if(dto.maxTeamDimension() != null)hackathon.setMaxTeamDimension(dto.maxTeamDimension());
+        if(dto.moneyPrice()!= null) hackathon.setMoneyPrice(dto.moneyPrice());
 
-        return hackathonRepo.save(hackathon);
+
+        List<User> usersToUpdate = new ArrayList<>();
+        for(Team t : hackathon.getTeamsList()) {
+            usersToUpdate.addAll(t.getTeamMembersList());
+        }
+        usersToUpdate.add(hackathon.getJudge());
+        usersToUpdate.addAll(hackathon.getMentorsList());
+        EventManager.getInstance().notify(EventType.MODIFIED_HACKATHON, usersToUpdate, "some fields of the hackathon" + hackathonId + "have been modified", hackathon);
+
+        hackathonRepo.save(hackathon);
     }
 }

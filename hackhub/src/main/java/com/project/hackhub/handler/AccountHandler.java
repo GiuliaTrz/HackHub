@@ -56,18 +56,17 @@ public class AccountHandler {
      * Modifies personal data of an existing user.
      * @param userId ID of the user to modify (must correspond to the logged-in user or have admin permissions)
      * @param nuovaPersonalData new data
-     * @return updated user
      * @author Giulia Trozzi
      */
     @Transactional
-    public User updateAccount(UUID userId, PersonalData nuovaPersonalData) {
+    public void updateAccount(UUID userId, PersonalData nuovaPersonalData) {
         User utente = utenteRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
         // the user can modify only themselves or is an admin (add logic)
         if(!nuovaPersonalData.getEmail().equals(utente.getPersonalData().getEmail()))
             throw new IllegalArgumentException("associated email cannot change");
         utente.setPersonalData(nuovaPersonalData);
-        return utenteRepository.save(utente);
+        utenteRepository.save(utente);
     }
 
     /**

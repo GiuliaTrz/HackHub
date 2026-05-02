@@ -22,7 +22,6 @@ import java.util.UUID;
 public class HackathonBoundary {
 
     private final HackathonHandler hackathonHandler;
-    private final StaffHandler staffHandler;
 
     /**
      * Deletes a hackathon.
@@ -34,11 +33,11 @@ public class HackathonBoundary {
      * @throws UnsupportedOperationException if the user lacks permission
      */
     @DeleteMapping("/{hackathonId}")
-    public ResponseEntity<Void> deleteHackathon(
+    public ResponseEntity<String> deleteHackathon(
             @AuthenticationPrincipal UUID deleterId,
             @PathVariable UUID hackathonId) {
         hackathonHandler.deleteHackathon(deleterId, hackathonId);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok("Hackathon deleted");
     }
 
     /**
@@ -51,12 +50,12 @@ public class HackathonBoundary {
      * @throws UnsupportedOperationException if the user lacks permission
      */
     @PutMapping("/{hackathonId}")
-    public ResponseEntity<Hackathon> updateHackathon(
+    public ResponseEntity<String> updateHackathon(
             @AuthenticationPrincipal UUID editorId,
             @PathVariable UUID hackathonId,
             @RequestBody HackathonDTO dto) {
-        Hackathon updated = hackathonHandler.updateHackathon(editorId, hackathonId, dto);
-        return ResponseEntity.ok(updated);
+        hackathonHandler.updateHackathon(editorId, hackathonId, dto);
+        return ResponseEntity.ok("Hackathon successfully updated");
     }
 
 }

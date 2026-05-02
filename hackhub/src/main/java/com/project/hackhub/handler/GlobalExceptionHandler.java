@@ -30,7 +30,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(UserNotAvailableException.class)
     public ResponseEntity<String> handleConflict(UserNotAvailableException ex) {
         return ResponseEntity.status(HttpStatus.CONFLICT)
-                .body("Users selected not available for the given reservation. Please choose different users ");
+                .body(ex.getMessage());
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
@@ -40,6 +40,10 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(IllegalStateException.class)
     public ResponseEntity<String> handleIllegalState(IllegalStateException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+    }
+    @ExceptionHandler(UnsupportedOperationException.class)
+    public ResponseEntity<String> handleUnsupportedOperation(UnsupportedOperationException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
     }
 }

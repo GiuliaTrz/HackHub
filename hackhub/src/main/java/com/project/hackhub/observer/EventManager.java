@@ -30,7 +30,7 @@ public final class EventManager {
      *                                  is not supported by the type of event
      * @author Giorgia Branchesi
      */
-    public void notify(EventType e, List<User> users, Object entity) {
+    public void notify(EventType e, List<User> users, String message, Object entity) {
 
         if (users == null || users.isEmpty()) return;
         if (e == null)
@@ -45,7 +45,7 @@ public final class EventManager {
         for (EventListener el : listeners) {
             if (el.getSupportedEventType().equals(e)) {
                 el.updateUsers(users,
-                        "Hai ricevuto un'invito a partecipare ad un Team!",
+                        message,
                         entity);
             }
         }

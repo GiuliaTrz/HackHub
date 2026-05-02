@@ -1,10 +1,13 @@
 package com.project.hackhub.handler;
 
 import com.project.hackhub.model.hackathon.Hackathon;
+import com.project.hackhub.model.hackathon.state.HackathonStateType;
 import com.project.hackhub.model.team.Team;
 import com.project.hackhub.model.user.User;
 import com.project.hackhub.model.user.state.Permission;
 import com.project.hackhub.model.user.state.UserStateType;
+import com.project.hackhub.observer.EventManager;
+import com.project.hackhub.observer.EventType;
 import com.project.hackhub.repository.HackathonRepository;
 import com.project.hackhub.repository.TeamRepository;
 import com.project.hackhub.repository.UserRepository;
@@ -13,6 +16,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.UUID;
 
 @Component
@@ -41,6 +45,9 @@ public class TeamHandler {
         if (!creator.hasPermission(Permission.CAN_CREATE_TEAM, hackathon)) {
             throw new UnsupportedOperationException("User cannot create a team in this hackathon");
         }
+        if(hackathon.getStateType() != HackathonStateType.SUBSCRIPTION_PHASE) {
+            throw new UnsupportedOperationException("Teams can only be created during the subscription phase");
+        }
         createTeam(teamName, creator, hackathon);
     }
 
@@ -49,14 +56,17 @@ public class TeamHandler {
      * @param editorId ID of the user requesting the modification
      * @param teamId ID of the team
      * @param newName new name
-     * @return updated team
      */
     @Transactional
-    public Team updateTeam(UUID editorId, UUID teamId, String newName) {
+    public void updateTeam(UUID editorId, UUID teamId, String newName) {
         User editor = userRepository.findById(editorId)
                 .orElseThrow(() -> new IllegalArgumentException("Editor not found"));
         Team team = teamRepository.findById(teamId)
                 .orElseThrow(() -> new IllegalArgumentException("Team not found"));
+
+        if(!team.getHackathon().getStateType().equals(HackathonStateType.SUBSCRIPTION_PHASE)) {
+            throw new UnsupportedOperationException("Operation cannot be performed in this state");
+        }
 
         boolean isLeader = team.getTeamLeader().getId().equals(editorId);
         boolean isOrganizer = editor.hasPermission(Permission.CAN_MANAGE_TEAMS, team.getHackathon());
@@ -66,7 +76,7 @@ public class TeamHandler {
         }
 
         team.setName(newName);
-        return teamRepository.save(team);
+        teamRepository.save(team);
     }
 
     /**
@@ -83,6 +93,10 @@ public class TeamHandler {
                 .orElseThrow(() -> new IllegalArgumentException("Team not found"));
         User member = userRepository.findById(memberId)
                 .orElseThrow(() -> new IllegalArgumentException("Member not found"));
+
+        if(!team.getHackathon().getStateType().equals(HackathonStateType.SUBSCRIPTION_PHASE)) {
+            throw new UnsupportedOperationException("Operation cannot be performed in this state");
+        }
 
         boolean isLeader = team.getTeamLeader().getId().equals(requesterId);
         boolean isOrganizer = requester.hasPermission(Permission.CAN_MANAGE_TEAMS, team.getHackathon());
@@ -130,7 +144,7 @@ public class TeamHandler {
         if (!team.getTeamMembersList().contains(user))
             throw new IllegalStateException("User is not a member of the team.");
 
-        userStateService.changeUserState(user, false, team.getHackathon(), UserStateType.DEFAULT_STATE);
+        EventManager.getInstance().notify(EventType.REMOVED_MEMBER_FROM_TEAM, List.of(user), "you have been removed from the team" + team.getId(), team);
         team.removeTeamMember(user);
         teamRepository.save(team);
     }

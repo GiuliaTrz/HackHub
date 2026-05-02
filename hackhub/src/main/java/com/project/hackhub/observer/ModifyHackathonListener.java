@@ -6,12 +6,8 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 @Component
-public class WinnerChoiceListener implements EventListener{
+public class ModifyHackathonListener implements EventListener{
 
-    @Override
-    public EventType getSupportedEventType() {
-        return EventType.WINNER_CHOICE;
-    }
 
     @Override
     public void updateUsers(List<User> usersList, String message, Object entity) {
@@ -19,9 +15,14 @@ public class WinnerChoiceListener implements EventListener{
         if(usersList == null || usersList.isEmpty())
             return;
         if(message == null) throw new IllegalArgumentException("message needed");
-        if(entity == null) throw new IllegalArgumentException("Hackathon cannot be null");
+        if(entity == null) {
+            throw new IllegalArgumentException("Entity must not be null");
+        }
 
-        // message will be simulated for testing through the API call
     }
 
+    @Override
+    public EventType getSupportedEventType() {
+         return EventType.MODIFIED_HACKATHON;
+    }
 }

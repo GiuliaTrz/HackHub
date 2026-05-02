@@ -5,10 +5,13 @@ import com.project.hackhub.model.hackathon.state.HackathonStateType;
 import com.project.hackhub.model.team.Team;
 import com.project.hackhub.model.user.User;
 import com.project.hackhub.model.user.state.Permission;
+import com.project.hackhub.model.user.state.UserState;
+import com.project.hackhub.model.user.state.UserStateType;
 import com.project.hackhub.observer.EventManager;
 import com.project.hackhub.observer.EventType;
 import com.project.hackhub.repository.TeamRepository;
 import com.project.hackhub.repository.UserRepository;
+import com.project.hackhub.service.UserStateService;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -22,6 +25,7 @@ public class TeamLeaderChoiceHandler {
 
     private final TeamRepository teamRepository;
     private final UserRepository userRepository;
+    private final UserStateService userStateService;
 
     /**
      * Changes the leader of a team
@@ -58,7 +62,8 @@ public class TeamLeaderChoiceHandler {
 
         team.setTeamLeader(newLeaderU);
         teamRepository.save(team);
+        userStateService.changeUserState(oldLeaderU, true, team.getHackathon(), UserStateType.TEAM_MEMBER);
         EventManager notifier = EventManager.getInstance();
-        notifier.notify(EventType.NEW_LEADER, List.of(oldLeaderU, newLeaderU), team);
+        notifier.notify(EventType.NEW_LEADER, List.of(newLeaderU), "you have been chosen as new team leader for the team" + team.getId(), team);
     }
 }

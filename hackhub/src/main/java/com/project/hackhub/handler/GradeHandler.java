@@ -44,6 +44,8 @@ public class GradeHandler {
                 .orElseThrow(()-> new IllegalArgumentException("judge not found"));
         Submission s = submissionRepository.findById(submissionId)
                 .orElseThrow(() -> new IllegalArgumentException("Submission not found"));
+        if(!s.equals(submissionRepository.findLatestSubmissionByTeamIdAndTaskId(s.getTeam().getId(), s.getTask().getId())))
+            throw new IllegalArgumentException("Only the latest submission for a task can be graded");
         Team t = s.getTeam();
         if(!t.getHackathon().getState().getStateType().equals(HackathonStateType.APPRAISAL))
              throw new IllegalStateException("Hackathon is not in APPRAISAL state");

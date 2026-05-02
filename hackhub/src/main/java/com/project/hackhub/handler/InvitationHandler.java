@@ -60,12 +60,15 @@ public class InvitationHandler {
         if(!teamLeader1.equals(t.getTeamLeader()))
             throw new IllegalArgumentException("Cannot invite users to other people's team!");
 
+        if(invitationRepository.existsBySenderAndAddresseeAndPendingTrue(t, userToInvite))
+            throw new IllegalArgumentException("An invitation has already been sent to this user for this team!");
+
        if (userToInvite.isAvailable(t.getHackathon().getReservation())) {
             Invitation invitation = new Invitation(t, userToInvite);
             t.addInvitation(invitation);
             teamRepository.save(t);
             EventManager notifier = EventManager.getInstance();
-            notifier.notify(EventType.USER_INVITATION, List.of(userToInvite), invitation);
+            notifier.notify(EventType.USER_INVITATION, List.of(userToInvite), "you have been invited on a team!", invitation);
         } else {
             throw new UserNotAvailableException("User is not available and cannot be invited!");
         }
@@ -93,6 +96,8 @@ public class InvitationHandler {
         if(!t.getHackathon().getState().getStateType().equals(HackathonStateType.SUBSCRIPTION_PHASE)
                 || !tMember.hasPermission(Permission.CAN_CANCEL_INVITATION, t.getHackathon()))
             throw new UnsupportedOperationException("Action not allowed.");
+        if(!(tMember.equals(t.getTeamLeader())) && !(tMember.equals(toCancel.getAddressee())))
+            throw new IllegalArgumentException("Only the team leader or the addressee can cancel the invitation!");
 
         t.removeInvitationFromList(toCancel);
         teamRepository.save(t);

@@ -54,7 +54,7 @@ public class PrizeHandler {
         }
 
         Money totalPrize = hackathon.getMoneyPrice();
-        double totalAmount = totalPrize.getQuantity();   // <-- Uses the correct getter
+        double totalAmount = totalPrize.getQuantity();
         int teamSize = winner.getTeamMembersList().size();
 
         // conversion necessary for precise
@@ -73,7 +73,6 @@ public class PrizeHandler {
 
     // Simulation of external payment service
     private boolean externalPaymentService(User user, BigDecimal amount) {
-        // Here you would integrate with a real payment gateway (extensibility)
         return true;
     }
 }

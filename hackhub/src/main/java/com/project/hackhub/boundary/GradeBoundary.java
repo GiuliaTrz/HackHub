@@ -32,6 +32,6 @@ public class GradeBoundary {
             @PathVariable UUID submissionId,
             @RequestBody float num){
         gradeHandler.gradeSubmission(judge, submissionId, num);
-        return ResponseEntity.ok("submission " + submissionId + " successfully graded");
+        return ResponseEntity.ok("submission " + submissionId + " successfully graded " + num);
     }
 }

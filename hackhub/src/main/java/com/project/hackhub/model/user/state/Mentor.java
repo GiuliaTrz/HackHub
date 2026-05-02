@@ -7,8 +7,10 @@ public class Mentor extends UserState {
 
     public Mentor(){
         super(EnumSet.of(Permission.CAN_REPORT_INFRACTION,
-                Permission.CAN_PROPOSE_CALL, Permission.DETAILED_INFO,
+                Permission.CAN_PROPOSE_CALL,
+                Permission.DETAILED_INFO,
                 Permission.STAFF_PERMISSION,
+                Permission.CAN_HANDLE_AID_REQUEST,
                 Permission.CAN_DELETE_INFRACTION));
     }
 

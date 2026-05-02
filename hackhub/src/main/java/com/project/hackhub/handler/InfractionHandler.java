@@ -42,14 +42,18 @@ public class InfractionHandler {
     @Transactional
     public void deleteInfraction(UUID deleterId, UUID hackathonId, int infractionIndex) {
         User deleter = userRepository.findById(deleterId)
-                .orElseThrow(() -> new IllegalArgumentException("Utente non trovato"));
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
         Hackathon hackathon = hackathonRepository.findById(hackathonId)
-                .orElseThrow(() -> new IllegalArgumentException("Hackathon non trovato"));
+                .orElseThrow(() -> new IllegalArgumentException("Hackathon not found"));
         if(!deleter.hasPermission(Permission.CAN_DELETE_INFRACTION, hackathon))
             throw new UnsupportedOperationException("User lacks required permission");
 
         if (infractionIndex < 0 || infractionIndex >= hackathon.getInfractions().size()) {
-            throw new IllegalArgumentException("Indice segnalazione non valido");
+            throw new IllegalArgumentException("infraction index not valid");
+        }
+
+        if(!hackathon.getStateType().equals(HackathonStateType.ONGOING)) {
+            throw new UnsupportedOperationException("Operation cannot be performed if the hackathon state is on: on going");
         }
 
         hackathon.getInfractions().remove(infractionIndex);
@@ -81,7 +85,7 @@ public class InfractionHandler {
         h.removeInfractionByTeam(t);
         hackathonRepository.save(h);
         List<User> teamMembers = t.getTeamMembersList();
-        EventManager.getInstance().notify(EventType.EXPULSION_TEAM, teamMembers, h);
+        EventManager.getInstance().notify(EventType.EXPULSION_TEAM, teamMembers, "the team you were partecipating in the hackathon" + h.getId() + "has been expelled",  h);
         teamRepository.delete(t);
     }
 
@@ -94,22 +98,23 @@ public class InfractionHandler {
      * by that team or if the Hackathon is not in {@link HackathonStateType#ONGOING} or {@link HackathonStateType#APPRAISAL}
      */
     @Transactional
-    public void handleInfraction(UUID coordinator, UUID team) {
+    public List<Infraction> handleInfraction(UUID coordinator, UUID team) {
 
         User coord = userRepository.findById(coordinator).orElseThrow(
                 () -> new IllegalArgumentException("coordinator cannot be null"));
         Team t = teamRepository.findById(team).orElseThrow(
                 () -> new IllegalArgumentException("team to expel cannot be null"));
         Hackathon h = t.getHackathon();
-        Infraction i = hackathonRepository.findInfractionByTeam(h, t).orElseThrow(
-                () -> new IllegalArgumentException("infraction does not exist"));
+
 
         if (!coord.hasPermission(Permission.CAN_MANAGE_INFRACTIONS, h)
                 || !(h.getStateType().equals(HackathonStateType.ONGOING) ||
                 !h.getStateType().equals(HackathonStateType.APPRAISAL)))
             throw new UnsupportedOperationException("cannot perform this action");
 
-        //MESSAGGIO AD API "ESPELLI O PENALIZZA TEAM"
+        //API MESSAGE: "EXPEL OR PENALIZE TEAM"
+        return hackathonRepository.findInfractionByTeam(h, t).orElseThrow(
+                () -> new IllegalArgumentException("infraction does not exist"));
     }
 
     /**
@@ -142,7 +147,7 @@ public class InfractionHandler {
         grade = grade - points;
         t.setGrade(grade);
         teamRepository.save(t);
-        EventManager.getInstance().notify(PENALIZED_TEAM, t.getTeamMembersList(), h);
+        EventManager.getInstance().notify(PENALIZED_TEAM, t.getTeamMembersList(), "the team you were participating in the hackathon" + h.getId() + "has been penalized", h);
     }
 
     /**
@@ -171,7 +176,7 @@ public class InfractionHandler {
         Infraction infraction = new Infraction(t, dto.description(), dto.type());
         h.addInfraction(infraction);
         hackathonRepository.save(h);
-        EventManager.getInstance().notify(INFRACTION, List.of(h.getCoordinator()), h);
+        EventManager.getInstance().notify(INFRACTION, List.of(h.getCoordinator()), "an infraction has been reported for the hackathon" + h.getId() + "!", h);
     }
 
     /**

@@ -13,12 +13,10 @@ public class Concluded implements HackathonState {
     @Override
     public ReportData getReportData(Hackathon h){
         ReportData r = new ReportData();
-        //public data
         r.setName(h.getName());
         r.setRuleBook(h.getRuleBook());
         r.setState(h.getState());
         r.setTeamsGrades(h.getTeamsGrades());
-        //dettagli
         r.setCoordinator(h.getCoordinator());
         r.setJudge(h.getJudge());
         r.setMentorsList(h.getMentorsList());

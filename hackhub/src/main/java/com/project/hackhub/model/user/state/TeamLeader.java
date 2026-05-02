@@ -12,6 +12,7 @@ public class TeamLeader extends UserState {
                 Permission.CAN_CANCEL_INVITATION,
                 Permission.CAN_UNSUBSCRIBE_TEAM,
                 Permission.CAN_SEND_AID_REQUEST,
+                Permission.CAN_HANDLE_AID_REQUEST,
                 Permission.CAN_SEND_SUBMISSION,
                 Permission.CAN_MODIFY_LEADER));
     }

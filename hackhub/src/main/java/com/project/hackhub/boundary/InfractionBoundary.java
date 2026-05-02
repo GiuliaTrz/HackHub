@@ -2,11 +2,13 @@ package com.project.hackhub.boundary;
 
 import com.project.hackhub.dto.InfractionDTO;
 import com.project.hackhub.handler.InfractionHandler;
+import com.project.hackhub.model.team.Infraction;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -79,12 +81,12 @@ public class InfractionBoundary {
      * @return informational message
      */
     @PostMapping("/handle")
-    public ResponseEntity<String> handleInfraction(
+    public ResponseEntity<List<Infraction>> handleInfraction(
             @AuthenticationPrincipal UUID coordinator,
             @RequestBody UUID team) {
 
-        infractionHandler.handleInfraction(coordinator, team);
-        return ResponseEntity.ok("Infraction to be handled: please penalize or expel the team");
+        List<Infraction> infractions = infractionHandler.handleInfraction(coordinator, team);
+        return ResponseEntity.ok(infractions);
     }
 
     /**
@@ -96,12 +98,12 @@ public class InfractionBoundary {
      * @return ResponseEntity with HTTP 204 No Content status
      */
     @DeleteMapping("/{hackathonId}/{infractionIndex}")
-    public ResponseEntity<Void> deleteInfraction(
+    public ResponseEntity<String> deleteInfraction(
             @AuthenticationPrincipal UUID userId,
             @PathVariable UUID hackathonId,
             @PathVariable int infractionIndex) {
 
         infractionHandler.deleteInfraction(userId, hackathonId, infractionIndex);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok("Infraction deleted");
     }
 }

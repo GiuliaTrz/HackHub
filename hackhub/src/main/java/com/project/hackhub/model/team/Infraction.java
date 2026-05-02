@@ -1,5 +1,7 @@
 package com.project.hackhub.model.team;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import com.project.hackhub.model.hackathon.Hackathon;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.ManyToOne;
@@ -7,11 +9,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 @Embeddable @NoArgsConstructor
+@Getter
 public class Infraction {
 
+    @JsonIncludeProperties({"name", "id"})
     @ManyToOne
     @Getter
     private Team iTeam;
@@ -26,6 +29,7 @@ public class Infraction {
         this.timestamp = LocalDateTime.now();
     }
 
+    @JsonIgnore
     public Hackathon getHackathon() {
         return this.iTeam.getHackathon();
     }

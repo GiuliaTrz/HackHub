@@ -50,7 +50,7 @@ public class ParticipationHandler {
         h.removeTeam(t);
         hackathonRepository.save(h);
         EventManager notifier = EventManager.getInstance();
-        notifier.notify(EventType.UNSUBSCRIBE_TEAM, t.getTeamMembersList(), t);
+        notifier.notify(EventType.UNSUBSCRIBE_TEAM, t.getTeamMembersList(), "the team leader has unsubscribed the team" + t.getId(), t);
         teamRepository.delete(t);
     }
 }

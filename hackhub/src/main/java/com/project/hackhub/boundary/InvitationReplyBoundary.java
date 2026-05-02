@@ -43,11 +43,11 @@ public class InvitationReplyBoundary {
      * @return ResponseEntity with HTTP 204 No Content status
      */
     @DeleteMapping("/{invitation}")
-    public ResponseEntity<Void> declineInvitation(
+    public ResponseEntity<String> declineInvitation(
             @AuthenticationPrincipal UUID user,
             @PathVariable UUID invitation) {
 
         invitationReplyHandler.declineInvitation(user, invitation);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok("Invitation declined");
     }
 }

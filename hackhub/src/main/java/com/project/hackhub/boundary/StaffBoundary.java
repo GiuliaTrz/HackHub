@@ -72,12 +72,12 @@ public class StaffBoundary {
      * @throws UnsupportedOperationException if the organizer lacks permissions or tries to change their own role
      */
     @PostMapping("/{hackathonId}/staff/change-role")
-    public ResponseEntity<Void> modifyStaff(
+    public ResponseEntity<String> modifyStaff(
             @AuthenticationPrincipal UUID organizerId,
             @PathVariable UUID hackathonId,
             @RequestBody UpdateStaffRequestDTO request) {
         staffHandler.changeStaffRole(organizerId, hackathonId,
                 request.toChange(), request.role());
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok("staff successfully modified");
     }
 }

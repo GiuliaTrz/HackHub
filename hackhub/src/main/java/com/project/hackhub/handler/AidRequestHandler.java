@@ -20,14 +20,14 @@ import java.util.List;
 import java.util.UUID;
 
 @Service
-public class SupportRequestHandler {
+public class AidRequestHandler {
 
     private final CalendarAdapter calendarAdapter;
     private final HackathonRepository hackathonRepository;
     private final UserRepository userRepository;
     private final TeamRepository teamRepository;
 
-    public SupportRequestHandler(CalendarAdapter calendarAdapter, HackathonRepository hackathonRepository, UserRepository userRepository, TeamRepository teamRepository) {
+    public AidRequestHandler(CalendarAdapter calendarAdapter, HackathonRepository hackathonRepository, UserRepository userRepository, TeamRepository teamRepository) {
         this.calendarAdapter = calendarAdapter;
         this.hackathonRepository = hackathonRepository;
         this.userRepository = userRepository;
@@ -48,7 +48,7 @@ public class SupportRequestHandler {
     public List<Slot> getAvailableSlots(UUID user, UUID hackathon){
         Hackathon h = this.hackathonRepository.findById(hackathon)
                 .orElseThrow(() -> new IllegalArgumentException("Hackathon not found"));
-        if(h.getState().getStateType() != HackathonStateType.ONGOING)
+        if(h.getStateType() != HackathonStateType.ONGOING)
             throw new IllegalStateException("Hackathon is not IN_CORSO");
         User u = this.userRepository.findById(user)
                 .orElseThrow(()-> new IllegalArgumentException("User not found"));
@@ -58,8 +58,8 @@ public class SupportRequestHandler {
     }
 
     /**
-     * Proposes a call to a team that a mentor reckons may benefit from aid.
-     * Adds a new aid request in the hackathon's aidrequest list booked for a specific time slot and saves the changes.
+     * Proposes a call to a team that has sent an aid request for a specific time slot.
+     * Adds a new aid request in the hackathon's aid request list booked for a specific time slot and saves the changes.
      * Updates the team's pending request flag.
      *
      * @param mentor the id of a user that starts the action.
@@ -74,7 +74,7 @@ public class SupportRequestHandler {
     public void proposeCall(UUID mentor, Slot slot, UUID team){
         Team t = this.hackathonRepository.findByTeamId(team)
                 .orElseThrow(() -> new IllegalArgumentException("Team not found"));
-        if(t.getHackathon().getState().getStateType() != HackathonStateType.ONGOING)
+        if(t.getHackathon().getStateType() != HackathonStateType.ONGOING)
             throw new IllegalStateException("Hackathon is not IN_CORSO");
         User u = this.userRepository.findById(mentor)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
@@ -108,8 +108,8 @@ public class SupportRequestHandler {
                 .orElseThrow(() -> new IllegalArgumentException("Team not found"));
         User u =  this.userRepository.findById(leader)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
-        if(realTeam.getHackathon().getState().getStateType() != HackathonStateType.ONGOING)
-                throw new IllegalStateException("Hackathon is not IN_CORSO");
+        if(realTeam.getHackathon().getStateType() != HackathonStateType.ONGOING)
+                throw new IllegalStateException("Hackathon is not ONGOING");
         if (!u.hasPermission(Permission.CAN_SEND_AID_REQUEST, realTeam.getHackathon()))
                 throw new UnsupportedOperationException("User does not have required permission");
         if (checkAidRequestData(dto, realTeam)) {
@@ -139,49 +139,49 @@ public class SupportRequestHandler {
     }
 
     /**
-     * Elimina una richiesta di supporto. Si assume che al massimo ci sia una richiesta per team.
-     * @param requesterId ID utente (team leader o mentore)
-     * @param hackathonId ID hackathon
-     * @param teamId      ID team
+     * Deletes an AidRequest for a specific team in a given hackathon.
+     * Only the team leader or a mentor can perform this action.
+     * @param requesterId user ID
+     * @param hackathonId hackathon ID
+     * @param teamId      team ID
      * @author Giulia Trozzi
      */
     @Transactional
-    public void deleteSupportRequest(UUID requesterId, UUID hackathonId, UUID teamId) {
+    public void deleteAidRequest(UUID requesterId, UUID hackathonId, UUID teamId) {
         User requester = userRepository.findById(requesterId)
-                .orElseThrow(() -> new IllegalArgumentException("Utente non trovato"));
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
         Hackathon hackathon = hackathonRepository.findById(hackathonId)
-                .orElseThrow(() -> new IllegalArgumentException("Hackathon non trovato"));
+                .orElseThrow(() -> new IllegalArgumentException("Hackathon not found"));
 
         Team team = hackathon.getTeamsList().stream()
                 .filter(t -> t.getId().equals(teamId))
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("Team non trovato nell'hackathon"));
+                .orElseThrow(() -> new IllegalArgumentException("Team does not participate in this hackathon"));
 
-        boolean isTeamLeader = team.getTeamLeader().getId().equals(requesterId);
-        boolean isMentor = hackathon.getMentorsList().contains(requester);
-        if (!isTeamLeader && !isMentor) {
-            throw new UnsupportedOperationException("Solo team leader o mentore possono eliminare la richiesta");
-        }
+        if (!requester.hasPermission(Permission.CAN_HANDLE_AID_REQUEST, hackathon))
+            throw new UnsupportedOperationException("User does not have required permission");
 
         AidRequest toRemove = hackathon.getAidRequests().stream()
                 .filter(r -> r.getTeam().equals(team))
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("Nessuna richiesta attiva per questo team"));
+                .orElseThrow(() -> new IllegalArgumentException("No support request active for this team"));
 
+        if(!requester.equals(team.getTeamLeader()))
+            throw new IllegalArgumentException("This is not your team! Only the actual team leader can delete the aid request");
         hackathon.getAidRequests().remove(toRemove);
         team.setHasPendingCallProposal(false);
         hackathonRepository.save(hackathon);
     }
 
     /**
-     * Visualizza tutte le richieste di supporto di un hackathon.
-     * @param viewerId    ID utente (mentore o organizzatore)
-     * @param hackathonId ID hackathon
-     * @return lista di AidRequest
+     * Gets all AidRequests of a hackathon
+     * @param viewerId    user ID (mentor or coordinator
+     * @param hackathonId hackathon ID
+     * @return AidRequest list
      * @author Giulia Trozzi
      */
     @Transactional
-    public List<AidRequest> getAllSupportRequests(UUID viewerId, UUID hackathonId) {
+    public List<AidRequest> getAllAidRequests(UUID viewerId, UUID hackathonId) {
         User viewer = userRepository.findById(viewerId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
         Hackathon hackathon = hackathonRepository.findById(hackathonId)
@@ -189,6 +189,10 @@ public class SupportRequestHandler {
         if(!viewer.hasPermission(Permission.STAFF_PERMISSION, hackathon))
             throw new UnsupportedOperationException("user lacks required permissions for the operation");
 
+        if(hackathon.getStateType().equals(HackathonStateType.SUBSCRIPTION_PHASE)) {
+            throw new UnsupportedOperationException("Operation cannot be performed if this state");
+        }
+        
         return hackathon.getAidRequests();
     }
 }

@@ -53,7 +53,7 @@ public class HackathonBuilder implements Builder {
     }
 
     /**
-     * Sets the state of the hackathon to the default 'SUBSCRIPTION_TIME' state.
+     * Sets the state of the hackathon to the default 'SUBSCRIPTION_PHASE' state.
      */
     @Override
     public void setState() {

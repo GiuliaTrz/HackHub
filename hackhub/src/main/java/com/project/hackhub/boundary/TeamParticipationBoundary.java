@@ -29,10 +29,10 @@ public class TeamParticipationBoundary {
      * @throws UnsupportedOperationException if the user is the team leader or the team has only one member
      */
     @PostMapping("/{teamId}/leave")
-    public ResponseEntity<Void> leaveTeam(
+    public ResponseEntity<String> leaveTeam(
             @AuthenticationPrincipal UUID userId,
             @PathVariable UUID teamId) {
         teamParticipationHandler.leaveTeam(userId, teamId);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok("User has left the team");
     }
 }
