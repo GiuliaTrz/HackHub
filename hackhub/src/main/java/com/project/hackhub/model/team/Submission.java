@@ -17,11 +17,11 @@ import java.util.UUID;
 public class Submission {
     @Id @GeneratedValue
     private UUID id;
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REMOVE)
     @JsonIgnoreProperties({"description"})
     private Task task;
     @ManyToOne
-    @JsonIgnoreProperties({"hackathon", "teamMembersList", "invitationList", "pendingCallProposal"
+    @JsonIgnoreProperties({"hackathon", "teamMembersList", "invitationList", "hasPendingCallProposal"
     , "teamLeader"})
     private Team team;
     @Embedded

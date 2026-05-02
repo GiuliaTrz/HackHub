@@ -42,7 +42,7 @@ public class NewLeaderListener implements EventListener{
         if(entity == null) throw new IllegalArgumentException("team cannot be null");
 
         Team team = (Team) entity;
-        userStateService.changeUserState(usersList.get(1), true, team.getHackathon(), UserStateType.TEAM_LEADER);
+        userStateService.changeUserState(usersList.getFirst(), true, team.getHackathon(), UserStateType.TEAM_LEADER);
         // message will be simulated for testing through the API call
     }
 }

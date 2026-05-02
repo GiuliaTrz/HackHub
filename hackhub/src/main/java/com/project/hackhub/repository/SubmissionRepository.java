@@ -17,4 +17,9 @@ public interface SubmissionRepository extends JpaRepository<Submission, UUID> {
             "AND s.timestamp = (SELECT MAX(s2.timestamp) FROM Submission s2 " +
             "WHERE s2.team.id = :teamId AND s2.task = s.task)")
     List<Submission> findLatestSubmissionsByTeamId(@Param("teamId") UUID teamId);
+
+    @Query("select  s FROM Submission s WHERE s.team.id = :teamId AND s.task.id = :taskId " +
+            "AND s.timestamp = (SELECT MAX(s2.timestamp) FROM Submission s2 " +
+            "WHERE s2.team.id = :teamId AND s2.task.id = :taskId)")
+    Submission findLatestSubmissionByTeamIdAndTaskId(@Param("teamId")UUID id, @Param("taskId")UUID id1);
 }

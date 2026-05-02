@@ -41,6 +41,9 @@ public class HackathonHandler {
         if (!deleter.hasPermission(Permission.CAN_DELETE_HACKATHON, hackathon)) {
             throw new UnsupportedOperationException("Insufficient permissions to delete hackathon");
         }
+        if(!hackathon.getStateType().equals(HackathonStateType.SUBSCRIPTION_PHASE)) {
+            throw new UnsupportedOperationException("Hackathon cannot be deleted in this state");
+        }
 
         List<User> participants = new ArrayList<>();
 
