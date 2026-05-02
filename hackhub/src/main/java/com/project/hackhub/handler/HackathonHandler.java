@@ -83,11 +83,11 @@ public class HackathonHandler {
             throw new UnsupportedOperationException("Insufficient permissions");
         }
 
-        if(!hackathon.getStateType().equals(HackathonStateType.ONGOING)) {
+        if(!hackathon.getStateType().equals(HackathonStateType.SUBSCRIPTION_PHASE)) {
             throw new UnsupportedOperationException("Operation cannot be performed in this state");
         }
 
-        if(dto.judge() != null || !dto.mentorsList().isEmpty())
+        if(dto.judge() != null || !(dto.mentorsList() == null))
             throw new IllegalArgumentException("Staff roles cannot be modified through this endpoint;" +
                     "Please use the appropriate staff management endpoints.");
       
