@@ -98,15 +98,14 @@ public class InfractionHandler {
      * by that team or if the Hackathon is not in {@link HackathonStateType#ONGOING} or {@link HackathonStateType#APPRAISAL}
      */
     @Transactional
-    public void handleInfraction(UUID coordinator, UUID team) {
+    public List<Infraction> handleInfraction(UUID coordinator, UUID team) {
 
         User coord = userRepository.findById(coordinator).orElseThrow(
                 () -> new IllegalArgumentException("coordinator cannot be null"));
         Team t = teamRepository.findById(team).orElseThrow(
                 () -> new IllegalArgumentException("team to expel cannot be null"));
         Hackathon h = t.getHackathon();
-        Infraction i = hackathonRepository.findInfractionByTeam(h, t).orElseThrow(
-                () -> new IllegalArgumentException("infraction does not exist"));
+
 
         if (!coord.hasPermission(Permission.CAN_MANAGE_INFRACTIONS, h)
                 || !(h.getStateType().equals(HackathonStateType.ONGOING) ||
@@ -114,6 +113,8 @@ public class InfractionHandler {
             throw new UnsupportedOperationException("cannot perform this action");
 
         //API MESSAGE: "EXPEL OR PENALIZE TEAM"
+        return hackathonRepository.findInfractionByTeam(h, t).orElseThrow(
+                () -> new IllegalArgumentException("infraction does not exist"));
     }
 
     /**

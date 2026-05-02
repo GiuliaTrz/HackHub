@@ -38,7 +38,7 @@ public class CalendarAdapter {
                         LocalDateTime.of(2026, Month.MAY,15,11,30,0)));
         return mockSlots;
     }
-
+    //simulated
     public boolean removeSlot(Hackathon hackathon, Slot slot){
         return true;
     }

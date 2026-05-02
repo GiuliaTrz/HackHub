@@ -166,6 +166,8 @@ public class AidRequestHandler {
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("No support request active for this team"));
 
+        if(!requester.equals(team.getTeamLeader()))
+            throw new IllegalArgumentException("This is not your team! Only the actual team leader can delete the aid request");
         hackathon.getAidRequests().remove(toRemove);
         team.setHasPendingCallProposal(false);
         hackathonRepository.save(hackathon);

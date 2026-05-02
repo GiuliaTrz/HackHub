@@ -59,6 +59,7 @@ public class Hackathon {
     @OneToOne(cascade = CascadeType.PERSIST)
     private Reservation reservation;
 
+
     @ElementCollection
     private List<Infraction> infractions = new ArrayList<>();
 

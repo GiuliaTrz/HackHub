@@ -96,6 +96,8 @@ public class InvitationHandler {
         if(!t.getHackathon().getState().getStateType().equals(HackathonStateType.SUBSCRIPTION_PHASE)
                 || !tMember.hasPermission(Permission.CAN_CANCEL_INVITATION, t.getHackathon()))
             throw new UnsupportedOperationException("Action not allowed.");
+        if(!(tMember.equals(t.getTeamLeader())) && !(tMember.equals(toCancel.getAddressee())))
+            throw new IllegalArgumentException("Only the team leader or the addressee can cancel the invitation!");
 
         t.removeInvitationFromList(toCancel);
         teamRepository.save(t);
