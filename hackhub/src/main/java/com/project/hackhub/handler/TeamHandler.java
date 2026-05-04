@@ -75,6 +75,11 @@ public class TeamHandler {
             throw new UnsupportedOperationException("Only team leader or organizer can modify the team");
         }
 
+        for(Team t: team.getHackathon().getTeamsList())
+            if(t.getName().equals(newName))
+                throw new IllegalArgumentException("A team with the same name already exists in this hackathon.");
+
+
         team.setName(newName);
         teamRepository.save(team);
     }
