@@ -175,6 +175,8 @@ public class StaffHandler {
             }
             case JUDGE -> {
                 if (hackathon.getJudge() != null) {
+                    if(hackathon.getMentorsList().contains(user))
+                        hackathon.removeMentor(user);
                     User oldJudge = hackathon.getJudge();
                     EventManager.getInstance().notify(EventType.CHANGE_STAFF_ROLE, List.of(oldJudge), "you have been replaced on the hackathon" + hackathon.getId(), hackathon);
                     userStateService.changeUserState(user, true, hackathon, UserStateType.JUDGE);

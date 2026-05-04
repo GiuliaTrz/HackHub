@@ -6,15 +6,30 @@ This document provides a comprehensive guide to all API endpoints available in t
 
 ### Account Management
 - **POST** `/api/account/registration` - Create a new user account
+- **PUT** `/api/account/update` - Update user account information
+- **DELETE** `/api/account/delete` - Delete user account
 
 ### Authentication
 - **POST** `/api/authentication` - Authenticate a user and obtain JWT token
 
+### Request Coordinator Permission
+- **PATCH** `/api/organizer/permit/request` - Request coordinator permission
+
 ### Hackathon Management
 - **POST** `/api/hackathon/creation` - Create a new hackathon
 - **POST** `/api/hackathon/{hackathonId}/task` - Insert a task into a hackathon
+- **DELETE** `/api/hackathon/{hackathonId}` - Delete a hackathon
+- **PUT** `/api/hackathon/{hackathonId}` - Update hackathon information
 - **GET** `/api/info/hackathons` - Retrieve all hackathons
 - **GET** `/api/info/{hackathonId}/report` - Retrieve hackathon report
+
+### Team Management
+- **POST** `/api/team/{hackathonId}/creation` - Create a new team
+- **DELETE** `/api/team/{teamId}/members/{memberId}` - Remove a member from a team
+- **PATCH** `/api/team/{teamId}` - Update team information
+- **DELETE** `/api/teamPartecipation/unsubscribeTeam/{team}` - Unsubscribe team from hackathon
+- **PATCH** `/api/teamLeader/{t}/choice` - Change team leader
+- **POST** `/api/team-participation/{teamId}/leave` - Leave team participation
 
 ### Grades & Submissions
 - **PATCH** `/api/grades/submission/{submissionId}` - Grade a submission
@@ -26,11 +41,7 @@ This document provides a comprehensive guide to all API endpoints available in t
 - **POST** `/api/infraction/handle` - Handle an infraction
 - **PATCH** `/api/infraction/{team}/penalize` - Penalize a team
 - **DELETE** `/api/infraction/{team}/expel` - Expel a team
-
-### Team Management
-- **POST** `/api/team/{hackathonId}/creation` - Create a new team
-- **DELETE** `/api/teamParticipation/unsubscribeTeam/{team}` - Unsubscribe team from hackathon
-- **PATCH** `/api/teamLeader/{t}/choice` - Change team leader
+- **DELETE** `/api/infraction/{hackathonId}/{infractionIndex}` - Delete a specific infraction
 
 ### Invitations
 - **POST** `/api/invitation/{team}/invite/{user}` - Invite user to team
@@ -39,15 +50,24 @@ This document provides a comprehensive guide to all API endpoints available in t
 - **DELETE** `/api/invitation/{invitation}` - Decline invitation
 
 ### Support & Organizer
-- **PATCH** `/api/organizer/permit/request` - Request organizer permission
 - **GET** `/api/support/available-slots/{hackathon}` - Get available support slots
 - **POST** `/api/support/propose-call/{team}` - Propose a support call
 - **POST** `/api/support/send-aid-request` - Send aid request
+- **GET** `/api/support/{hackathonId}` - Get support requests for hackathon
+- **DELETE** `/api/support/{hackathonId}/teams/{teamId}` - Delete support request
 
 ### Winner Selection
 - **PATCH** `/api/winner/{hackathonId}/auto` - Automatically select winner
 - **PATCH** `/api/winner/{hackathonId}/manual/{teamId}` - Manually select winner
 - **PATCH** `/api/winner/{hackathon}/proclaim` - Proclaim the winner
+
+### Staff Management
+- **POST** `/api/staff/{hackathonId}/mentors` - Add a mentor to a hackathon
+- **DELETE** `/api/staff/{hackathonId}/mentors/{mentorId}` - Remove a mentor from a hackathon
+- **POST** `/api/staff/{hackathonId}/staff/change-role` - Change the role of a staff member
+
+### Prize Management
+- **POST** `/api/prize/{hackathonId}/claim` - Claim a prize
 
 
 ---
@@ -67,8 +87,6 @@ This document provides a comprehensive guide to all API endpoints available in t
 ### 2. Hackathon Creation Process
 
 #### Step 1: Request Organizer Permission
-**Endpoint:** `PATCH http://localhost:8080/api/organizer/permit/request`
-
 ```json
 {
   "fileName": "organizer_certificate"
@@ -76,8 +94,6 @@ This document provides a comprehensive guide to all API endpoints available in t
 ```
 
 #### Step 2: Create Hackathon
-**Endpoint:** `POST http://localhost:8080/api/hackathon/creation`
-
 **Hackathon 1:**
 ```json
 {
@@ -400,5 +416,32 @@ This document provides a comprehensive guide to all API endpoints available in t
   },
   "email": "byst@test.it",
   "password": "password"
+}
+```
+
+** Team leader change **
+
+### BODY
+```json
+"<UUID of new team leader>"
+```
+** Staff role change **
+
+### BODY
+```json
+{
+  "toChange": "<UUID of staff member>",
+  "role": "MENTOR || JUDGE"
+}
+```
+
+** Infraction **
+
+### BODY
+```json
+{
+  "description": "tried copying the solution from another team",
+  "type": "AI",
+  "team": "<ID TEAM>"
 }
 ```

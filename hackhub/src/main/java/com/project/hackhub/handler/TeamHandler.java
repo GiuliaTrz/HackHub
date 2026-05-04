@@ -144,7 +144,7 @@ public class TeamHandler {
         if (!team.getTeamMembersList().contains(user))
             throw new IllegalStateException("User is not a member of the team.");
 
-        EventManager.getInstance().notify(EventType.REMOVED_MEMBER_FROM_TEAM, List.of(user), "you have been removed from the team" + team.getId(), team);
+        EventManager.getInstance().notify(EventType.REMOVED_MEMBER_FROM_TEAM, List.of(user), "you have been removed from the team" + team.getId(), team.getHackathon());
         team.removeTeamMember(user);
         teamRepository.save(team);
     }

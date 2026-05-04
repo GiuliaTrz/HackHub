@@ -54,7 +54,8 @@ public class User {
     public void setState(Reservation reservation, UserStateType newStateType){
 
         if(stateInHackathon.containsKey(reservation))
-            return;
+            if(stateInHackathon.get(reservation).equals(newStateType))
+                return;
 
         this.stateInHackathon.put(reservation, newStateType);
     }

@@ -80,8 +80,9 @@ public class AidRequestHandler {
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
         if(!u.hasPermission(Permission.CAN_PROPOSE_CALL, t.getHackathon()))
                 throw new UnsupportedOperationException("User does not have required permission");
-        if(t.isHasPendingCallProposal())
-            throw new IllegalStateException("Team already has a pending call proposal");
+        if(t.isHasPendingCallProposal()) {
+            t.getHackathon().removeAidRequestByTeam(t);
+        }
         boolean removed = this.calendarAdapter.removeSlot(t.getHackathon(), slot);
             if(removed) {
                 AidRequest a = new AidRequest(t, AidRequestType.CALL_PROPOSAL, slot);
@@ -112,6 +113,8 @@ public class AidRequestHandler {
                 throw new IllegalStateException("Hackathon is not ONGOING");
         if (!u.hasPermission(Permission.CAN_SEND_AID_REQUEST, realTeam.getHackathon()))
                 throw new UnsupportedOperationException("User does not have required permission");
+        if(!realTeam.getTeamLeader().equals(u))
+            throw new IllegalArgumentException("This is not your team! Only the actual team leader can send an aid request");
         if (checkAidRequestData(dto, realTeam)) {
                 AidRequest aidRequest = new AidRequest(realTeam, dto.type(), dto.description(), null);
                 realTeam.getHackathon().addAidRequest(aidRequest);

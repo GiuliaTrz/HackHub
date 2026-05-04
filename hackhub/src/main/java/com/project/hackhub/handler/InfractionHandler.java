@@ -81,11 +81,11 @@ public class InfractionHandler {
                 !h.getStateType().equals(HackathonStateType.APPRAISAL)))
             throw new UnsupportedOperationException("cannot perform this action");
 
-        h.removeTeam(t);
-        h.removeInfractionByTeam(t);
-        hackathonRepository.save(h);
         List<User> teamMembers = t.getTeamMembersList();
         EventManager.getInstance().notify(EventType.EXPULSION_TEAM, teamMembers, "the team you were partecipating in the hackathon" + h.getId() + "has been expelled",  h);
+        h.removeInfractionByTeam(t);
+        h.removeTeam(t);
+        hackathonRepository.save(h);
         teamRepository.delete(t);
     }
 
