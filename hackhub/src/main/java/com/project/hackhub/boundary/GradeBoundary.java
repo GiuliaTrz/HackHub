@@ -10,7 +10,7 @@ import java.util.UUID;
 
 
 @RestController
-@RequestMapping("/api/grades")
+@RequestMapping("/api/evaluation")
 public class GradeBoundary {
     private final GradeHandler gradeHandler;
 
@@ -18,15 +18,6 @@ public class GradeBoundary {
         this.gradeHandler = gradeHandler;
     }
 
-    /**
-     * Allows a judge to grade a submission by providing the submission id and the grade details.
-     * The judge must be authenticated to perform this action.
-     * @param judge the id of the judge performing the action
-     * @param submissionId the id of the submission to grade
-     * @param num the record containing the grade
-     * @return a ResponseEntity with a success message if the grading is successful
-     * @author Chiara Marinucci
-     */
     @PatchMapping("/submission/{submissionId}")
     public ResponseEntity<String> gradeSubmission(
             @AuthenticationPrincipal UUID judge,
@@ -34,5 +25,13 @@ public class GradeBoundary {
             @RequestBody GradeDTO evaluation) {
         gradeHandler.gradeSubmission(judge, submissionId, evaluation);
         return ResponseEntity.ok("submission " + submissionId + " successfully graded " + evaluation.grade());
+    }
+
+    @GetMapping("/{teamId}")
+    public ResponseEntity<String> viewEvaluation(
+            @AuthenticationPrincipal UUID teamMemberId,
+            @PathVariable UUID teamId) {
+
+        return ResponseEntity.ok(gradeHandler.viewEvaluation(teamMemberId, teamId));
     }
 }

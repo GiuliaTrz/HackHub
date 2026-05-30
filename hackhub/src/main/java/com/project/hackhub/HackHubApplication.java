@@ -1,6 +1,7 @@
 package com.project.hackhub;
 
-import com.project.hackhub.observer.*;
+import com.project.hackhub.observer.EventListener;
+import com.project.hackhub.observer.EventManager;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;

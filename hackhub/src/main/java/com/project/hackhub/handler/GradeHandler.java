@@ -12,8 +12,6 @@ import com.project.hackhub.repository.TeamRepository;
 import com.project.hackhub.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -23,8 +21,7 @@ public class GradeHandler {
     private final UserRepository userRepository;
     private final TeamRepository teamRepository;
 
-    public GradeHandler(SubmissionRepository submissionRepository, UserRepository userRepository,
-                        TeamRepository teamRepository) {
+    public GradeHandler(SubmissionRepository submissionRepository, UserRepository userRepository, TeamRepository teamRepository) {
         this.submissionRepository = submissionRepository;
         this.userRepository = userRepository;
         this.teamRepository = teamRepository;
@@ -44,7 +41,6 @@ public class GradeHandler {
             throw new IllegalArgumentException("Grade not valid; must be between 0 and 10");
         if(evaluation.writtenEvaluation() == null)
             throw new IllegalArgumentException("Written evaluation cannot be null");
-        float num = evaluation.grade();
         User j = userRepository.findById(judge)
                 .orElseThrow(()-> new IllegalArgumentException("judge not found"));
         Submission s = submissionRepository.findById(submissionId)
@@ -55,28 +51,26 @@ public class GradeHandler {
              throw new IllegalStateException("Hackathon is not in APPRAISAL state");
         if(!j.hasPermission(Permission.CAN_GRADE_SUBMISSION, t.getHackathon()))
             throw new IllegalArgumentException("User does not have required permission");
+        float num = evaluation.grade();
         s.setGrade(num);
         s.setWrittenEvaluation(evaluation.writtenEvaluation());
+        if(t.getGrade() + num < 0.0)
+          t.setGrade((float) 0.0);
+        else t.setGrade(num);
+        t.setWrittenEvaluation(evaluation.writtenEvaluation());
         submissionRepository.save(s);
         }
 
-    /**
-     * Calculates and updates the team's final grade if all submissions are evaluated.
-     *
-     * @param t The Team to update.
-     */
-    private void updateTeamFinalGrade(Team t){
-            List<Submission> allSubmissions = submissionRepository.findLatestSubmissionsByTeamId(t.getId());
-            boolean isEverythingGraded = allSubmissions.stream()
-                    .allMatch(sub -> sub.getGrade() != null);
-            if(isEverythingGraded && !allSubmissions.isEmpty()){
-                float sum = t.getGrade() != null ? t.getGrade() : 0;
-                for (Submission sub : allSubmissions)
-                    sum += sub.getGrade();
+        public String viewEvaluation(UUID teamMemberId, UUID teamId) {
+            Team team = teamRepository.findById(teamId)
+                    .orElseThrow(() -> new IllegalArgumentException("Team not found"));
+            User teamMember = userRepository.findById(teamMemberId)
+                    .orElseThrow(() -> new IllegalArgumentException("User not found"));
+            if(!team.getTeamMembersList().contains(teamMember))
+                throw new IllegalArgumentException("User is not a member of the team");
+            if(team.getHackathon().getStateType() != HackathonStateType.CONCLUDED)
+                throw new IllegalArgumentException("The team evaluation can only be viewed after the hackathon is concluded");
 
-                float average = sum / allSubmissions.size();
-                t.setGrade(average);
-                teamRepository.save(t);
+            return "your team grade is " + team.getGrade() + " and the written evaluation is: " + team.getWrittenEvaluation();
         }
-    }
 }

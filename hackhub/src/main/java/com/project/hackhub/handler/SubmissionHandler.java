@@ -2,19 +2,20 @@ package com.project.hackhub.handler;
 
 import com.project.hackhub.dto.SubmissionDTO;
 import com.project.hackhub.model.hackathon.Hackathon;
-import com.project.hackhub.model.team.FileTemplate;
-import com.project.hackhub.model.hackathon.Task;
 import com.project.hackhub.model.hackathon.state.HackathonStateType;
+import com.project.hackhub.model.team.FileTemplate;
 import com.project.hackhub.model.team.Submission;
 import com.project.hackhub.model.team.Team;
 import com.project.hackhub.model.user.User;
 import com.project.hackhub.model.user.state.Permission;
-import com.project.hackhub.repository.*;
+import com.project.hackhub.repository.HackathonRepository;
+import com.project.hackhub.repository.SubmissionRepository;
+import com.project.hackhub.repository.TeamRepository;
+import com.project.hackhub.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service

@@ -1,7 +1,8 @@
 package com.project.hackhub.dto;
 
-import com.project.hackhub.model.hackathon.Reservation;
 import com.project.hackhub.model.hackathon.Money;
+import com.project.hackhub.model.hackathon.Reservation;
+
 import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;

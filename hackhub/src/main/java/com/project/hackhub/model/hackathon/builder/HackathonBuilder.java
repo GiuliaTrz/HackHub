@@ -1,8 +1,8 @@
 package com.project.hackhub.model.hackathon.builder;
 
 import com.project.hackhub.model.hackathon.Hackathon;
-import com.project.hackhub.model.hackathon.Reservation;
 import com.project.hackhub.model.hackathon.Money;
+import com.project.hackhub.model.hackathon.Reservation;
 import com.project.hackhub.model.hackathon.state.HackathonStateType;
 import com.project.hackhub.model.user.User;
 import com.project.hackhub.repository.UserRepository;

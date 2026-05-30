@@ -6,11 +6,16 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 @Component
-public class WinnerChoiceListener implements EventListener{
+public class PendingCallProposalListener implements EventListener{
 
+    /**
+     * Gets the {@link EventType} supported by this listener
+     * @return the {@link EventType} supported by this listener
+     * @author Giorgia Branchesi
+     */
     @Override
     public EventType getSupportedEventType() {
-        return EventType.WINNER_CHOICE;
+        return EventType.PENDING_CALL_PROPOSAL;
     }
 
     @Override
@@ -19,9 +24,7 @@ public class WinnerChoiceListener implements EventListener{
         if(usersList == null || usersList.isEmpty())
             return;
         if(message == null) throw new IllegalArgumentException("message needed");
-        if(entity == null) throw new IllegalArgumentException("Hackathon cannot be null");
-
+        if(entity == null) throw new IllegalArgumentException("hackathon cannot be null");
         // message will be simulated for testing through the API call
     }
-
 }

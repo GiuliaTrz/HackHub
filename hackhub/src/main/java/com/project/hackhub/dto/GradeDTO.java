@@ -1,4 +1,6 @@
 package com.project.hackhub.dto;
 
-public record GradeDTO(float grade, String writtenEvaluation) {
+public record GradeDTO(
+        float grade,
+        String writtenEvaluation) {
 }

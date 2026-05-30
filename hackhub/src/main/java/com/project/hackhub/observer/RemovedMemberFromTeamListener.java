@@ -1,7 +1,7 @@
 package com.project.hackhub.observer;
 
-import com.project.hackhub.model.user.User;
 import com.project.hackhub.model.hackathon.Hackathon;
+import com.project.hackhub.model.user.User;
 import com.project.hackhub.model.user.state.UserStateType;
 import com.project.hackhub.service.UserStateService;
 import lombok.RequiredArgsConstructor;

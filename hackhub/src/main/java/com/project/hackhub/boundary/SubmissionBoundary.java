@@ -20,13 +20,6 @@ public class SubmissionBoundary {
         this.submissionHandler = submissionHandler;
     }
 
-    /**
-     * Allows user to send a submission associated to a team for a given task
-     * @param teamLeader id of the user sending the submission, must be the team leader
-     * @param dto the submission data transfer object containing the necessary information for the submission
-     * @return a ResponseEntity with status CREATED if successful
-     * @author Chiara Marinucci
-     */
     @PostMapping("/send")
     public ResponseEntity<Void> sendSubmission(
             @AuthenticationPrincipal UUID teamLeader,

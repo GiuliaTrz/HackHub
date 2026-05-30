@@ -18,8 +18,8 @@ public enum EventType {
     NEW_LEADER(Team .class),
     USER_INVITATION(Invitation.class),
     PENALIZED_TEAM(Hackathon .class),
-    WINNER_CHOICE(Hackathon .class),
-    CHANGE_STAFF_ROLE(Hackathon .class);
+    CHANGE_STAFF_ROLE(Hackathon .class),
+    PENDING_CALL_PROPOSAL(Hackathon .class);
 
     @Getter private final Class<?> entityClass;
 

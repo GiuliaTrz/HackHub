@@ -6,13 +6,13 @@ import com.project.hackhub.model.hackathon.state.HackathonStateType;
 import com.project.hackhub.model.team.Team;
 import com.project.hackhub.model.user.User;
 import com.project.hackhub.model.user.state.Permission;
+import com.project.hackhub.observer.EventManager;
 import com.project.hackhub.observer.EventType;
 import com.project.hackhub.repository.HackathonRepository;
 import com.project.hackhub.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import com.project.hackhub.observer.EventManager;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -19,7 +19,7 @@ import java.util.UUID;
 @Entity
 public class Submission {
     @Id @GeneratedValue
-    private UUID id;
+    private UUID ids;
     @ManyToOne
     @JsonIgnoreProperties({"hackathon", "teamMembersList", "invitationList", "hasPendingCallProposal"
     , "teamLeader"})
@@ -30,7 +30,6 @@ public class Submission {
     private LocalDateTime timestamp;
 
     private Float grade;
-
     private String writtenEvaluation;
 
     @ManyToOne

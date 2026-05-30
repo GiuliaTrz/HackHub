@@ -2,11 +2,11 @@ package com.project.hackhub.model.hackathon;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.project.hackhub.model.hackathon.state.HackathonState;
-import com.project.hackhub.model.hackathon.state.HackathonStateType;
 import com.project.hackhub.model.hackathon.state.HackathonStateFactory;
+import com.project.hackhub.model.hackathon.state.HackathonStateType;
+import com.project.hackhub.model.team.AidRequest;
 import com.project.hackhub.model.team.Infraction;
 import com.project.hackhub.model.team.Team;
-import com.project.hackhub.model.team.AidRequest;
 import com.project.hackhub.model.user.User;
 import jakarta.persistence.*;
 import lombok.Getter;
