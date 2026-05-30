@@ -48,7 +48,7 @@ public class Hackathon {
     private List<User> mentorsList = new ArrayList<>();
 
     @Embedded
-    private Money moneyPrice;
+    private Money moneyPrize;
 
     @ManyToOne
     private User judge;

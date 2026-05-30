@@ -15,7 +15,7 @@ public class SubscriptionTime implements HackathonState {
         r.setName(h.getName());
         r.setRuleBook(h.getRuleBook());
         r.setState(h.getState());
-        r.setMoneyPrice(h.getMoneyPrice());
+        r.setMoneyPrice(h.getMoneyPrize());
         r.setExpiredSubscriptionsDate(h.getExpiredSubscriptionsDate());
         r.setReservation(h.getReservation());
         r.setMaxTeamDimension(h.getMaxTeamDimension());

@@ -35,19 +35,11 @@ public class SubmissionBoundary {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    /**
-     * Allows a user to view the list of a team's submission according to user's permissions.
-     * Staff can view all teams' submissions, team members only their own.
-     * @param user the id of the user
-     * @param teamId the id of the team
-     * @return a list of the team's submissions if the user has the necessary permission.
-     * @author Chiara Marinucci
-     */
-    @GetMapping("/team/{teamId}")
-    public ResponseEntity<List<Submission>> getTeamSubmissions(
+    @GetMapping("/all")
+    public ResponseEntity<List<Submission>> getAllTeamsSubmissions(
             @AuthenticationPrincipal UUID user,
-            @PathVariable UUID teamId){
-            List<Submission> submissions = submissionHandler.getTeamSubmissions(user, teamId);
+            @RequestBody UUID hackathonId){
+            List<Submission> submissions = submissionHandler.getAllTeamsSubmissions(user, hackathonId);
             if(submissions.isEmpty())
                 return ResponseEntity.noContent().build(); //204
             return ResponseEntity.ok(submissions); //200 OK

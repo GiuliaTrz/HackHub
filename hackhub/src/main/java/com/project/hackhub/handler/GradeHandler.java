@@ -1,6 +1,7 @@
 package com.project.hackhub.handler;
 
 
+import com.project.hackhub.dto.GradeDTO;
 import com.project.hackhub.model.hackathon.state.HackathonStateType;
 import com.project.hackhub.model.team.Submission;
 import com.project.hackhub.model.team.Team;
@@ -33,27 +34,30 @@ public class GradeHandler {
      * Grades a specific submission after validating judge permissions and Hackathon state.     *
      * @param judge UUID of the user performing the evaluation.
      * @param submissionId UUID of the submission to be graded.
-     * @param num the grade to assign to the submission.
      * @throws IllegalArgumentException if entities are not found or permissions are missing.
      * @throws IllegalStateException if the Hackathon is not in the evaluation phase.
      * @author Chiara Marinucci
      */
     @Transactional
-    public void gradeSubmission(UUID judge, UUID submissionId, float num) {
+    public void gradeSubmission(UUID judge, UUID submissionId, GradeDTO evaluation) {
+        if(evaluation.grade() < 0 || evaluation.grade() > 10)
+            throw new IllegalArgumentException("Grade not valid; must be between 0 and 10");
+        if(evaluation.writtenEvaluation() == null)
+            throw new IllegalArgumentException("Written evaluation cannot be null");
+        float num = evaluation.grade();
         User j = userRepository.findById(judge)
                 .orElseThrow(()-> new IllegalArgumentException("judge not found"));
         Submission s = submissionRepository.findById(submissionId)
                 .orElseThrow(() -> new IllegalArgumentException("Submission not found"));
-        if(!s.equals(submissionRepository.findLatestSubmissionByTeamIdAndTaskId(s.getTeam().getId(), s.getTask().getId())))
-            throw new IllegalArgumentException("Only the latest submission for a task can be graded");
+
         Team t = s.getTeam();
         if(!t.getHackathon().getState().getStateType().equals(HackathonStateType.APPRAISAL))
              throw new IllegalStateException("Hackathon is not in APPRAISAL state");
         if(!j.hasPermission(Permission.CAN_GRADE_SUBMISSION, t.getHackathon()))
             throw new IllegalArgumentException("User does not have required permission");
         s.setGrade(num);
+        s.setWrittenEvaluation(evaluation.writtenEvaluation());
         submissionRepository.save(s);
-        updateTeamFinalGrade(t);
         }
 
     /**

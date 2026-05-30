@@ -99,7 +99,7 @@ public class HackathonHandler {
         if(dto.ruleBook() != null) hackathon.setRuleBook(dto.ruleBook());
         if(dto.expiredSubscriptionsDate() != null)hackathon.setExpiredSubscriptionsDate(dto.expiredSubscriptionsDate());
         if(dto.maxTeamDimension() != null)hackathon.setMaxTeamDimension(dto.maxTeamDimension());
-        if(dto.moneyPrice()!= null) hackathon.setMoneyPrice(dto.moneyPrice());
+        if(dto.moneyPrice()!= null) hackathon.setMoneyPrize(dto.moneyPrice());
 
 
         List<User> usersToUpdate = new ArrayList<>();

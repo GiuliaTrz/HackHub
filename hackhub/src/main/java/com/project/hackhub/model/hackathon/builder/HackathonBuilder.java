@@ -87,7 +87,7 @@ public class HackathonBuilder implements Builder {
     @Override
     public void setMoneyPrice(Money p) {
         if(p != null && p.getQuantity() >= 0)
-            hackathon.setMoneyPrice(p);
+            hackathon.setMoneyPrize(p);
     }
 
     /**
@@ -188,7 +188,7 @@ public class HackathonBuilder implements Builder {
                 && hackathon.getExpiredSubscriptionsDate() != null
                 && hackathon.getMaxTeamDimension() != null
                 && hackathon.getMaxTeamDimension() != 0
-                && hackathon.getMoneyPrice() != null
+                && hackathon.getMoneyPrize() != null
                 && hackathon.getJudge() != null
                 && hackathon.getReservation() != null
                 && hackathon.getMentorsList() != null

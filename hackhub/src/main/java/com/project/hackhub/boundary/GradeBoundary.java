@@ -1,5 +1,6 @@
 package com.project.hackhub.boundary;
 
+import com.project.hackhub.dto.GradeDTO;
 import com.project.hackhub.handler.GradeHandler;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -30,8 +31,8 @@ public class GradeBoundary {
     public ResponseEntity<String> gradeSubmission(
             @AuthenticationPrincipal UUID judge,
             @PathVariable UUID submissionId,
-            @RequestBody float num){
-        gradeHandler.gradeSubmission(judge, submissionId, num);
-        return ResponseEntity.ok("submission " + submissionId + " successfully graded " + num);
+            @RequestBody GradeDTO evaluation) {
+        gradeHandler.gradeSubmission(judge, submissionId, evaluation);
+        return ResponseEntity.ok("submission " + submissionId + " successfully graded " + evaluation.grade());
     }
 }
