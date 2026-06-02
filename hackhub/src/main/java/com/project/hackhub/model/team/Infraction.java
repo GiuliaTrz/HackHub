@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Embeddable @NoArgsConstructor
 @Getter
@@ -32,5 +33,16 @@ public class Infraction {
     @JsonIgnore
     public Hackathon getHackathon() {
         return this.iTeam.getHackathon();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof Infraction that)) return false;
+        return Objects.equals(iTeam, that.iTeam) && Objects.equals(iDescription, that.iDescription) && Objects.equals(iType, that.iType) && Objects.equals(timestamp, that.timestamp);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(iTeam, iDescription, iType, timestamp);
     }
 }

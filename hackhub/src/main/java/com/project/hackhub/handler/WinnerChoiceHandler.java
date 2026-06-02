@@ -37,9 +37,9 @@ public class WinnerChoiceHandler {
         Hackathon h = hackathonRepository.findById(hackathonId)
                 .orElseThrow(() -> new IllegalArgumentException("Hackathon not found"));
 
-        if(h.getTeamsList().contains(t))
+        if(!h.getTeamsList().contains(t))
             throw new IllegalArgumentException("Team is not part of the hackathon");
-        if(organizer.hasPermission(Permission.CAN_PROCLAIM_WINNER, h))
+        if(!organizer.hasPermission(Permission.CAN_PROCLAIM_WINNER, h))
             throw new IllegalArgumentException("User does not have required permission");
         if(h.getStateType() != HackathonStateType.APPRAISAL)
             throw new IllegalStateException("Hackathon is not in the right state to proclaim winner");
@@ -70,7 +70,7 @@ public class WinnerChoiceHandler {
         Hackathon h = hackathonRepository.findById(hackathonId)
                 .orElseThrow(() -> new IllegalArgumentException("Hackathon not found"));
 
-        if(organizer.hasPermission(Permission.CAN_PROCLAIM_WINNER, h))
+        if(!organizer.hasPermission(Permission.CAN_PROCLAIM_WINNER, h))
             throw new IllegalArgumentException("User does not have required permission");
         if(h.getStateType() != HackathonStateType.APPRAISAL)
             throw new IllegalStateException("Hackathon is in the wrong state");

@@ -23,7 +23,7 @@ import java.util.*;
 public class Hackathon {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue @Column(name = "hackathon_id")
     private UUID id;
 
     @Column(name = "HackathonName")

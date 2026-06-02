@@ -33,7 +33,7 @@ public class Submission {
     private String writtenEvaluation;
 
     @ManyToOne
-    @JoinColumn(name = "id", nullable = false)
+    @JoinColumn(name = "hackathon_id", nullable = false) // <--- Cambiato da "id" a "hackathon_id"
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JsonIncludeProperties({"id", "name"})
     private Hackathon hackathon;
