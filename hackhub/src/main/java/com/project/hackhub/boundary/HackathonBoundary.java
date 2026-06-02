@@ -1,9 +1,7 @@
 package com.project.hackhub.boundary;
 
 import com.project.hackhub.dto.HackathonDTO;
-import com.project.hackhub.dto.UpdateStaffRequestDTO;
 import com.project.hackhub.handler.HackathonHandler;
-import com.project.hackhub.handler.StaffHandler;
 import com.project.hackhub.model.hackathon.Hackathon;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;

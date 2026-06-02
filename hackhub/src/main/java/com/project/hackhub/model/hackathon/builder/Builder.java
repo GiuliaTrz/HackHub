@@ -1,8 +1,9 @@
 package com.project.hackhub.model.hackathon.builder;
 
-import com.project.hackhub.model.hackathon.Reservation;
 import com.project.hackhub.model.hackathon.Money;
+import com.project.hackhub.model.hackathon.Reservation;
 import com.project.hackhub.model.user.User;
+
 import java.time.LocalDate;
 import java.util.List;
 

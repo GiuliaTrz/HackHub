@@ -2,11 +2,11 @@ package com.project.hackhub.model.hackathon;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.project.hackhub.model.hackathon.state.HackathonState;
-import com.project.hackhub.model.hackathon.state.HackathonStateType;
 import com.project.hackhub.model.hackathon.state.HackathonStateFactory;
+import com.project.hackhub.model.hackathon.state.HackathonStateType;
+import com.project.hackhub.model.team.AidRequest;
 import com.project.hackhub.model.team.Infraction;
 import com.project.hackhub.model.team.Team;
-import com.project.hackhub.model.team.AidRequest;
 import com.project.hackhub.model.user.User;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -23,7 +23,7 @@ import java.util.*;
 public class Hackathon {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue @Column(name = "hackathon_id")
     private UUID id;
 
     @Column(name = "HackathonName")
@@ -48,7 +48,7 @@ public class Hackathon {
     private List<User> mentorsList = new ArrayList<>();
 
     @Embedded
-    private Money moneyPrice;
+    private Money moneyPrize;
 
     @ManyToOne
     private User judge;

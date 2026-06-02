@@ -1,18 +1,20 @@
 package com.project.hackhub.handler;
 
 import com.project.hackhub.dto.AidRequestDTO;
-import com.project.hackhub.repository.TeamRepository;
-import com.project.hackhub.service.calendar.CalendarAdapter;
-import com.project.hackhub.service.calendar.Slot;
 import com.project.hackhub.model.hackathon.Hackathon;
 import com.project.hackhub.model.hackathon.state.HackathonStateType;
+import com.project.hackhub.model.team.AidRequest;
 import com.project.hackhub.model.team.AidRequestType;
 import com.project.hackhub.model.team.Team;
-import com.project.hackhub.model.team.AidRequest;
 import com.project.hackhub.model.user.User;
 import com.project.hackhub.model.user.state.Permission;
+import com.project.hackhub.observer.EventManager;
+import com.project.hackhub.observer.EventType;
 import com.project.hackhub.repository.HackathonRepository;
+import com.project.hackhub.repository.TeamRepository;
 import com.project.hackhub.repository.UserRepository;
+import com.project.hackhub.service.calendar.CalendarAdapter;
+import com.project.hackhub.service.calendar.Slot;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
@@ -90,6 +92,7 @@ public class AidRequestHandler {
                 t.setHasPendingCallProposal(true);
                 hackathonRepository.save(t.getHackathon());
             }
+        EventManager.getInstance().notify(EventType.PENDING_CALL_PROPOSAL, t.getTeamMembersList(), "a call proposal has been made for your team", t.getHackathon());
     }
 
     /**

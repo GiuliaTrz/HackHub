@@ -1,7 +1,6 @@
 package com.project.hackhub.model.user.state;
 
 public enum Permission {
-    CAN_ADD_MENTOR,
     CAN_INVITE_USERS,
     CAN_MANAGE_INFRACTIONS,
     CAN_MODIFY_HACKATHON,
@@ -22,7 +21,6 @@ public enum Permission {
     CAN_SEND_SUBMISSION,
     CAN_EXPEL_TEAM,
     CAN_PENALIZE_TEAM,
-    CAN_CHOOSE_WINNER,
     CAN_PROCLAIM_WINNER,
     CAN_ADD_TASK,
     CAN_ACCEPT_INVITATION,

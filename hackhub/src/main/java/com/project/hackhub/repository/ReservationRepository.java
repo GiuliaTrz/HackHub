@@ -1,8 +1,8 @@
 package com.project.hackhub.repository;
 
-import com.project.hackhub.model.hackathon.TimeInterval;
 import com.project.hackhub.model.hackathon.Location;
 import com.project.hackhub.model.hackathon.Reservation;
+import com.project.hackhub.model.hackathon.TimeInterval;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

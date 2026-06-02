@@ -51,6 +51,8 @@ public class Team {
 
     private Float grade = (float) 0.00;
 
+    private String writtenEvaluation;
+
     public Team(@NonNull String name, @NonNull Hackathon hackathon, @NonNull User teamLeader) {
         this.name = name;
         this.hackathon = hackathon;
@@ -112,16 +114,14 @@ public class Team {
      * Removes an {@link Invitation} from the team invitations list.
      *
      * @param i the invitation to remove; cannot be null
-     * @return true if the invitation was removed, false if it was not in the list
      * @throws IllegalArgumentException if the invitation is null
-     *
      * @author Giulia Trozzi
      */
-    public boolean removeInvitationFromList(Invitation i) {
+    public void removeInvitationFromList(Invitation i) {
         if (i == null)
             throw new IllegalArgumentException("Invitation cannot be null.");
 
-        return invitationList.remove(i);
+        invitationList.remove(i);
     }
 
     /**

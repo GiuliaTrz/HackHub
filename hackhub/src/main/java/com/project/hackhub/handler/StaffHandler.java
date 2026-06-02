@@ -5,7 +5,6 @@ import com.project.hackhub.model.hackathon.Hackathon;
 import com.project.hackhub.model.hackathon.state.HackathonStateType;
 import com.project.hackhub.model.user.User;
 import com.project.hackhub.model.user.state.Permission;
-import com.project.hackhub.model.user.state.UserState;
 import com.project.hackhub.model.user.state.UserStateType;
 import com.project.hackhub.observer.EventManager;
 import com.project.hackhub.observer.EventType;
@@ -180,8 +179,8 @@ public class StaffHandler {
                     User oldJudge = hackathon.getJudge();
                     EventManager.getInstance().notify(EventType.CHANGE_STAFF_ROLE, List.of(oldJudge), "you have been replaced on the hackathon" + hackathon.getId(), hackathon);
                     userStateService.changeUserState(user, true, hackathon, UserStateType.JUDGE);
-                }
                 hackathon.setJudge(user);
+                }
             }
             default -> throw new IllegalArgumentException("Unhandled role: " + role);
         }

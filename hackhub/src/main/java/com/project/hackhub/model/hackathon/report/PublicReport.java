@@ -1,8 +1,8 @@
 package com.project.hackhub.model.hackathon.report;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.project.hackhub.model.hackathon.Reservation;
 import com.project.hackhub.model.hackathon.Money;
+import com.project.hackhub.model.hackathon.Reservation;
 import com.project.hackhub.model.hackathon.state.HackathonState;
 import com.project.hackhub.model.team.Team;
 import lombok.Getter;

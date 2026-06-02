@@ -1,8 +1,8 @@
 package com.project.hackhub.model.hackathon.builder;
 
 import com.project.hackhub.model.hackathon.Hackathon;
-import com.project.hackhub.model.hackathon.Reservation;
 import com.project.hackhub.model.hackathon.Money;
+import com.project.hackhub.model.hackathon.Reservation;
 import com.project.hackhub.model.hackathon.state.HackathonStateType;
 import com.project.hackhub.model.user.User;
 import com.project.hackhub.repository.UserRepository;
@@ -87,7 +87,7 @@ public class HackathonBuilder implements Builder {
     @Override
     public void setMoneyPrice(Money p) {
         if(p != null && p.getQuantity() >= 0)
-            hackathon.setMoneyPrice(p);
+            hackathon.setMoneyPrize(p);
     }
 
     /**
@@ -188,7 +188,7 @@ public class HackathonBuilder implements Builder {
                 && hackathon.getExpiredSubscriptionsDate() != null
                 && hackathon.getMaxTeamDimension() != null
                 && hackathon.getMaxTeamDimension() != 0
-                && hackathon.getMoneyPrice() != null
+                && hackathon.getMoneyPrize() != null
                 && hackathon.getJudge() != null
                 && hackathon.getReservation() != null
                 && hackathon.getMentorsList() != null

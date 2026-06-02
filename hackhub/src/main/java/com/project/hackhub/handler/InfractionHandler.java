@@ -133,7 +133,7 @@ public class InfractionHandler {
                 () -> new IllegalArgumentException("coordinator cannot be null"));
         Team t = teamRepository.findById(team).orElseThrow(
                 () -> new IllegalArgumentException("team to expel cannot be null"));
-        if(points <= 0) throw new IllegalArgumentException("number of points invalid");
+        if(points <= 0 || points > 10) throw new IllegalArgumentException("number of points invalid");
         Hackathon h = t.getHackathon();
 
         if (!coord.hasPermission(Permission.CAN_PENALIZE_TEAM, h)
@@ -169,8 +169,7 @@ public class InfractionHandler {
                 () -> new IllegalArgumentException("team cannot be null"));
         Hackathon h = t.getHackathon();
         if(!m.hasPermission(Permission.CAN_REPORT_INFRACTION, h) ||
-                h.getStateType().equals(HackathonStateType.SUBSCRIPTION_PHASE) ||
-                h.getStateType().equals(HackathonStateType.CONCLUDED))
+                !h.getStateType().equals(HackathonStateType.ONGOING))
             throw new IllegalArgumentException("cannot perform this operation");
 
         Infraction infraction = new Infraction(t, dto.description(), dto.type());

@@ -55,7 +55,7 @@ public class HackathonBuilderMemento implements Memento {
         snapshot.setRuleBook(hackathon.getRuleBook());
         snapshot.setExpiredSubscriptionsDate(hackathon.getExpiredSubscriptionsDate());
         snapshot.setMaxTeamDimension(hackathon.getMaxTeamDimension());
-        snapshot.setMoneyPrice(hackathon.getMoneyPrice());
+        snapshot.setMoneyPrice(hackathon.getMoneyPrize());
         snapshot.setReservation(hackathon.getReservation());
 
         // Always save mentors list, even if empty or null
@@ -119,7 +119,7 @@ public class HackathonBuilderMemento implements Memento {
             hackathon.setMaxTeamDimension(snapshot.getMaxTeamDimension());
 
         if (snapshot.getMoneyPrice() != null)
-            hackathon.setMoneyPrice(snapshot.getMoneyPrice());
+            hackathon.setMoneyPrize(snapshot.getMoneyPrice());
 
         if (snapshot.getReservation() != null)
             hackathon.setReservation(snapshot.getReservation());

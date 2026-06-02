@@ -1,7 +1,7 @@
 package com.project.hackhub.model.hackathon.builder;
 
-import com.project.hackhub.model.hackathon.Reservation;
 import com.project.hackhub.model.hackathon.Money;
+import com.project.hackhub.model.hackathon.Reservation;
 import com.project.hackhub.model.user.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

@@ -53,7 +53,7 @@ public class PrizeHandler {
             throw new UnsupportedOperationException("Only members of the winning team can collect the prize");
         }
 
-        Money totalPrize = hackathon.getMoneyPrice();
+        Money totalPrize = hackathon.getMoneyPrize();
         double totalAmount = totalPrize.getQuantity();
         int teamSize = winner.getTeamMembersList().size();
 

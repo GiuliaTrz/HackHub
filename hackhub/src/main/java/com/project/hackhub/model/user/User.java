@@ -3,13 +3,13 @@ package com.project.hackhub.model.user;
 import com.project.hackhub.model.hackathon.Hackathon;
 import com.project.hackhub.model.hackathon.Reservation;
 import com.project.hackhub.model.team.Invitation;
-import com.project.hackhub.model.user.state.DefaultState;
-import com.project.hackhub.model.user.state.Permission;
-import com.project.hackhub.model.user.state.UserState;
-import com.project.hackhub.model.user.state.UserStateFactory;
-import com.project.hackhub.model.user.state.UserStateType;
-import lombok.*;
+import com.project.hackhub.model.user.state.*;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
+import lombok.Setter;
+
 import java.util.*;
 
 @NoArgsConstructor
