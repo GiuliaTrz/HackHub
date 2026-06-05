@@ -2,31 +2,30 @@ package com.project.hackhub.handler;
 
 import com.project.hackhub.model.hackathon.Hackathon;
 import com.project.hackhub.model.hackathon.state.HackathonStateType;
+import com.project.hackhub.model.team.Submission;
 import com.project.hackhub.model.team.Team;
 import com.project.hackhub.model.user.User;
 import com.project.hackhub.model.user.state.Permission;
 import com.project.hackhub.observer.EventManager;
 import com.project.hackhub.repository.HackathonRepository;
+import com.project.hackhub.repository.SubmissionRepository;
 import com.project.hackhub.repository.TeamRepository;
 import com.project.hackhub.repository.UserRepository;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.UUID;
 import static com.project.hackhub.observer.EventType.PROCLAIM_WINNER;
 
+@AllArgsConstructor
 @Service
 public class WinnerChoiceHandler {
 
     private final HackathonRepository hackathonRepository;
     private final UserRepository userRepository;
     private final TeamRepository teamRepository;
-
-    public WinnerChoiceHandler(HackathonRepository hackathonRepository, UserRepository userRepository, TeamRepository teamRepository) {
-        this.hackathonRepository = hackathonRepository;
-        this.userRepository = userRepository;
-        this.teamRepository = teamRepository;
-    }
+    private final SubmissionRepository submissionRepository;
 
     public Team proclaimWinner(UUID teamId, UUID organizerId, UUID hackathonId) {
 
@@ -44,6 +43,9 @@ public class WinnerChoiceHandler {
         if(h.getStateType() != HackathonStateType.APPRAISAL)
             throw new IllegalStateException("Hackathon is not in the right state to proclaim winner");
 
+        if(!checkAppraisals(h))
+            throw new IllegalArgumentException("Not all submissions have been appraised yet, cannot proclaim winner");
+
         h.setWinner(t);
         List<User> usersToUpdate = h.getTeamsList().stream()
                 .flatMap(team -> team.getTeamMembersList().stream())
@@ -53,6 +55,16 @@ public class WinnerChoiceHandler {
         return t;
     }
 
+    private boolean checkAppraisals(Hackathon h) {
+
+        List<Submission> submissions = submissionRepository.findLatestSubmissionsByHackathon(h);
+
+        for(Submission s : submissions) {
+            if(s.getGrade() == null)
+                return false;
+        }
+        return true;
+    }
 
     /**
      * Helper method that sets the Hackathon state to CONCLUDED and saves changes.
