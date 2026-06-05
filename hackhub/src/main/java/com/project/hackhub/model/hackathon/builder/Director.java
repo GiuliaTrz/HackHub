@@ -86,8 +86,8 @@ public class Director {
         if (dto.expiredSubscriptionsDate() != null)
             builder.setExpiredSubscriptionDate(dto.expiredSubscriptionsDate());
 
-        if (dto.moneyPrice() != null)
-            builder.setMoneyPrice(dto.moneyPrice());
+        if (dto.moneyPrize() != null)
+            builder.setMoneyPrice(dto.moneyPrize());
 
         if (dto.maxTeamDimension() != null)
             builder.setMaxTeamDimension(dto.maxTeamDimension());

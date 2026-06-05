@@ -15,7 +15,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/teamLeader")
-public class TeamLeaderChoiceBoundary {
+public class    TeamLeaderChoiceBoundary {
 
     private final TeamLeaderChoiceHandler teamLeaderChoiceHandler;
 

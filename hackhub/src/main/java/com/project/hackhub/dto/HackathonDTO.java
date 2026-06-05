@@ -15,7 +15,7 @@ public record HackathonDTO(
           LocalDate expiredSubscriptionsDate,
           Integer maxTeamDimension,
           List<UUID> mentorsList,
-          Money moneyPrice,
+          Money moneyPrize,
           UUID judge,
           Reservation reservation
 ) {}

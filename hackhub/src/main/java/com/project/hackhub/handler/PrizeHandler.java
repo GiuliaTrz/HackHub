@@ -20,7 +20,7 @@ import java.util.UUID;
 public class PrizeHandler {
 
     private final HackathonRepository hackathonRepository;
-    private final UserRepository utenteRepository;
+    private final UserRepository userRepository;
 
     /**
      * Claims the monetary prize for a team member winner.
@@ -34,7 +34,7 @@ public class PrizeHandler {
      */
     @Transactional
     public void claimPrize(UUID userId, UUID hackathonId) {
-        User user = utenteRepository.findById(userId)
+        User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
         Hackathon hackathon = hackathonRepository.findById(hackathonId)
                 .orElseThrow(() -> new IllegalArgumentException("Hackathon not found"));

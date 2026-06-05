@@ -11,8 +11,4 @@ import java.util.UUID;
 
 @Repository
 public interface TeamRepository extends JpaRepository<Team, UUID> {
-
-    @Query("SELECT t from Team t where t.hackathon.id = :hackathonId " +
-            "AND t.grade = (SELECT MAX(t2.grade) FROM Team t2 WHERE t2.hackathon.id = :hackathonId) ")
-    List<Team> getTeamsWithMaxGrade(@Param("hackathonId") UUID hackathonId);
 }

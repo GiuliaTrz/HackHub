@@ -61,10 +61,12 @@ public class GradeHandler {
         submissionRepository.save(s);
         }
 
-        public String viewEvaluation(UUID teamMemberId, UUID teamId) {
-            Team team = teamRepository.findById(teamId)
-                    .orElseThrow(() -> new IllegalArgumentException("Team not found"));
-            User teamMember = userRepository.findById(teamMemberId)
+    @Transactional
+    public String viewEvaluation(UUID teamMemberId, UUID teamId) {
+
+        Team team = teamRepository.findById(teamId)
+                   .orElseThrow(() -> new IllegalArgumentException("Team not found"));
+        User teamMember = userRepository.findById(teamMemberId)
                     .orElseThrow(() -> new IllegalArgumentException("User not found"));
             if(!team.getTeamMembersList().contains(teamMember))
                 throw new IllegalArgumentException("User is not a member of the team");
